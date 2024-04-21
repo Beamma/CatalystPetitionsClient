@@ -1,3 +1,20 @@
 2024-04-22 11:07:39:739 [32minfo[39m: [32mSuccessfully connected to database[39m
 2024-04-22 11:07:39:739 [32minfo[39m: [32mListening on port: 4941[39m
 2024-04-22 11:09:44:944 [35mhttp[39m: [35m##### GET /api/v1/clubs #####[39m
+2024-04-22 11:27:27:2727 [35mhttp[39m: [35m##### OPTIONS /api/v1/users/register #####[39m
+2024-04-22 11:27:27:2727 [35mhttp[39m: [35m##### POST /api/v1/users/register #####[39m
+2024-04-22 11:27:36:2736 [35mhttp[39m: [35m##### OPTIONS /api/v1/users/login #####[39m
+2024-04-22 11:27:36:2736 [35mhttp[39m: [35m##### POST /api/v1/users/login #####[39m
+2024-04-22 11:28:22:2822 [35mhttp[39m: [35m##### OPTIONS /api/v1/users/register #####[39m
+2024-04-22 11:28:22:2822 [35mhttp[39m: [35m##### POST /api/v1/users/register #####[39m
+2024-04-22 11:28:22:2822 [31merror[39m: [31mDuplicate entry 'jbremma@gmail.com' for key 'unique_key'[39m
+2024-04-22 11:28:40:2840 [35mhttp[39m: [35m##### OPTIONS /api/v1/users/login #####[39m
+2024-04-22 11:28:40:2840 [35mhttp[39m: [35m##### POST /api/v1/users/login #####[39m
+2024-04-22 11:28:43:2843 [35mhttp[39m: [35m##### POST /api/v1/users/login #####[39m
+2024-04-22 11:28:55:2855 [35mhttp[39m: [35m##### OPTIONS /api/v1/users/login #####[39m
+2024-04-22 11:28:55:2855 [35mhttp[39m: [35m##### POST /api/v1/users/login #####[39m
+2024-04-22 11:28:58:2858 [35mhttp[39m: [35m##### POST /api/v1/users/login #####[39m
+2024-04-22 11:29:18:2918 [35mhttp[39m: [35m##### OPTIONS /api/v1/users/login #####[39m
+2024-04-22 11:29:18:2918 [35mhttp[39m: [35m##### POST /api/v1/users/login #####[39m
+2024-04-22 11:29:46:2946 [35mhttp[39m: [35m##### OPTIONS /api/v1/users/login #####[39m
+2024-04-22 11:29:46:2946 [35mhttp[39m: [35m##### POST /api/v1/users/login #####[39m

@@ -13,7 +13,7 @@ function Copyright(props: any) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        ClubHub
+        Petitions
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -49,7 +49,6 @@ const Login = () => {
 
     React.useEffect(() => {
         const getUsers = () => {
-
         }
         getUsers()
     }, [updateFlag])
@@ -76,7 +75,18 @@ const Login = () => {
                 })
         }
     }
+
+    const checkValidSession = () => {
+      if (Cookies.get('sessionId')) {
+        return true;
+      }
+
+      return false;
+    }
+
     if (response) {
+        return (<Navigate to = {{ pathname: "/home" }} />)
+    } else if (checkValidSession()) {
         return (<Navigate to = {{ pathname: "/home" }} />)
     } else {
         return (
