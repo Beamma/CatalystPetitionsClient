@@ -67,7 +67,7 @@ const Login = () => {
                     setSnackMessage("User successfully logged in")
                     setSnackOpenSuccess(true)
                     console.log(response.data.token)
-                    Cookies.set('sessionId', response.data.token);
+                    Cookies.set('X-Authorization', response.data.token);
                     setResponse(true)
                 }, (error) => {
                     setSnackMessage(error.response.statusText)
@@ -77,7 +77,7 @@ const Login = () => {
     }
 
     const checkValidSession = () => {
-      if (Cookies.get('sessionId')) {
+      if (Cookies.get('X-Authorization')) {
         return true;
       }
 

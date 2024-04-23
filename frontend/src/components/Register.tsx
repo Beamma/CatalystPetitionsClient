@@ -69,7 +69,7 @@ const Register = () => {
 
                         if (selectedFile !== null) {
                             console.log("Photo found");
-                            axios.put(`http://localhost:4941/api/v1/users/${Cookies.get('userId')}/image`, selectedFile)
+                            axios.put(`http://localhost:4941/api/v1/users/${Cookies.get('userId')}/image`, {selectedFile}, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": "image/jpeg"}})
                                 .then((res) => {
                                     console.log("Request sent");
                                     console.log(res)
@@ -95,7 +95,7 @@ const Register = () => {
     }
 
     const checkValidSession = () => {
-        if (Cookies.get('sessionId')) {
+        if (Cookies.get('X-Authorization')) {
           return true;
         }
   
