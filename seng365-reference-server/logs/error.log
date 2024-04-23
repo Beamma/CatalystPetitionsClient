@@ -1,1 +1,4 @@
 2024-04-22 11:28:22:2822 [31merror[39m: [31mDuplicate entry 'jbremma@gmail.com' for key 'unique_key'[39m
+2024-04-23 13:53:22:5322 [31merror[39m: [31mDuplicate entry 'jbremma@gmail.com' for key 'unique_key'[39m
+2024-04-24 10:04:22:422 [31merror[39m: [31mDuplicate entry '123@g.c' for key 'unique_key'[39m
+2024-04-24 10:35:17:3517 [31merror[39m: [31mDuplicate entry '213213123@g.c' for key 'unique_key'[39m
