@@ -68,7 +68,7 @@ const Register = () => {
                         setResponse(true)
 
                         if (selectedFile !== null) {
-                            axios.put(`http://localhost:4941/api/v1/users/${Cookies.get('userId')}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": "image/jpeg"}})
+                            axios.put(`http://localhost:4941/api/v1/users/${Cookies.get('userId')}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": selectedFile.type}})
                                 .then((res) => {
                                     setSelectedFile(null);
                                     setSnackOpenFail(false)

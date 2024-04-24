@@ -19,15 +19,16 @@ const UserProfile = () => {
     const [lname, setLname] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [photoUrl, setPhotoUrl] = React.useState<string>("");
+    const [edit, setEdit] = React.useState(false);
 
 
     React.useEffect(() => {
-        getUserInfo()
+        
     }, [])
 
     React.useEffect(() => {
         getUserInfo()
-    }, [error])
+    }, [error, edit])
 
     const getUserInfo = () => {
         if (! id?.match(/^\d+$/)) {
@@ -54,6 +55,10 @@ const UserProfile = () => {
         }
         
     }
+
+    const handleEdit = () => {
+        setEdit(true);
+    }
     
     if (error) {
         return (
@@ -62,6 +67,8 @@ const UserProfile = () => {
                 {errorMessage}
             </div>
         )
+    } else if (edit) {
+        return (<Navigate to = {{ pathname: "/users/" + id +"/edit" }} />)  
     } else {
         return (
             <div>
@@ -74,7 +81,11 @@ const UserProfile = () => {
                 </div>
 
                 <div>
-                Email: {email}
+                    Email: {email}
+                </div>
+
+                <div>
+                    <Button onClick={handleEdit}>Edit</Button>
                 </div>
                 
             </div>
