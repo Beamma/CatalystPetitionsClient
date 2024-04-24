@@ -1,7 +1,13 @@
+import Logout from "./Logout";
+
 const Home = () => {
 
-    return (<h1>Welcome To Petitions</h1>)
-
+    return (
+        <div>
+            <h1>Welcome To Petitions</h1>
+                <Logout />
+        </div>
+    )
 }
 
 export default Home;
