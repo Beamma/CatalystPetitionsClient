@@ -91,18 +91,30 @@ const EditProfile = () => {
 
     const editUserInfo = () => {
         if (selectedFile !== null) {
-            console.log(selectedFile)
             axios.put(`http://localhost:4941/api/v1/users/${id}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": selectedFile.type}})
                 .then((res) => {
                     setSelectedFile(null);
                     setSnackOpenFail(false)
-                    setSnackOpenSuccess(false)
+                    setSnackOpenSuccess(true)
+                    setSnackMessage("Successfully updated user")
                     setPhotoExists(true)
                 }, (error) => {
                     setSnackMessage(error.response.statusText)
                     setSnackOpenFail(true)
                 })
-        }
+        } 
+        
+        axios.patch(`http://localhost:4941/api/v1/users/${id}`, {"email": email, "firstName": fname, "lastName": lname}, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+            .then((res) => {
+                setSnackOpenFail(false)
+                setSnackOpenSuccess(true)
+                setPhotoExists(false)
+                setSnackMessage("Successfully updated user")
+            }, (error) => {
+                setSnackMessage(error.response.statusText)
+                setSnackOpenFail(true)
+            })
+        
     }
 
     const deleteImage = () => {
