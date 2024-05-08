@@ -131,7 +131,7 @@ const EditProfile = () => {
         if (photoExists) {
             return (
                 <div>
-                    <img src={photoUrl}></img>
+                    <img src={photoUrl} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
                     <Button
                     type="submit"
                     fullWidth

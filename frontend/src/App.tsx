@@ -7,6 +7,7 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import UserProfile from "./components/UserProfile";
 import EditProfile from "./components/EditProfile";
+import Petitions from './components/Petitions';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/users/:id" element={<UserProfile/>}/>
             <Route path="/users/:id/edit" element={<EditProfile/>}/>
             <Route path="*" element={<NotFound/>}/>
+            <Route path="/petitions" element={<Petitions/>}/>
           </Routes>
         </div>
       </Router>

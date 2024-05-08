@@ -1,4 +1,5 @@
 import Logout from "./Logout";
+import Petitions from "./Petitions";
 
 const Home = () => {
 

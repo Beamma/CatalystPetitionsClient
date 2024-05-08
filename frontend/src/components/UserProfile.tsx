@@ -1,11 +1,9 @@
 import * as React from 'react';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from "axios";
-import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme} from "@mui/material";
+import { Button} from "@mui/material";
 import { Navigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
+import NavBar from './NavBar';
 
 
 
@@ -72,9 +70,10 @@ const UserProfile = () => {
     } else {
         return (
             <div>
+                <NavBar></NavBar>
                 <h1>UserProfile</h1>
                 <div>
-                    <img src={photoUrl}></img>
+                    <img src={photoUrl} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
                 </div>
                 <div>
                     Name: {fname + " " + lname}
