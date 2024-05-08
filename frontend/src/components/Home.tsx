@@ -1,10 +1,11 @@
 import Logout from "./Logout";
-import Petitions from "./Petitions";
+import NavBar from './NavBar';
 
 const Home = () => {
 
     return (
         <div>
+            <NavBar></NavBar>
             <h1>Welcome To Petitions</h1>
                 <Logout />
         </div>

@@ -7,6 +7,7 @@ import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, Link, Snackba
 import { Navigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { ChangeEvent } from 'react';
+import NavBar from './NavBar';
 
 
 
@@ -166,6 +167,7 @@ const EditProfile = () => {
     } else {
         return (
             <div>
+                <NavBar></NavBar>
                 <h1>Edit Your Profile</h1>
                 <Container component="main" maxWidth="xs">
                     <Box sx={{ mt: 3 }}>

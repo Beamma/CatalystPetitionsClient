@@ -6,8 +6,6 @@ import Cookies from 'js-cookie';
 import NavBar from './NavBar';
 
 
-
-
 const UserProfile = () => {
     const [updateFlag, setUpdateFlag] = React.useState(true);
     const [error, setError] = React.useState(false);

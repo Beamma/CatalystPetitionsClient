@@ -1,10 +1,28 @@
-import { TableCell, TableRow } from "@mui/material";
+import { Dialog, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import axios from "axios";
 import React from "react";
+import NavBar from './NavBar';
+import CSS from 'csstype';
 
 const Petitions = () => {
 
-    const [petitions, setPetitions] = React.useState<Array<Petition>>([]);
+    const [petitions, setPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
+
+    interface HeadCell {
+        id: string;
+        label: string;
+        numeric: boolean;
+    }
+    
+    const headCells: readonly HeadCell[] = [
+        {id: 'Image', label: 'Image', numeric: false},
+        { id: 'Title', label: 'Title', numeric: false },
+    ];
+
+    const card: CSS.Properties = {
+        padding: "10px",
+        margin: "20px",
+    }
 
     React.useEffect(() => {
         getAllPetitions()
@@ -13,31 +31,68 @@ const Petitions = () => {
     const getAllPetitions = () => {
         axios.get("http://localhost:4941/api/v1/petitions")
             .then((reponse) => {
-                console.log(reponse.data)
                 setPetitions(reponse.data)
+                console.log(petitions);
             })
     }
 
     const petition_rows = () => {
-        return petitions.map((row: Petition) =>
-            <TableRow
+        return petitions.petitions.map((row: petition) =>
+            <TableRow hover
+                tabIndex={-1}
                 key={row.petitionId}>
-                <TableCell>
-                    {row.petitionId}
-                </TableCell>
-                <TableCell align="right">{row.title}</TableCell>
+                <TableCell align="left"><img src={'http://localhost:4941/api/v1/petitions/' + row.petitionId +'/image'} width={150} height={150}></img></TableCell>
+                <TableCell align="left">{row.title}</TableCell>
             </TableRow>
         )
         }
 
     return (
         <div>
-            <h1> Petitions </h1>
-            <ul>
-                {/* {petitions.map(petition => (
-                    <li key={petition.petitionId}>{petition.title}</li>
-                ))} */}
-            </ul>
+            <NavBar></NavBar>
+            <Paper elevation={3} style={card}>
+                <h1>Petitions</h1>
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                {headCells.map((headCell) => (
+                                    <TableCell
+                                        key={headCell.id}
+                                        // align={headCell.numeric ? 'left' : 'right'}
+                                        padding={'normal'}>
+                                        {headCell.label}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                    <TableBody>
+                        {petition_rows()}
+                    </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
+
+            {/* <Paper elevation={3} style={card}>
+                <h1>Add a new user</h1>
+                <Stack direction="row" spacing={2} justifyContent="center">
+                    <TextField id="outlined-basic" label="Username" variant="outlined" value={addUserUsername}
+                        onChange={(event) => setAddUserUsername(event.target.value)} />
+                    <Button variant="outlined" onClick={() => { addUser() }}>
+                        Submit
+                    </Button>
+                </Stack>
+            </Paper> */}
+
+            {/* <Snackbar
+                autoHideDuration={6000}
+                open={snackOpen}
+                onClose={handleSnackClose}
+                key={snackMessage}>
+                <Alert onClose={handleSnackClose} severity="success" sx={{width: '100%'}}>
+                    {snackMessage}
+                </Alert>
+            </Snackbar> */}
         </div>
     )
 }
