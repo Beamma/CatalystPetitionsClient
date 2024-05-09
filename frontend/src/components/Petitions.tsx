@@ -9,6 +9,7 @@ const Petitions = () => {
     const search = useSearchStore(state => state.search)
     const [petitions, setPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
     const [categories, setCategories] = React.useState<category[]>([]);
+    const [supportTiers, setSupportTier] = React.useState<petitionSupportTiers[]>([]);
 
     interface HeadCell {
         id: string;
@@ -21,6 +22,7 @@ const Petitions = () => {
         { id: 'Title', label: 'Title', numeric: false },
         { id: 'CreationDate', label: 'Creation Date', numeric: false },
         { id: 'Category', label: 'Category', numeric: false },
+        { id: 'Cost', label: 'Cost', numeric: false },
         { id: 'Owner', label: 'Owner', numeric: false },
     ];
 
@@ -39,11 +41,13 @@ const Petitions = () => {
             axios.get("http://localhost:4941/api/v1/petitions?count=10")
             .then((reponse) => {
                 setPetitions(reponse.data)
+                getSupportTiers(reponse.data)
             })
         } else {
             axios.get("http://localhost:4941/api/v1/petitions?count=10&q=" + search)
             .then((reponse) => {
                 setPetitions(reponse.data)
+                getSupportTiers(reponse.data)
             })
         }
         
@@ -56,9 +60,29 @@ const Petitions = () => {
             })
     }
 
+    const getSupportTiers = (petitions: petitionReturn) => {
+        console.log("getSupportTiers")
+        let minSupportTiers: petitionSupportTiers[] = [];
+        petitions.petitions.map(async (row: petition) => 
+            {
+                const petitionId = row.petitionId
+                const individualPetitions = await axios.get('http://localhost:4941/api/v1/petitions/' + petitionId)
+                minSupportTiers.push({"petitionId": petitionId, "cost": individualPetitions.data.supportTiers.sort((a: { cost: number; }, b: { cost: number; }) => a.cost - b.cost)[0].cost})
+            }
+        )
+        // console.log(minSupportTiers)
+        setSupportTier(minSupportTiers)
+        
+    }
+
     function getCategoryName(categoryId: number): string | undefined {
         const category = categories.find(category => category.categoryId === categoryId);
         return category ? category.name : undefined;
+    }
+
+    function getCorrespondingSupportTier(petitionId: number): number | undefined {
+        const tier = supportTiers.find(tier => tier.petitionId === petitionId);
+        return tier ? tier.cost : 0;
     }
 
     const petition_rows = () => {
@@ -70,10 +94,11 @@ const Petitions = () => {
                 <TableCell align="left">{row.title}</TableCell>
                 <TableCell align="left">{row.creationDate}</TableCell>
                 <TableCell align="left">{getCategoryName(row.categoryId)}</TableCell>
+                <TableCell align="left">{getCorrespondingSupportTier(row.petitionId)}</TableCell>
                 <TableCell align="left">{row.ownerFirstName} {row.ownerLastName} <img src={'http://localhost:4941/api/v1/users/' + row.ownerId +'/image'} width={50} height={50} style={{ borderRadius: '50%' }} alt='Hero'></img></TableCell>
             </TableRow>
         )
-        }
+    }
 
     return (
         <div>
