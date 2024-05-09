@@ -8,6 +8,7 @@ import {useSearchStore} from "../store";
 const Petitions = () => {
     const search = useSearchStore(state => state.search)
     const [petitions, setPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
+    const [categories, setCategories] = React.useState<category[]>([]);
 
     interface HeadCell {
         id: string;
@@ -30,10 +31,10 @@ const Petitions = () => {
 
     React.useEffect(() => {
         getAllPetitions()
+        getCategories()
     }, [search])
 
     const getAllPetitions = () => {
-        // console.log("GETALLPETITIONS")
         if (search === "") {
             axios.get("http://localhost:4941/api/v1/petitions?count=10")
             .then((reponse) => {
@@ -48,6 +49,18 @@ const Petitions = () => {
         
     }
 
+    const getCategories = () => {
+        axios.get("http://localhost:4941/api/v1/petitions/categories")
+            .then((reponse) => {
+                setCategories(reponse.data)
+            })
+    }
+
+    function getCategoryName(categoryId: number): string | undefined {
+        const category = categories.find(category => category.categoryId === categoryId);
+        return category ? category.name : undefined;
+    }
+
     const petition_rows = () => {
         return petitions.petitions.map((row: petition) =>
             <TableRow hover
@@ -56,8 +69,8 @@ const Petitions = () => {
                 <TableCell align="left"><img src={'http://localhost:4941/api/v1/petitions/' + row.petitionId +'/image'} width={150} height={150}></img></TableCell>
                 <TableCell align="left">{row.title}</TableCell>
                 <TableCell align="left">{row.creationDate}</TableCell>
-                <TableCell align="left">{row.categoryId}</TableCell>
-                <TableCell align="left">{row.ownerFirstName} {row.ownerLastName}</TableCell>
+                <TableCell align="left">{getCategoryName(row.categoryId)}</TableCell>
+                <TableCell align="left">{row.ownerFirstName} {row.ownerLastName} <img src={'http://localhost:4941/api/v1/users/' + row.ownerId +'/image'} width={50} height={50} style={{ borderRadius: '50%' }} alt='Hero'></img></TableCell>
             </TableRow>
         )
         }
