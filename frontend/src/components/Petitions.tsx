@@ -3,9 +3,10 @@ import axios from "axios";
 import React from "react";
 import NavBar from './NavBar';
 import CSS from 'csstype';
+import {useSearchStore} from "../store";
 
 const Petitions = () => {
-
+    const search = useSearchStore(state => state.search)
     const [petitions, setPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
 
     interface HeadCell {
@@ -29,14 +30,22 @@ const Petitions = () => {
 
     React.useEffect(() => {
         getAllPetitions()
-    }, [])
+    }, [search])
 
     const getAllPetitions = () => {
-        axios.get("http://localhost:4941/api/v1/petitions")
+        // console.log("GETALLPETITIONS")
+        if (search === "") {
+            axios.get("http://localhost:4941/api/v1/petitions?count=10")
             .then((reponse) => {
                 setPetitions(reponse.data)
-                console.log(petitions);
             })
+        } else {
+            axios.get("http://localhost:4941/api/v1/petitions?count=10&q=" + search)
+            .then((reponse) => {
+                setPetitions(reponse.data)
+            })
+        }
+        
     }
 
     const petition_rows = () => {

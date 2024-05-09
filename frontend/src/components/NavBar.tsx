@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { alpha, styled } from '@mui/material/styles';
 import { Autocomplete, InputBase, TextField } from '@mui/material';
 import axios from 'axios';
+import {useSearchStore} from "../store";
 
 const pages = [{ title: "Petitions", link: "../petitions"}];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -65,9 +66,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function NavBar() {
+  const search = useSearchStore(state => state.search)
+  const setSearch = useSearchStore(state => state.setSearch)
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const [search, setSearch] = React.useState("");
   const [suggestedPetitions, setSuggestedPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -85,26 +87,8 @@ function NavBar() {
     setAnchorElUser(null);
   };
 
-  const updateSearch = (value: string) => {
-    setSearch(value)
-    if (value !== "") {
-      axios.get("http://localhost:4941/api/v1/petitions?count=10&q=" + value)
-      .then((reponse) => {
-          setSuggestedPetitions(reponse.data)
-          console.log(suggestedPetitions.petitions);
-      })
-    } else {
-      axios.get("http://localhost:4941/api/v1/petitions?count=10")
-      .then((reponse) => {
-          setSuggestedPetitions(reponse.data)
-          console.log(suggestedPetitions.petitions);
-      })
-    }
-  }
-
   const searchPetitions = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-    console.log(search);
   }
 
   return (
@@ -208,7 +192,7 @@ function NavBar() {
                   inputProps={{ 'aria-label': 'search' }}
                   sx={{ color: 'black'}}
                   value={search}
-                  onChange={(event) => updateSearch(event.target.value)}
+                  onChange={(event) => setSearch(event.target.value)}
                 />
               </Search>
             </ form>
