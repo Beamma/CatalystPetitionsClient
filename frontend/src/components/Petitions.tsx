@@ -21,7 +21,6 @@ const Petitions = () => {
     const search = useSearchStore(state => state.search)
     const [petitions, setPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
     const [categories, setCategories] = React.useState<category[]>([]);
-    const [supportTiers, setSupportTier] = React.useState<petitionSupportTiers[]>([]);
     const [filterCats, setFilterCats] = React.useState<String[]>([]);
 
     const updateFilterCats = (event: SelectChangeEvent<typeof filterCats>) => {
