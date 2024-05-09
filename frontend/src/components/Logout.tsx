@@ -6,6 +6,7 @@ import axios from "axios";
 import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme} from "@mui/material";
 import { Navigate } from "react-router-dom";
 import Cookies from 'js-cookie';
+import { useUserStore } from '../store/user';
 
 
 
@@ -17,6 +18,8 @@ const Logout = () => {
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
     const [response, setResponse] = React.useState(false);
+    const userId = useUserStore(state => state.id)
+    const setUserId = useUserStore(state => state.setUser)
 
     const handleSnackCloseSuccess = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -47,6 +50,7 @@ const Logout = () => {
 
                 Cookies.remove('X-Authorization');
                 setResponse(true)
+                setUserId("0");
             }, (error) => {
                 setSnackMessage(error.response.statusText)
                 setSnackOpenFail(true)

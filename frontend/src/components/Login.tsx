@@ -6,6 +6,7 @@ import axios from "axios";
 import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme} from "@mui/material";
 import { Navigate } from "react-router-dom";
 import Cookies from 'js-cookie';
+import {useUserStore} from "../store/user";
 
 
 function Copyright(props: any) {
@@ -32,6 +33,8 @@ const Login = () => {
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
     const [response, setResponse] = React.useState(false);
+    const userId = useUserStore(state => state.id)
+    const setUserId = useUserStore(state => state.setUser)
 
     const handleSnackCloseSuccess = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -68,6 +71,7 @@ const Login = () => {
                     setSnackOpenSuccess(true)
                     console.log(response.data.token)
                     Cookies.set('X-Authorization', response.data.token);
+                    setUserId(response.data.userId);
                     setResponse(true)
                 }, (error) => {
                     setSnackMessage(error.response.statusText)

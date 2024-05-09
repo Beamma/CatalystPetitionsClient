@@ -18,6 +18,7 @@ import { alpha, styled } from '@mui/material/styles';
 import { Autocomplete, InputBase, TextField } from '@mui/material';
 import axios from 'axios';
 import {useSearchStore} from "../store";
+import {useUserStore} from "../store/user";
 
 const pages = [{ title: "Petitions", link: "../petitions"}];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -68,6 +69,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function NavBar() {
   const search = useSearchStore(state => state.search)
   const setSearch = useSearchStore(state => state.setSearch)
+  const userId = useUserStore(state => state.id)
+  const setUserId = useUserStore(state => state.setUser)
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [suggestedPetitions, setSuggestedPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
@@ -205,7 +208,7 @@ function NavBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy Sharp" src={'http://localhost:4941/api/v1/users/' + userId +'/image'} />
                 </IconButton>
               </Tooltip>
               <Menu
