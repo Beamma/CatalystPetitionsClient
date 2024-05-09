@@ -16,15 +16,6 @@ const MenuProps = {
     },
 };
 
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
-    return {
-      fontWeight:
-        personName.indexOf(name) === -1
-          ? theme.typography.fontWeightRegular
-          : theme.typography.fontWeightMedium,
-    };
-}
-
 
 const Petitions = () => {
     const search = useSearchStore(state => state.search)
@@ -69,18 +60,14 @@ const Petitions = () => {
     }, [search, filterCats])
 
     const parseCategories = () => {
-
         let resultString = ""
         filterCats.map((cat: String) =>
             {
-                console.log(cat)
                 const categoryId = categories.find(category => category.name === cat);
-                resultString = resultString + "&categoryIds=" +categoryId?.categoryId + ","
+                resultString = resultString + "&categoryIds=" +categoryId?.categoryId
             }
         ) 
-
-        console.log(resultString.slice(0, -1))
-        return (resultString.slice(0, -1))
+        return (resultString)
     }
 
     const getAllPetitions = () => {
@@ -90,13 +77,11 @@ const Petitions = () => {
             axios.get("http://localhost:4941/api/v1/petitions?count=10" + parsedCatergories)
             .then((reponse) => {
                 setPetitions(reponse.data)
-                getSupportTiers(reponse.data)
             })
         } else {
             axios.get("http://localhost:4941/api/v1/petitions?count=10&q=" + search + parsedCatergories)
             .then((reponse) => {
                 setPetitions(reponse.data)
-                getSupportTiers(reponse.data)
             })
         }
         
@@ -109,28 +94,9 @@ const Petitions = () => {
             })
     }
 
-    const getSupportTiers = (petitions: petitionReturn) => {
-        let minSupportTiers: petitionSupportTiers[] = [];
-        petitions.petitions.map(async (row: petition) => 
-            {
-                const petitionId = row.petitionId
-                const individualPetitions = await axios.get('http://localhost:4941/api/v1/petitions/' + petitionId)
-                minSupportTiers.push({"petitionId": petitionId, "cost": individualPetitions.data.supportTiers.sort((a: { cost: number; }, b: { cost: number; }) => a.cost - b.cost)[0].cost})
-            }
-        )
-        // console.log(minSupportTiers)
-        setSupportTier(minSupportTiers)
-        
-    }
-
     function getCategoryName(categoryId: number): string | undefined {
         const category = categories.find(category => category.categoryId === categoryId);
         return category ? category.name : undefined;
-    }
-
-    function getCorrespondingSupportTier(petitionId: number): number | undefined {
-        const tier = supportTiers.find(tier => tier.petitionId === petitionId);
-        return tier ? tier.cost : 0;
     }
 
     const petition_rows = () => {
@@ -142,7 +108,7 @@ const Petitions = () => {
                 <TableCell align="left">{row.title}</TableCell>
                 <TableCell align="left">{row.creationDate}</TableCell>
                 <TableCell align="left">{getCategoryName(row.categoryId)}</TableCell>
-                <TableCell align="left">{getCorrespondingSupportTier(row.petitionId)}</TableCell>
+                <TableCell align="left">{row.supportingCost}</TableCell>
                 <TableCell align="left">{row.ownerFirstName} {row.ownerLastName} <img src={'http://localhost:4941/api/v1/users/' + row.ownerId +'/image'} width={50} height={50} style={{ borderRadius: '50%' }} alt='Hero'></img></TableCell>
             </TableRow>
         )
@@ -201,7 +167,6 @@ const Petitions = () => {
                                 {headCells.map((headCell) => (
                                     <TableCell
                                         key={headCell.id}
-                                        // align={headCell.numeric ? 'left' : 'right'}
                                         padding={'normal'}>
                                         {headCell.label}
                                     </TableCell>
@@ -214,27 +179,6 @@ const Petitions = () => {
                     </Table>
                 </TableContainer>
             </Paper>
-
-            {/* <Paper elevation={3} style={card}>
-                <h1>Add a new user</h1>
-                <Stack direction="row" spacing={2} justifyContent="center">
-                    <TextField id="outlined-basic" label="Username" variant="outlined" value={addUserUsername}
-                        onChange={(event) => setAddUserUsername(event.target.value)} />
-                    <Button variant="outlined" onClick={() => { addUser() }}>
-                        Submit
-                    </Button>
-                </Stack>
-            </Paper> */}
-
-            {/* <Snackbar
-                autoHideDuration={6000}
-                open={snackOpen}
-                onClose={handleSnackClose}
-                key={snackMessage}>
-                <Alert onClose={handleSnackClose} severity="success" sx={{width: '100%'}}>
-                    {snackMessage}
-                </Alert>
-            </Snackbar> */}
         </div>
     )
 }

@@ -7,6 +7,7 @@ type petition = {
     ownerFirstName: string,
     ownerLastName: string,
     numberOfSupporters: number,
+    supportingCost: number
 }
 
 type petitionReturn = {
