@@ -15,7 +15,8 @@ import PollIcon from '@mui/icons-material/Poll';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from "react-router-dom";
 import { alpha, styled } from '@mui/material/styles';
-import { InputBase } from '@mui/material';
+import { Autocomplete, InputBase, TextField } from '@mui/material';
+import axios from 'axios';
 
 const pages = [{ title: "Petitions", link: "../petitions"}];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -66,6 +67,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [search, setSearch] = React.useState("");
+  const [suggestedPetitions, setSuggestedPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -81,6 +84,28 @@ function NavBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const updateSearch = (value: string) => {
+    setSearch(value)
+    if (value !== "") {
+      axios.get("http://localhost:4941/api/v1/petitions?count=10&q=" + value)
+      .then((reponse) => {
+          setSuggestedPetitions(reponse.data)
+          console.log(suggestedPetitions.petitions);
+      })
+    } else {
+      axios.get("http://localhost:4941/api/v1/petitions?count=10")
+      .then((reponse) => {
+          setSuggestedPetitions(reponse.data)
+          console.log(suggestedPetitions.petitions);
+      })
+    }
+  }
+
+  const searchPetitions = (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+    console.log(search);
+  }
 
   return (
     <AppBar position="static" sx={{bgcolor: 'black'}}>
@@ -172,16 +197,22 @@ function NavBar() {
               </Button>
             ))}
           </Box>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon sx={{ color: 'black'}} />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-              sx={{ color: 'black'}}
-            />
-          </Search>
+          <Box>
+            <form onSubmit={searchPetitions}>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon sx={{ color: 'black'}} />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ 'aria-label': 'search' }}
+                  sx={{ color: 'black'}}
+                  value={search}
+                  onChange={(event) => updateSearch(event.target.value)}
+                />
+              </Search>
+            </ form>
+          </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
