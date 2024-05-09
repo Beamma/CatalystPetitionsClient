@@ -93,7 +93,7 @@ function NavBar() {
     setRedirect(true);
   }
 
-  if (redirect) {
+  if (redirect && window.location.pathname !== "/petitions") {
     return (<Navigate to = {{ pathname: "/petitions" }} />)
   } else {
     return (
