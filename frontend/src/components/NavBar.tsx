@@ -75,6 +75,7 @@ function NavBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [suggestedPetitions, setSuggestedPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
   const [redirect, setRedirect] = React.useState(false);
+  const [signInStatus, setSignInStatus] = React.useState(false);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -96,7 +97,64 @@ function NavBar() {
     setRedirect(true);
   }
 
-  if (redirect && window.location.pathname !== "/petitions") {
+  const signIn = () => {
+    setSignInStatus(true);
+  }
+
+  const UserInfo = () => {
+    if (userId === "0") {
+      return (
+          <Box>
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={signIn}
+            >
+                Sign In
+            </Button>
+          </Box>
+      );
+    } else {
+      return(
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src={'http://localhost:4941/api/v1/users/' + userId +'/image'} />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+      )
+    }
+  }
+
+  if (signInStatus) {
+    return (<Navigate to = {{ pathname: "/users/login" }} />)
+  }
+  else if (redirect && window.location.pathname !== "/petitions") {
     return (<Navigate to = {{ pathname: "/petitions" }} />)
   } else {
     return (
@@ -205,7 +263,7 @@ function NavBar() {
                 </Search>
               </ form>
             </Box>
-            <Box sx={{ flexGrow: 0 }}>
+            {/* <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar alt="Remy Sharp" src={'http://localhost:4941/api/v1/users/' + userId +'/image'} />
@@ -233,7 +291,8 @@ function NavBar() {
                   </MenuItem>
                 ))}
               </Menu>
-            </Box>
+            </Box> */}
+            <UserInfo />
           </Toolbar>
         </Container>
       </AppBar>
