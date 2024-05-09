@@ -17,6 +17,9 @@ const Petitions = () => {
     const headCells: readonly HeadCell[] = [
         {id: 'Image', label: 'Image', numeric: false},
         { id: 'Title', label: 'Title', numeric: false },
+        { id: 'CreationDate', label: 'Creation Date', numeric: false },
+        { id: 'Category', label: 'Category', numeric: false },
+        { id: 'Owner', label: 'Owner', numeric: false },
     ];
 
     const card: CSS.Properties = {
@@ -43,6 +46,9 @@ const Petitions = () => {
                 key={row.petitionId}>
                 <TableCell align="left"><img src={'http://localhost:4941/api/v1/petitions/' + row.petitionId +'/image'} width={150} height={150}></img></TableCell>
                 <TableCell align="left">{row.title}</TableCell>
+                <TableCell align="left">{row.creationDate}</TableCell>
+                <TableCell align="left">{row.categoryId}</TableCell>
+                <TableCell align="left">{row.ownerFirstName} {row.ownerLastName}</TableCell>
             </TableRow>
         )
         }
