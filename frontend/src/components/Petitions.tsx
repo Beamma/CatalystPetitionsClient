@@ -146,6 +146,14 @@ const Petitions = () => {
         )
     }
 
+    const FilterCost = () => {
+        return (
+            <FormControl fullWidth>
+                
+            </FormControl>
+        )
+    }
+
     return (
         <div>
             <NavBar></NavBar>

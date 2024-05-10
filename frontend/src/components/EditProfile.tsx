@@ -128,7 +128,7 @@ const EditProfile = () => {
             })
     }
 
-    const DisplayImage = () => {
+    const displayImage = () => {
         if (photoExists) {
             return (
                 <div>
@@ -236,7 +236,7 @@ const EditProfile = () => {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <DisplayImage />
+                                {displayImage()}
                             </Grid>
                         </Grid>
                         <Button

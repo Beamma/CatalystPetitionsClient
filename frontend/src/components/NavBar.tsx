@@ -58,9 +58,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     [theme.breakpoints.up('sm')]: {
-      width: '12ch',
+      width: '20ch',
       '&:focus': {
-        width: '20ch',
+        width: '30ch',
       },
     },
   },
@@ -101,7 +101,7 @@ function NavBar() {
     setSignInStatus(true);
   }
 
-  const UserInfo = () => {
+  const userInfo = () => {
     if (userId === "0") {
       return (
           <Box>
@@ -254,7 +254,7 @@ function NavBar() {
                     <SearchIcon sx={{ color: 'black'}} />
                   </SearchIconWrapper>
                   <StyledInputBase
-                    placeholder="Search…"
+                    placeholder="Search Petitions"
                     inputProps={{ 'aria-label': 'search' }}
                     sx={{ color: 'black'}}
                     value={search}
@@ -292,7 +292,7 @@ function NavBar() {
                 ))}
               </Menu>
             </Box> */}
-            <UserInfo />
+            {userInfo()}
           </Toolbar>
         </Container>
       </AppBar>
