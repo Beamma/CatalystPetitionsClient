@@ -1,4 +1,4 @@
-import { Box, Chip, Dialog, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme } from "@mui/material";
+import { Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Paper, Select, SelectChangeEvent, Slider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import axios from "axios";
 import React from "react";
 import NavBar from './NavBar';
@@ -22,6 +22,8 @@ const Petitions = () => {
     const [petitions, setPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
     const [categories, setCategories] = React.useState<category[]>([]);
     const [filterCats, setFilterCats] = React.useState<String[]>([]);
+    const [filteredCost, setFilteredCost] = React.useState<number>(50);
+    const [sort, setSort] = React.useState('');
 
     const updateFilterCats = (event: SelectChangeEvent<typeof filterCats>) => {
         const {
@@ -56,7 +58,7 @@ const Petitions = () => {
     React.useEffect(() => {
         getAllPetitions()
         getCategories()
-    }, [search, filterCats])
+    }, [search, filterCats, filteredCost, sort])
 
     const parseCategories = () => {
         let resultString = ""
@@ -69,16 +71,25 @@ const Petitions = () => {
         return (resultString)
     }
 
+    const parseCost = () => {
+        if (filteredCost === undefined) {
+            return ""
+        }
+        let resultString = "&supportingCost=" + filteredCost.toString()
+        return resultString
+    }
+
     const getAllPetitions = () => {
         const parsedCatergories = parseCategories()
+        const parsedCost = parseCost()
 
         if (search === "") {
-            axios.get("http://localhost:4941/api/v1/petitions?count=10" + parsedCatergories)
+            axios.get("http://localhost:4941/api/v1/petitions?count=10" + parsedCatergories + parsedCost + sort)
             .then((reponse) => {
                 setPetitions(reponse.data)
             })
         } else {
-            axios.get("http://localhost:4941/api/v1/petitions?count=10&q=" + search + parsedCatergories)
+            axios.get("http://localhost:4941/api/v1/petitions?count=10&q=" + search + parsedCatergories + parsedCost + sort)
             .then((reponse) => {
                 setPetitions(reponse.data)
             })
@@ -146,10 +157,39 @@ const Petitions = () => {
         )
     }
 
-    const FilterCost = () => {
+    const handleFilterCostChange = (event: Event, newValue: number | number[]) => {
+        setFilteredCost(newValue as number);
+      };
+
+    const filterCost = () => {
         return (
             <FormControl fullWidth>
-                
+                <Slider aria-label="Default" valueLabelDisplay="auto" onChange={handleFilterCostChange} value={filteredCost}/>
+            </FormControl>
+        )
+    }
+    const changeSort = (event: SelectChangeEvent) => {
+        setSort(event.target.value as string);
+      };
+
+    const sortPetitions = () => {
+        return (
+            <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Sort</InputLabel>
+                <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={sort}
+                label="Sort"
+                onChange={changeSort}
+                >
+                    <MenuItem value={"&sortBy=ALPHABETICAL_ASC"}>Alphabetical Asc</MenuItem>
+                    <MenuItem value={"&sortBy=ALPHABETICAL_DESC"}>Alphabetical Desc</MenuItem>
+                    <MenuItem value={"&sortBy=COST_ASC"}>Cost Asc</MenuItem>
+                    <MenuItem value={"&sortBy=COST_DESC"}>Cost Desc</MenuItem>
+                    <MenuItem value={"&sortBy=CREATED_ASC"}>Creadted Asc</MenuItem>
+                    <MenuItem value={"&sortBy=CREATED_DESC"}>Created Desc</MenuItem>
+                </Select>
             </FormControl>
         )
     }
@@ -160,8 +200,14 @@ const Petitions = () => {
             <Paper style={card}>
                 <h3>Filter</h3>
                 <Grid container spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid item xs={4}>
                         <FilterCategories />
+                    </Grid>
+                    <Grid item xs={4}>
+                        {filterCost()}
+                    </Grid>
+                    <Grid item xs={4}>
+                        {sortPetitions()}
                     </Grid>
                 </Grid>
             </Paper>
