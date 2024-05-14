@@ -1,4 +1,4 @@
-import { Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Paper, Select, SelectChangeEvent, Slider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
 import axios from "axios";
 import React from "react";
 import NavBar from './NavBar';
@@ -26,6 +26,9 @@ const Petitions = () => {
     const [filterCats, setFilterCats] = React.useState<String[]>([]);
     const [filteredCost, setFilteredCost] = React.useState<number>(100);
     const [sort, setSort] = React.useState('');
+    const [petitionCount, setPetitionCount] = React.useState(0);
+    const [page, setPage] = React.useState(1);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const updateFilterCats = (event: SelectChangeEvent<typeof filterCats>) => {
         const {
@@ -60,7 +63,7 @@ const Petitions = () => {
     React.useEffect(() => {
         getAllPetitions()
         getCategories()
-    }, [search, filterCats, filteredCost, sort])
+    }, [search, filterCats, filteredCost, sort, page, rowsPerPage])
 
     const parseCategories = () => {
         let resultString = ""
@@ -86,14 +89,16 @@ const Petitions = () => {
         const parsedCost = parseCost()
 
         if (search === "") {
-            axios.get("http://localhost:4941/api/v1/petitions?count=10" + parsedCatergories + parsedCost + sort)
+            axios.get("http://localhost:4941/api/v1/petitions?count=" + rowsPerPage + parsedCatergories + parsedCost + sort + "&startIndex=" + (rowsPerPage * page))
             .then((reponse) => {
                 setPetitions(reponse.data)
+                setPetitionCount(reponse.data.count)
             })
         } else {
-            axios.get("http://localhost:4941/api/v1/petitions?count=10&q=" + search + parsedCatergories + parsedCost + sort)
+            axios.get("http://localhost:4941/api/v1/petitions?count=" + rowsPerPage + "&q=" + search + parsedCatergories + parsedCost + sort + "&startIndex=" + (rowsPerPage * page))
             .then((reponse) => {
                 setPetitions(reponse.data)
+                setPetitionCount(reponse.data.count)
             })
         }
         
@@ -186,15 +191,45 @@ const Petitions = () => {
                 label="Sort"
                 onChange={changeSort}
                 >
-                    <MenuItem value={"&sortBy=ALPHABETICAL_ASC"}>Alphabetical <ArrowDropUpIcon /></MenuItem>
-                    <MenuItem value={"&sortBy=ALPHABETICAL_DESC"}>Alphabetical <ArrowDropDownIcon /></MenuItem>
-                    <MenuItem value={"&sortBy=COST_ASC"}>Cost <ArrowDropUpIcon /></MenuItem>
-                    <MenuItem value={"&sortBy=COST_DESC"}>Cost <ArrowDropDownIcon /></MenuItem>
-                    <MenuItem value={"&sortBy=CREATED_ASC"}>Creadted <ArrowDropUpIcon /></MenuItem>
-                    <MenuItem value={"&sortBy=CREATED_DESC"}>Created <ArrowDropDownIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=ALPHABETICAL_ASC"}>Alphabetical (A-Z)<ArrowDropUpIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=ALPHABETICAL_DESC"}>Alphabetical (Z-A)<ArrowDropDownIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=COST_ASC"}>Cost (Low to High)<ArrowDropUpIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=COST_DESC"}>Cost (High to Low)<ArrowDropDownIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=CREATED_ASC"}>Creadted (Oldest First)<ArrowDropUpIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=CREATED_DESC"}>Created (Newest First)<ArrowDropDownIcon /></MenuItem>
                 </Select>
             </FormControl>
         )
+    }
+
+    const handleChangePage = (
+        event: React.MouseEvent<HTMLButtonElement> | null,
+        newPage: number,
+        ) => {
+            setPage(newPage);
+            
+        };
+    
+    const handleChangeRowsPerPage = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        ) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+        };
+
+    const pagination = () => {
+        return (
+            
+                <TablePagination
+                component="div"
+                count={petitionCount}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            
+          );
     }
 
     return (
@@ -232,6 +267,9 @@ const Petitions = () => {
                     <TableBody>
                         {petition_rows()}
                     </TableBody>
+                    <TableFooter>
+                        {pagination()}
+                    </TableFooter>
                     </Table>
                 </TableContainer>
             </Paper>

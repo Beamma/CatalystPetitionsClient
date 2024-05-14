@@ -129,7 +129,6 @@ function NavBar() {
           setUserId("0")
           Cookies.remove('X-Authorization');
           handleSnackOpen()
-      }, (error) => {
       })
   }
 
