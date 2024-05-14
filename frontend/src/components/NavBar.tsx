@@ -122,11 +122,15 @@ function NavBar() {
   }
 
   const handleLogOutModalAgree = () => {
-    setLogOutModal(false);
-    setLogOut(true);
-    setUserId("0")
-    Cookies.remove('X-Authorization');
-    handleSnackOpen()
+    axios.post('http://localhost:4941/api/v1/users/logout', {}, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+      .then(() => {
+          setLogOutModal(false);
+          setLogOut(true);
+          setUserId("0")
+          Cookies.remove('X-Authorization');
+          handleSnackOpen()
+      }, (error) => {
+      })
   }
 
   const handleLogOutModalDisagree = () => {
