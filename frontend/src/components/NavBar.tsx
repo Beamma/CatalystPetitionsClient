@@ -15,7 +15,7 @@ import PollIcon from '@mui/icons-material/Poll';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link, Navigate } from "react-router-dom";
 import { alpha, styled } from '@mui/material/styles';
-import { Autocomplete, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputBase, TextField } from '@mui/material';
+import { Alert, Autocomplete, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputBase, Snackbar, TextField } from '@mui/material';
 import axios from 'axios';
 import {useSearchStore} from "../store";
 import {useUserStore} from "../store/user";
@@ -79,6 +79,7 @@ function NavBar() {
   const [navProfile, setNavProfile] = React.useState(false);
   const [logOut, setLogOut] = React.useState(false);
   const [logOutModal, setLogOutModal] = React.useState(false)
+  const [snackOpen, setSnackOpen] = React.useState(false);
 
   React.useEffect(() => {
     
@@ -125,11 +126,24 @@ function NavBar() {
     setLogOut(true);
     setUserId("0")
     Cookies.remove('X-Authorization');
+    handleSnackOpen()
   }
 
   const handleLogOutModalDisagree = () => {
     setLogOutModal(false);
     setLogOut(false)
+  }
+
+  const handleSnackOpen = () => {
+    setSnackOpen(true)
+  }
+
+  const handleSnackClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackOpen(false);
   }
 
   const userInfo = () => {
@@ -351,6 +365,16 @@ function NavBar() {
           </Button>
         </DialogContent>
       </Dialog>
+      <Snackbar open={snackOpen} autoHideDuration={6000} onClose={handleSnackClose}>
+        <Alert
+          onClose={handleSnackClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          Successfully Logged Out!
+        </Alert>
+      </Snackbar>
       </AppBar>
     );}
 }
