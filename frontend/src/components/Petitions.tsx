@@ -4,6 +4,8 @@ import React from "react";
 import NavBar from './NavBar';
 import CSS from 'csstype';
 import {useSearchStore} from "../store";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 const POS_TAG_HEIGHT = 48;
 const POS_TAG_PADDING_TOP = 8;
@@ -164,6 +166,7 @@ const Petitions = () => {
     const filterCost = () => {
         return (
             <FormControl fullWidth>
+                Support Tier Cost
                 <Slider aria-label="Default" valueLabelDisplay="auto" onChange={handleFilterCostChange} value={filteredCost}/>
             </FormControl>
         )
@@ -183,12 +186,12 @@ const Petitions = () => {
                 label="Sort"
                 onChange={changeSort}
                 >
-                    <MenuItem value={"&sortBy=ALPHABETICAL_ASC"}>Alphabetical Asc</MenuItem>
-                    <MenuItem value={"&sortBy=ALPHABETICAL_DESC"}>Alphabetical Desc</MenuItem>
-                    <MenuItem value={"&sortBy=COST_ASC"}>Cost Asc</MenuItem>
-                    <MenuItem value={"&sortBy=COST_DESC"}>Cost Desc</MenuItem>
-                    <MenuItem value={"&sortBy=CREATED_ASC"}>Creadted Asc</MenuItem>
-                    <MenuItem value={"&sortBy=CREATED_DESC"}>Created Desc</MenuItem>
+                    <MenuItem value={"&sortBy=ALPHABETICAL_ASC"}>Alphabetical <ArrowDropUpIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=ALPHABETICAL_DESC"}>Alphabetical <ArrowDropDownIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=COST_ASC"}>Cost <ArrowDropUpIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=COST_DESC"}>Cost <ArrowDropDownIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=CREATED_ASC"}>Creadted <ArrowDropUpIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=CREATED_DESC"}>Created <ArrowDropDownIcon /></MenuItem>
                 </Select>
             </FormControl>
         )
@@ -199,7 +202,7 @@ const Petitions = () => {
             <NavBar></NavBar>
             <Paper style={card}>
                 <h3>Filter</h3>
-                <Grid container spacing={2}>
+                <Grid container spacing={20}>
                     <Grid item xs={4}>
                         <FilterCategories />
                     </Grid>
