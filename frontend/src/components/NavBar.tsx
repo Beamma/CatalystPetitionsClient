@@ -15,13 +15,13 @@ import PollIcon from '@mui/icons-material/Poll';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link, Navigate } from "react-router-dom";
 import { alpha, styled } from '@mui/material/styles';
-import { Autocomplete, InputBase, TextField } from '@mui/material';
+import { Autocomplete, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputBase, TextField } from '@mui/material';
 import axios from 'axios';
 import {useSearchStore} from "../store";
 import {useUserStore} from "../store/user";
+import Cookies from 'js-cookie';
 
 const pages = [{ title: "Petitions", link: "../petitions"}];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -69,13 +69,20 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function NavBar() {
   const search = useSearchStore(state => state.search)
   const setSearch = useSearchStore(state => state.setSearch)
-  const userId = useUserStore(state => state.id)
   const setUserId = useUserStore(state => state.setUser)
+  const userId = useUserStore(state => state.id)
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [suggestedPetitions, setSuggestedPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
   const [redirect, setRedirect] = React.useState(false);
   const [signInStatus, setSignInStatus] = React.useState(false);
+  const [navProfile, setNavProfile] = React.useState(false);
+  const [logOut, setLogOut] = React.useState(false);
+  const [logOutModal, setLogOutModal] = React.useState(false)
+
+  React.useEffect(() => {
+    
+  }, [logOut])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -99,6 +106,30 @@ function NavBar() {
 
   const signIn = () => {
     setSignInStatus(true);
+  }
+
+  const updateNavProfile = () => {
+    setNavProfile(true)
+  }
+
+  const handleOpenLogOutModal = () => {
+    setLogOutModal(true);
+  }
+
+  const handleCloseLogOutModal = () => {
+    setLogOutModal(false);
+  }
+
+  const handleLogOutModalAgree = () => {
+    setLogOutModal(false);
+    setLogOut(true);
+    setUserId("0")
+    Cookies.remove('X-Authorization');
+  }
+
+  const handleLogOutModalDisagree = () => {
+    setLogOutModal(false);
+    setLogOut(false)
   }
 
   const userInfo = () => {
@@ -140,15 +171,23 @@ function NavBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem key={'Profile'} onClick={updateNavProfile}>
+                <Typography textAlign="center">Profile</Typography>
+              </MenuItem>
+              <MenuItem key={'Logout'} onClick={handleOpenLogOutModal}>
+                <Typography textAlign="center">LogOut</Typography>
+              </MenuItem>
             </Menu>
           </Box>
       )
     }
+  }
+  if (userId === "0" && (window.location.pathname.includes('users'))) {
+    return (<Navigate to = {{ pathname: "/home" }} />)
+  }
+
+  if (navProfile && (window.location.pathname !== `/users/${userId}`)) {
+    return (<Navigate to = {{ pathname: `/users/${userId}` }} />)
   }
 
   if (signInStatus) {
@@ -295,6 +334,23 @@ function NavBar() {
             {userInfo()}
           </Toolbar>
         </Container>
+        <Dialog
+        open={logOutModal}
+        onClose={handleCloseLogOutModal}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Log Out?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure you want to log out?</DialogContentText>
+          <Button onClick={handleLogOutModalDisagree}>Cancel</Button>
+          <Button onClick={handleLogOutModalAgree} autoFocus>
+            Log Out
+          </Button>
+        </DialogContent>
+      </Dialog>
       </AppBar>
     );}
 }

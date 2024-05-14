@@ -6,8 +6,7 @@ const Home = () => {
     return (
         <div>
             <NavBar></NavBar>
-            <h1>Welcome To Petitions</h1>
-                <Logout />
+            <h1>Welcome To Catalyst Petitions</h1>
         </div>
     )
 }

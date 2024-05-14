@@ -24,7 +24,7 @@ const Petitions = () => {
     const [petitions, setPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
     const [categories, setCategories] = React.useState<category[]>([]);
     const [filterCats, setFilterCats] = React.useState<String[]>([]);
-    const [filteredCost, setFilteredCost] = React.useState<number>(50);
+    const [filteredCost, setFilteredCost] = React.useState<number>(100);
     const [sort, setSort] = React.useState('');
 
     const updateFilterCats = (event: SelectChangeEvent<typeof filterCats>) => {
@@ -167,7 +167,7 @@ const Petitions = () => {
         return (
             <FormControl fullWidth>
                 Support Tier Cost
-                <Slider aria-label="Default" valueLabelDisplay="auto" onChange={handleFilterCostChange} value={filteredCost}/>
+                <Slider aria-label="Default" valueLabelDisplay="auto" onChange={handleFilterCostChange} value={filteredCost} />
             </FormControl>
         )
     }
