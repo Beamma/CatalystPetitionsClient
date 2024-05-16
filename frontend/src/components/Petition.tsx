@@ -122,30 +122,46 @@ const Petition = () => {
             <Container>
               {petition && (
                 <Card sx={{ marginTop: 4 }}>
-                    <img src={'http://localhost:4941/api/v1/petitions/' + petition.petitionId +'/image'} width="30%"></img>
+                    <Typography variant="h2" component="h1" gutterBottom>
+                        {petition.title}
+                    </Typography>
+                    <Grid container spacing={2} >
+                        <Grid item xs={6}>
+                            <img src={'http://localhost:4941/api/v1/petitions/' + petition.petitionId +'/image'} width="80%" ></img>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Grid container spacing={2} alignItems="center">
+                                <Grid item>
+                                    <Avatar
+                                    alt={`${petition.ownerFirstName} ${petition.ownerLastName}`}
+                                    src={'http://localhost:4941/api/v1/users/' + petition.ownerId +'/image'}
+                                    sx={{ width: 56, height: 56 }}
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <Typography variant="h6" component="h2">
+                                        {petition.ownerFirstName} {petition.ownerLastName}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                            <Typography variant="body1" align='left'>
+                                <b>Category ID:</b> {petition.categoryId}
+                            </Typography>
+                            <Typography variant="body1" align='left'>
+                                <b>Number of Supporters:</b> {petition.numberOfSupporters}
+                            </Typography>
+                            <Typography variant="body1" align='left'>
+                                <b>Created On:</b> {new Date(petition.creationDate).toLocaleDateString()}
+                            </Typography>
+                            <Typography variant="body1" paragraph align='left'>
+                                <b>Description:</b> {petition.description}
+                            </Typography>
+                            <Typography variant="body1" align='left'>
+                                <b>Money Raised:</b> ${petition.moneyRaised}
+                            </Typography>
+                        </Grid>
+                    </Grid>
                     <CardContent>
-                    <Typography variant="h4" component="h1" gutterBottom>
-                      {petition.title}
-                    </Typography>
-                    <Typography variant="h6" component="h2">
-                        <img src={'http://localhost:4941/api/v1/users/' + petition.ownerId +'/image'} width={50} height={50} style={{ borderRadius: '50%' }} alt='Hero'></img>
-                        {petition.ownerFirstName} {petition.ownerLastName}
-                    </Typography>
-                    <Typography variant="body1">
-                      Category ID: {petition.categoryId}
-                    </Typography>
-                    <Typography variant="body1">
-                      Number of Supporters: {petition.numberOfSupporters}
-                    </Typography>
-                    <Typography variant="body1">
-                      Created On: {new Date(petition.creationDate).toLocaleDateString()}
-                    </Typography>
-                    <Typography variant="body1" paragraph>
-                      Description: {petition.description}
-                    </Typography>
-                    <Typography variant="body1">
-                      Money Raised: ${petition.moneyRaised}
-                    </Typography>
                     <Typography variant="h5" component="h3" gutterBottom>
                       Support Tiers
                     </Typography>
