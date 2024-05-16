@@ -9,6 +9,7 @@ import UserProfile from "./components/UserProfile";
 import EditProfile from "./components/EditProfile";
 import Petitions from './components/Petitions';
 import Petition from './components/Petition';
+import Create from './components/Create';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="*" element={<NotFound/>}/>
             <Route path="/petitions" element={<Petitions/>}/>
             <Route path="/petitions/:id" element={<Petition/>}/>
+            <Route path="/petitions/create" element={<Create/>}/>
           </Routes>
         </div>
       </Router>
