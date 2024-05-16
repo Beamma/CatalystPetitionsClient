@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Typography, Container, Grid } from '@mui/material';
+import { TextField, Button, Typography, Container, Grid, IconButton } from '@mui/material';
 import NavBar from "./NavBar";
 import AddIcon from '@mui/icons-material/Add';
+import { Delete } from '@mui/icons-material';
 
 interface SupportTier {
     title: string;
@@ -50,13 +51,22 @@ const Create = () => {
         }
     };
 
+    const handleRemoveTier = () => {
+      setFormData((prevData) => ({
+        ...prevData,
+        supportTiers: prevData.supportTiers.filter((_, i) => i ),
+      }));
+    };
+
     const handleSubmit = async () => {
-        try {
-            const response = await axios.post('http://localhost:4941/api/v1/petitions/', formData);
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error creating petition:', error);
-        }
+        axios.post(`http://localhost:4941/api/v1/petitions/`, formData)
+        .then((response) => {
+            console.log(response);
+            console.log("Success")
+        }, (error) => {
+            console.log(error)
+            console.log("Failure")
+        })
     };
 
     return (
@@ -137,9 +147,16 @@ const Create = () => {
                                 </Button>
                             </Grid>
                         )}
+                        {formData.supportTiers.length > 0 && (
+                            <Grid item xs={12} style={{ justifyContent: 'center' }}>
+                                <Button onClick={() => handleRemoveTier()} variant='outlined' startIcon={<Delete />}>
+                                    Remove Tier
+                                </Button>
+                            </Grid>
+                        )}
                     </Grid>
                     <Button type="submit" variant="contained" color="primary">
-                    Create Petition
+                        Create Petition
                     </Button>
                 </form>
             </Container>

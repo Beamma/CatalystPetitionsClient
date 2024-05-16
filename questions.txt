@@ -3,6 +3,7 @@ Does it need to be reactive to mobile
 For similar petitions can I display just 3? Or does it have to be all of them?
 How to get around the async, when trying to get similar petitions
 Avatar tags aligning to left of container
+Broken Create Petition
 
 Need to display default images if 404
 Similar petitions include petitions by the same owner
