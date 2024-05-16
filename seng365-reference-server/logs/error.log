@@ -287,3 +287,4 @@
 2024-05-17 04:20:39:2039 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m
 2024-05-17 04:53:14:5314 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m
 2024-05-17 04:53:14:5314 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m
+2024-05-17 05:49:14:4914 [31merror[39m: [31mDuplicate entry 'Test3' for key 'title'[39m

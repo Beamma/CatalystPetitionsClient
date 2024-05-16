@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Typography, Container, Grid, IconButton } from '@mui/material';
+import { TextField, Button, Typography, Container, Grid, IconButton, Snackbar, Alert } from '@mui/material';
 import NavBar from "./NavBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Delete } from '@mui/icons-material';
+import Cookies from 'js-cookie';
 
 interface SupportTier {
     title: string;
@@ -25,12 +26,29 @@ const Create = () => {
         categoryId: 0,
         supportTiers: [],
     });
+    const [snackMessage, setSnackMessage] = React.useState("")
+    const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
+    const [snackOpenFail, setSnackOpenFail] = React.useState(false)
+
+    const handleSnackCloseSuccess = (event?: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+          return;
+      }
+      setSnackOpenSuccess(false);
+    };
+    
+    const handleSnackCloseFail = (event?: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+          return;
+      }
+      setSnackOpenFail(false);
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [name]: value,
+            [name]: name === 'categoryId' ? parseInt(value, 10) : value
         }));
     };
 
@@ -59,13 +77,20 @@ const Create = () => {
     };
 
     const handleSubmit = async () => {
-        axios.post(`http://localhost:4941/api/v1/petitions/`, formData)
+        axios.post(`http://localhost:4941/api/v1/petitions/`, formData, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
         .then((response) => {
-            console.log(response);
-            console.log("Success")
+            setFormData({
+                title: '',
+                description: '',
+                categoryId: 0,
+                supportTiers: [],
+            })
+            setSnackOpenFail(false)
+            setSnackOpenSuccess(true)
+            setSnackMessage("Successfully Created Petition")
         }, (error) => {
-            console.log(error)
-            console.log("Failure")
+            setSnackMessage(error.response.statusText)
+            setSnackOpenFail(true)
         })
     };
 
@@ -76,7 +101,6 @@ const Create = () => {
                 <Typography variant="h4" gutterBottom>
                     Create a Petition
                 </Typography>
-                <form onSubmit={handleSubmit}>
                     <TextField
                         fullWidth
                         required
@@ -151,11 +175,28 @@ const Create = () => {
                             </Grid>
                         )}
                     </Grid>
-                    <Button type="submit" variant="contained" color="primary">
+                    <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
                         Create Petition
                     </Button>
-                </form>
             </Container>
+            <Snackbar
+                autoHideDuration={6000}
+                open={snackOpenSuccess}
+                onClose={handleSnackCloseSuccess}
+                key={snackMessage}>
+                <Alert onClose={handleSnackCloseSuccess} severity="success" sx={{width: '100%'}}>
+                    {snackMessage}
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                autoHideDuration={6000}
+                open={snackOpenFail}
+                onClose={handleSnackCloseFail}
+                key={snackMessage}>
+                <Alert onClose={handleSnackCloseFail} severity="error" sx={{width: '100%'}}>
+                    {snackMessage}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }
