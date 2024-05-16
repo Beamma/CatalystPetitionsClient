@@ -1,5 +1,6 @@
 What is best way to handle nav bar, with users and ids? When I go to the route via url, it loses the id from the store.
 Does it need to be reactive to mobile
+For similar petitions can I display just 3? Or does it have to be all of them?
 
 
 Need to display default images if 404

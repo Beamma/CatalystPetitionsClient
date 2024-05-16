@@ -36,6 +36,17 @@ interface Supporter {
     supporterImageUrl?: string; // Add optional supporter image URL
 }
 
+interface SimilarPetition {
+    petitionId: number;
+    title: string;
+    categoryId: number;
+    ownerId: number;
+    ownerFirstName: string;
+    ownerLastName: string;
+    creationDate: string;
+    supportingCost: number;
+}
+
 const Petition = () => {
     const {id} = useParams();
     const [error, setError] = React.useState(false);
@@ -43,10 +54,12 @@ const Petition = () => {
     const [petition, setPetition] = React.useState<Petition | null>(null);
     const [supporters, setSupporters] = React.useState<Supporter[]>([]);
     const [showAllSupporters, setShowAllSupporters] = React.useState<boolean>(false);
+    const [similarPetitions, setSimilarPetitions] = React.useState<SimilarPetition[]>([]);
 
     React.useEffect(() => {
         getPeitionInfo()
         getSupporters()
+        getSimilarPetitions()
     }, [])
 
     const getPeitionInfo = async () => {
@@ -73,6 +86,21 @@ const Petition = () => {
             await axios.get(`http://localhost:4941/api/v1/petitions/${id}/supporters/`)
             .then((response) => {
                 setSupporters(response.data)
+            }, (error) => {
+                setError(true);
+                setErrorMessage(error.statusText)
+            })
+        }
+    }
+
+    const getSimilarPetitions = async () => {
+        if (! id?.match(/^\d+$/)) {
+            setError(true);
+            setErrorMessage("404 Not Found");
+        } else {
+            await axios.get(`http://localhost:4941/api/v1/petitions?count=3`, { params: { categoryIds: petition?.categoryId } })
+            .then((response) => {
+                setSimilarPetitions(response.data.petitions);
             }, (error) => {
                 setError(true);
                 setErrorMessage(error.statusText)
@@ -185,6 +213,51 @@ const Petition = () => {
                     </CardContent>
                 </Card>
               )}
+            <Typography variant="h5" component="h3" gutterBottom>
+                Similar Petitions
+            </Typography>
+            <Grid container spacing={2}>
+                {similarPetitions.map((similarPetition) => (
+                <Grid item xs={12} sm={6} md={4} key={similarPetition.petitionId}>
+                    <Card>
+                    <CardMedia
+                        component="img"
+                        height="140"
+                        image={"Test"}
+                        alt="Petition Image"
+                    />
+                    <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                        {similarPetition.title}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" gutterBottom>
+                        Creation Date: {new Date(similarPetition.creationDate).toLocaleDateString()}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" gutterBottom>
+                        Category: {similarPetition.categoryId}
+                        </Typography>
+                        <Grid container alignItems="center">
+                        <Grid item>
+                            <Avatar
+                            alt={`${similarPetition.ownerFirstName} ${similarPetition.ownerLastName}`}
+                            src={"Test"}
+                            sx={{ width: 24, height: 24, marginRight: 1 }}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <Typography variant="body2" color="textSecondary" gutterBottom>
+                            Owner: {similarPetition.ownerFirstName} {similarPetition.ownerLastName}
+                            </Typography>
+                        </Grid>
+                        </Grid>
+                        <Typography variant="body2" color="textSecondary">
+                        Supporting Cost: ${similarPetition.supportingCost}
+                        </Typography>
+                    </CardContent>
+                    </Card>
+                </Grid>
+                ))}
+            </Grid>
             </Container>
         );
     }
