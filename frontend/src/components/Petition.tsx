@@ -176,7 +176,7 @@ const Petition = () => {
                                 <ListItemAvatar>
                                 <Avatar
                                     alt={`${supporter.supporterFirstName} ${supporter.supporterLastName}`}
-                                    src={supporter.supporterImageUrl || '/default-profile.png'}
+                                    src={`http://localhost:4941/api/v1/users/${supporter.supporterId}/image` || '/default-profile.png'}
                                 />
                                 </ListItemAvatar>
                                 <ListItemText

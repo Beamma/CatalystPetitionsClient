@@ -2,8 +2,9 @@ What is best way to handle nav bar, with users and ids? When I go to the route v
 Does it need to be reactive to mobile
 For similar petitions can I display just 3? Or does it have to be all of them?
 How to get around the async, when trying to get similar petitions
+Avatar tags aligning to left of container
 
 Need to display default images if 404
-Fix users images displaying on supporters
 Similar petitions include petitions by the same owner
 Fix petition and owner images for similar petitions
+Need to display categories as names not ids
