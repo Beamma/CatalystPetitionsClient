@@ -2,7 +2,7 @@ import React from 'react';
 import NavBar from './NavBar';
 import { useParams } from "react-router-dom";
 import axios from 'axios';
-import { Alert, Avatar, Card, CardContent, CardMedia, Container, Grid, Typography } from '@mui/material';
+import { Alert, Avatar, Card, CardContent, CardMedia, Container, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 
 interface SupportTier {
     title: string;
@@ -25,19 +25,30 @@ interface Petition {
     supportTiers: SupportTier[];
 }
 
+interface Supporter {
+    supportId: number;
+    supportTierId: number;
+    message: string;
+    supporterId: number;
+    supporterFirstName: string;
+    supporterLastName: string;
+    timestamp: string;
+    supporterImageUrl?: string; // Add optional supporter image URL
+}
+
 const Petition = () => {
     const {id} = useParams();
     const [error, setError] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState("");
     const [petition, setPetition] = React.useState<Petition | null>(null);
-    const [ownerProfilePic, setOwnerProfilePic] = React.useState(false);
+    const [supporters, setSupporters] = React.useState<Supporter[]>([]);
 
     React.useEffect(() => {
         getPeitionInfo()
+        getSupporters()
     }, [])
 
     const getPeitionInfo = async () => {
-        console.log("getPeitionInfo1")
         if (! id?.match(/^\d+$/)) {
             setError(true);
             setErrorMessage("404 Not Found");
@@ -53,31 +64,25 @@ const Petition = () => {
         
     }
 
-    // const displayPetitionInfo = () => {
-    //     return (
-    //         <div>
-    //             {petition && (
-    //             <div>
-    //               <h1>{petition.title}</h1>
-    //               <p>Owner: {petition.ownerFirstName} {petition.ownerLastName}</p>
-    //               <img src={'http://localhost:4941/api/v1/user/' + petition.ownerId +'/image'} width={150} height={150}></img>
-    //               <p>Description: {petition.description}</p>
-    //               <p>Number of Supporters: {petition.numberOfSupporters}</p>
-    //               <p>Creation Date: {new Date(petition.creationDate).toLocaleDateString()}</p>
-    //               <p>Money Raised: ${petition.moneyRaised}</p>
-    //               <h2>Support Tiers:</h2>
-    //               <ul>
-    //                 {petition.supportTiers.map((tier: any) => (
-    //                   <li key={tier.supportTierId}>
-    //                     <strong>{tier.title}</strong> - {tier.description} (Cost: ${tier.cost})
-    //                   </li>
-    //                 ))}
-    //               </ul>
-    //             </div>
-    //           )}
-    //         </div>
-    //       );
-    // }
+    const getSupporters = async () => {
+        if (! id?.match(/^\d+$/)) {
+            setError(true);
+            setErrorMessage("404 Not Found");
+        } else {
+            await axios.get(`http://localhost:4941/api/v1/petitions/${id}/supporters/`)
+            .then((response) => {
+                setSupporters(response.data)
+            }, (error) => {
+                setError(true);
+                setErrorMessage(error.statusText)
+            })
+        }
+    }
+
+    const getSupportTierTitle = (tierId: number) => {
+        const tier = petition?.supportTiers.find(t => t.supportTierId === tierId);
+        return tier ? tier.title : 'Unknown Tier';
+      };
 
     const displayPetitionInfo = () => {
         return (
@@ -128,6 +133,49 @@ const Petition = () => {
                         </Grid>
                       ))}
                     </Grid>
+                    <Typography variant="h5" component="h3" gutterBottom>
+                        Supporters
+                        </Typography>
+                        <List>
+                        {supporters.map((supporter) => (
+                            <React.Fragment key={supporter.supportId}>
+                            <ListItem alignItems="flex-start">
+                                <ListItemAvatar>
+                                <Avatar
+                                    alt={`${supporter.supporterFirstName} ${supporter.supporterLastName}`}
+                                    src={supporter.supporterImageUrl || '/default-profile.png'}
+                                />
+                                </ListItemAvatar>
+                                <ListItemText
+                                primary={`${supporter.supporterFirstName} ${supporter.supporterLastName}`}
+                                secondary={
+                                    <>
+                                    <Typography
+                                        sx={{ display: 'inline' }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                    >
+                                        {getSupportTierTitle(supporter.supportTierId)}
+                                    </Typography>
+                                    {` — ${supporter.message || 'No message provided'}`}
+                                    <br />
+                                    <Typography
+                                        sx={{ display: 'inline' }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.secondary"
+                                    >
+                                        {new Date(supporter.timestamp).toLocaleString()}
+                                    </Typography>
+                                    </>
+                                }
+                                />
+                            </ListItem>
+                            <Divider variant="inset" component="li" />
+                            </React.Fragment>
+                        ))}
+                        </List>
                     </CardContent>
                 </Card>
               )}
