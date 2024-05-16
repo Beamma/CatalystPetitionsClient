@@ -47,6 +47,11 @@ interface SimilarPetition {
     supportingCost: number;
 }
 
+interface Category {
+    categoryId: number;
+    name: string;
+}
+
 const Petition = () => {
     const {id} = useParams();
     const [error, setError] = React.useState(false);
@@ -56,11 +61,22 @@ const Petition = () => {
     const [showAllSupporters, setShowAllSupporters] = React.useState<boolean>(false);
     const [similarPetitions, setSimilarPetitions] = React.useState<SimilarPetition[]>([]);
     const [showAllPetitions, setShowAllPetitions] = React.useState<boolean>(false);
+    const [categories, setCategories] = React.useState<Category[]>([]);
 
     React.useEffect(() => {
         getPeitionInfo()
         getSupporters()
+        getCategories()
+        getSimilarPetitions()
     }, [])
+
+    const updateSimilarPetition = (toAdd: SimilarPetition[]) => {
+        let tempSimilar = similarPetitions
+        tempSimilar = tempSimilar.concat(toAdd)
+        console.log(similarPetitions)
+        console.log(toAdd)
+        setSimilarPetitions(tempSimilar)
+    }
 
     const getPeitionInfo = async () => {
         if (! id?.match(/^\d+$/)) {
@@ -75,6 +91,16 @@ const Petition = () => {
                 setErrorMessage(error.statusText)
             })
         }
+    }
+
+    const getCategories = () => {
+        axios.get(`http://localhost:4941/api/v1/petitions/categories/`)
+            .then((response) => {
+                setCategories(response.data);
+            }, (error) => {
+                setError(true);
+                setErrorMessage(error.statusText)
+            })
     }
 
     const getSupporters = async () => {
@@ -97,13 +123,22 @@ const Petition = () => {
             setError(true);
             setErrorMessage("404 Not Found");
         } else {
-            axios.get(`http://localhost:4941/api/v1/petitions/`, { params: { categoryId: petition?.categoryId, count: 20 } })
+            axios.get(`http://localhost:4941/api/v1/petitions/`, { params: { categoryIds: petition?.categoryId, count: 20 } })
             .then((response) => {
-                setSimilarPetitions(response.data.petitions);
+                updateSimilarPetition(response.data.petitions);
             }, (error) => {
                 setError(true);
                 setErrorMessage(error.statusText)
             })
+            
+            axios.get(`http://localhost:4941/api/v1/petitions/`, { params: { ownerId: petition?.ownerId, count: 20 } })
+            .then((response) => {
+                updateSimilarPetition(response.data.petitions);
+            }, (error) => {
+                setError(true);
+                setErrorMessage(error.statusText)
+            })
+
         }
     }
 
@@ -116,9 +151,13 @@ const Petition = () => {
 
     const displayPetitions = showAllPetitions ? similarPetitions : similarPetitions.slice(0, 3);
 
+    const categoryMap: { [key: number]: string } = {};
+        categories.forEach(category => {
+            categoryMap[category.categoryId] = category.name;
+    });
+
     const displaySimilarPetitions = () => {
 
-        getSimilarPetitions()
 
         return (
             <div>
@@ -128,7 +167,7 @@ const Petition = () => {
                 <Grid container spacing={2}>
                     {displayPetitions.map((similarPetition) => (
                         <Grid item xs={12} sm={6} md={4} key={similarPetition.petitionId}>
-                            <a href={`/petition/${similarPetition.petitionId}`}>
+                            <a href={`/petitions/${similarPetition.petitionId}`}>
                                 <Card>
                                     <CardMedia
                                         component="img"
@@ -144,7 +183,7 @@ const Petition = () => {
                                             Creation Date: {new Date(similarPetition.creationDate).toLocaleDateString()}
                                         </Typography>
                                         <Typography variant="body2" color="textSecondary" gutterBottom>
-                                            Category: {similarPetition.categoryId}
+                                            Category: {categoryMap[similarPetition.categoryId]}
                                         </Typography>
                                         <Grid container alignItems="center" justifyContent="center">
                                             <Grid item>
@@ -204,7 +243,7 @@ const Petition = () => {
                                     </Grid>
                                 </Grid>
                                 <Typography variant="body1" align='left'>
-                                    <b>Category ID:</b> {petition.categoryId}
+                                    <b>Category:</b> {categoryMap[petition.categoryId]}
                                 </Typography>
                                 <Typography variant="body1" align='left'>
                                     <b>Number of Supporters:</b> {petition.numberOfSupporters}

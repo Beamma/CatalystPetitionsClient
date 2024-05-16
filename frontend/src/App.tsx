@@ -24,7 +24,7 @@ function App() {
             <Route path="/users/:id/edit" element={<EditProfile/>}/>
             <Route path="*" element={<NotFound/>}/>
             <Route path="/petitions" element={<Petitions/>}/>
-            <Route path="/petition/:id" element={<Petition/>}/>
+            <Route path="/petitions/:id" element={<Petition/>}/>
           </Routes>
         </div>
       </Router>

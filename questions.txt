@@ -6,4 +6,5 @@ Avatar tags aligning to left of container
 
 Need to display default images if 404
 Similar petitions include petitions by the same owner
-Need to display categories as names not ids
+Need to convert petitions page to have cards
+Dont display own petition in similar petition
