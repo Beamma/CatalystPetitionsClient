@@ -121,9 +121,9 @@ const Petitions = () => {
             <TableRow hover
                 tabIndex={-1}
                 key={row.petitionId}>
-                <TableCell align="left"><img src={'http://localhost:4941/api/v1/petitions/' + row.petitionId +'/image'} width={150} height={150}></img></TableCell>
-                <TableCell align="left">{row.title}</TableCell>
-                <TableCell align="left">{row.creationDate}</TableCell>
+                <TableCell align="left"><a href={'/petition/' + row.petitionId}><img src={'http://localhost:4941/api/v1/petitions/' + row.petitionId +'/image'} width={150} height={150}></img></a></TableCell>
+                <TableCell align="left"><a href={'/petition/' + row.petitionId}>{row.title}</a></TableCell>
+                <TableCell align="left">{new Date(row.creationDate).toLocaleDateString()}</TableCell>
                 <TableCell align="left">{getCategoryName(row.categoryId)}</TableCell>
                 <TableCell align="left">{row.supportingCost}</TableCell>
                 <TableCell align="left">{row.ownerFirstName} {row.ownerLastName} <img src={'http://localhost:4941/api/v1/users/' + row.ownerId +'/image'} width={50} height={50} style={{ borderRadius: '50%' }} alt='Hero'></img></TableCell>

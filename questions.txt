@@ -1,0 +1,1 @@
+What is best way to handle nav bar, with users and ids? When I go to the route via url, it loses the id from the store.

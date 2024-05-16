@@ -8,6 +8,7 @@ import Login from "./components/Login";
 import UserProfile from "./components/UserProfile";
 import EditProfile from "./components/EditProfile";
 import Petitions from './components/Petitions';
+import Petition from './components/Petition';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/users/:id/edit" element={<EditProfile/>}/>
             <Route path="*" element={<NotFound/>}/>
             <Route path="/petitions" element={<Petitions/>}/>
+            <Route path="/petition/:id" element={<Petition/>}/>
           </Routes>
         </div>
       </Router>
