@@ -8,3 +8,4 @@ Need to display default images if 404
 Similar petitions include petitions by the same owner
 Need to convert petitions page to have cards
 Dont display own petition in similar petition
+Need to fix pagination

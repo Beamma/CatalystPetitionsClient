@@ -52,7 +52,7 @@ const Create = () => {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('/api/petitions', formData);
+            const response = await axios.post('http://localhost:4941/api/v1/petitions/', formData);
             console.log(response.data);
         } catch (error) {
             console.error('Error creating petition:', error);
@@ -63,88 +63,86 @@ const Create = () => {
         <div>
             <NavBar></NavBar>
             <Container maxWidth="md">
-      <Typography variant="h4" gutterBottom>
-        Create a Petition
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          fullWidth
-          required
-          label="Title"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          required
-          label="Description"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          margin="normal"
-          multiline
-          rows={4}
-        />
-        <TextField
-          fullWidth
-          required
-          type="number"
-          label="Category ID"
-          name="categoryId"
-          value={formData.categoryId}
-          onChange={handleChange}
-          margin="normal"
-        />
-        <Grid container spacing={2}>
-          {formData.supportTiers.map((tier, index) => (
-            <React.Fragment key={index}>
-              <Grid item xs={12} sm={4}>
-                <Typography variant="h6">Support Tier {index + 1}</Typography>
-                <TextField
-                  fullWidth
-                  required
-                  label="Title"
-                  value={tier.title}
-                  onChange={(e) => handleTierChange(index, 'title', e.target.value)}
-                  margin="normal"
-                />
-                <TextField
-                  fullWidth
-                  required
-                  label="Description"
-                  value={tier.description}
-                  onChange={(e) => handleTierChange(index, 'description', e.target.value)}
-                  margin="normal"
-                  multiline
-                  rows={4}
-                />
-                <TextField
-                  fullWidth
-                  required
-                  type="number"
-                  label="Cost"
-                  value={tier.cost}
-                  onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
-                  margin="normal"
-                />
-              </Grid>
-            </React.Fragment>
-          ))}
-          {formData.supportTiers.length < 3 && (
-            <Grid item xs={12}>
-              <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
-                Add Support Tier
-              </Button>
-            </Grid>
-          )}
-        </Grid>
-        <Button type="submit" variant="contained" color="primary">
-          Create Petition
-        </Button>
-      </form>
-    </Container>
+                <Typography variant="h4" gutterBottom>
+                    Create a Petition
+                </Typography>
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        fullWidth
+                        required
+                        label="Title"
+                        name="title"
+                        value={formData.title}
+                        onChange={handleChange}
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        required
+                        label="Description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        margin="normal"
+                        multiline
+                        rows={4}
+                    />
+                    <TextField
+                        fullWidth
+                        required
+                        type="number"
+                        label="Category ID"
+                        name="categoryId"
+                        value={formData.categoryId}
+                        onChange={handleChange}
+                        margin="normal"
+                    />
+                    <Grid container spacing={2}>
+                        {formData.supportTiers.map((tier, index) => (
+                            <Grid item xs={12} sm={4} key={index} >
+                                <Typography variant="h6">Support Tier {index + 1}</Typography>
+                                <TextField
+                                    fullWidth
+                                    required
+                                    label="Title"
+                                    value={tier.title}
+                                    onChange={(e) => handleTierChange(index, 'title', e.target.value)}
+                                    margin="normal"
+                                />
+                                <TextField
+                                    fullWidth
+                                    required
+                                    label="Description"
+                                    value={tier.description}
+                                    onChange={(e) => handleTierChange(index, 'description', e.target.value)}
+                                    margin="normal"
+                                    multiline
+                                    rows={4}
+                                />
+                                <TextField
+                                    fullWidth
+                                    required
+                                    type="number"
+                                    label="Cost"
+                                    value={tier.cost}
+                                    onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
+                                    margin="normal"
+                                />
+                            </Grid>
+                        ))}
+                        {formData.supportTiers.length < 3 && (
+                            <Grid item xs={12} style={{ justifyContent: 'center' }}>
+                                <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
+                                    Add Support Tier
+                                </Button>
+                            </Grid>
+                        )}
+                    </Grid>
+                    <Button type="submit" variant="contained" color="primary">
+                    Create Petition
+                    </Button>
+                </form>
+            </Container>
         </div>
     );
 }
