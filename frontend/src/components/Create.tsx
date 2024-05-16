@@ -51,10 +51,10 @@ const Create = () => {
         }
     };
 
-    const handleRemoveTier = () => {
+    const handleRemoveTier = (index: number) => {
       setFormData((prevData) => ({
         ...prevData,
-        supportTiers: prevData.supportTiers.filter((_, i) => i ),
+        supportTiers: prevData.supportTiers.filter((_, i) => i !== index),
       }));
     };
 
@@ -138,19 +138,15 @@ const Create = () => {
                                     onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
                                     margin="normal"
                                 />
+                                <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
+                                    <Delete />
+                                </IconButton>
                             </Grid>
                         ))}
                         {formData.supportTiers.length < 3 && (
                             <Grid item xs={12} style={{ justifyContent: 'center' }}>
                                 <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
                                     Add Support Tier
-                                </Button>
-                            </Grid>
-                        )}
-                        {formData.supportTiers.length > 0 && (
-                            <Grid item xs={12} style={{ justifyContent: 'center' }}>
-                                <Button onClick={() => handleRemoveTier()} variant='outlined' startIcon={<Delete />}>
-                                    Remove Tier
                                 </Button>
                             </Grid>
                         )}
