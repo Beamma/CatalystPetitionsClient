@@ -1,7 +1,7 @@
 import React from 'react';
 import NavBar from './NavBar';
 import { useParams } from "react-router-dom";
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Alert, Avatar, Button, Card, CardContent, CardMedia, Container, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 
 interface SupportTier {
@@ -55,6 +55,7 @@ const Petition = () => {
     const [supporters, setSupporters] = React.useState<Supporter[]>([]);
     const [showAllSupporters, setShowAllSupporters] = React.useState<boolean>(false);
     const [similarPetitions, setSimilarPetitions] = React.useState<SimilarPetition[]>([]);
+    const [showAllPetitions, setShowAllPetitions] = React.useState<boolean>(false);
 
     React.useEffect(() => {
         getPeitionInfo()
@@ -67,7 +68,7 @@ const Petition = () => {
             setError(true);
             setErrorMessage("404 Not Found");
         } else {
-            await axios.get(`http://localhost:4941/api/v1/petitions/${id}/`)
+            axios.get(`http://localhost:4941/api/v1/petitions/${id}/`)
             .then((response) => {
                 setPetition(response.data)
             }, (error) => {
@@ -75,7 +76,6 @@ const Petition = () => {
                 setErrorMessage(error.statusText)
             })
         }
-        
     }
 
     const getSupporters = async () => {
@@ -98,7 +98,7 @@ const Petition = () => {
             setError(true);
             setErrorMessage("404 Not Found");
         } else {
-            await axios.get(`http://localhost:4941/api/v1/petitions?count=3`, { params: { categoryIds: petition?.categoryId } })
+            axios.get(`http://localhost:4941/api/v1/petitions/`, { params: { categoryId: petition?.categoryId, count: 20 } })
             .then((response) => {
                 setSimilarPetitions(response.data.petitions);
             }, (error) => {
@@ -114,6 +114,8 @@ const Petition = () => {
       };
 
     const displaySupporters = showAllSupporters ? supporters : supporters.slice(0, 5);
+
+    const displayPetitions = showAllPetitions ? similarPetitions : similarPetitions.slice(0, 3);
 
     const displayPetitionInfo = () => {
         return (
@@ -217,7 +219,7 @@ const Petition = () => {
                 Similar Petitions
             </Typography>
             <Grid container spacing={2}>
-                {similarPetitions.map((similarPetition) => (
+                {displayPetitions.map((similarPetition) => (
                 <Grid item xs={12} sm={6} md={4} key={similarPetition.petitionId}>
                     <Card>
                     <CardMedia
@@ -258,6 +260,9 @@ const Petition = () => {
                 </Grid>
                 ))}
             </Grid>
+            {!showAllPetitions && similarPetitions.length > 3 && (
+                <Button onClick={() => setShowAllPetitions(true)}>View More Petitions</Button>
+            )}
             </Container>
         );
     }
