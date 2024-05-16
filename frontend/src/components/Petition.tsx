@@ -241,7 +241,7 @@ const Petition = () => {
                     <CardMedia
                         component="img"
                         height="140"
-                        image={"Test"}
+                        image={`http://localhost:4941/api/v1/petitions/${similarPetition.petitionId}/image`}
                         alt="Petition Image"
                     />
                     <CardContent>
@@ -254,11 +254,11 @@ const Petition = () => {
                         <Typography variant="body2" color="textSecondary" gutterBottom>
                         Category: {similarPetition.categoryId}
                         </Typography>
-                        <Grid container alignItems="center">
+                        <Grid container alignItems="center" justifyContent="center">
                         <Grid item>
                             <Avatar
                             alt={`${similarPetition.ownerFirstName} ${similarPetition.ownerLastName}`}
-                            src={"Test"}
+                            src={`http://localhost:4941/api/v1/users/${similarPetition.ownerId}/image` || '/default-profile.png'}
                             sx={{ width: 24, height: 24, marginRight: 1 }}
                             />
                         </Grid>
