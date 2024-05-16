@@ -2,7 +2,7 @@ import React from 'react';
 import NavBar from './NavBar';
 import { useParams } from "react-router-dom";
 import axios from 'axios';
-import { Alert, Avatar, Card, CardContent, CardMedia, Container, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import { Alert, Avatar, Button, Card, CardContent, CardMedia, Container, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 
 interface SupportTier {
     title: string;
@@ -42,6 +42,7 @@ const Petition = () => {
     const [errorMessage, setErrorMessage] = React.useState("");
     const [petition, setPetition] = React.useState<Petition | null>(null);
     const [supporters, setSupporters] = React.useState<Supporter[]>([]);
+    const [showAllSupporters, setShowAllSupporters] = React.useState<boolean>(false);
 
     React.useEffect(() => {
         getPeitionInfo()
@@ -83,6 +84,8 @@ const Petition = () => {
         const tier = petition?.supportTiers.find(t => t.supportTierId === tierId);
         return tier ? tier.title : 'Unknown Tier';
       };
+
+    const displaySupporters = showAllSupporters ? supporters : supporters.slice(0, 5);
 
     const displayPetitionInfo = () => {
         return (
@@ -137,7 +140,7 @@ const Petition = () => {
                         Supporters
                         </Typography>
                         <List>
-                        {supporters.map((supporter) => (
+                        {displaySupporters.map((supporter) => (
                             <React.Fragment key={supporter.supportId}>
                             <ListItem alignItems="flex-start">
                                 <ListItemAvatar>
@@ -176,6 +179,9 @@ const Petition = () => {
                             </React.Fragment>
                         ))}
                         </List>
+                        {!showAllSupporters && supporters.length > 5 && (
+                            <Button onClick={() => setShowAllSupporters(true)}>View More Supporters</Button>
+                        )}
                     </CardContent>
                 </Card>
               )}
