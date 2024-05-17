@@ -71,6 +71,7 @@ const Login = () => {
                     setSnackOpenSuccess(true)
                     console.log(response.data.token)
                     Cookies.set('X-Authorization', response.data.token);
+                    Cookies.set('userId', response.data.userId);
                     setUserId(response.data.userId);
                     setResponse(true)
                 }, (error) => {

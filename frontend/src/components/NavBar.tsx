@@ -69,8 +69,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function NavBar() {
   const search = useSearchStore(state => state.search)
   const setSearch = useSearchStore(state => state.setSearch)
-  const setUserId = useUserStore(state => state.setUser)
-  const userId = useUserStore(state => state.id)
+  // const setUserId = useUserStore(state => state.setUser)
+  // const userId = useUserStore(state => state.id)
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [suggestedPetitions, setSuggestedPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
@@ -80,10 +80,15 @@ function NavBar() {
   const [logOut, setLogOut] = React.useState(false);
   const [logOutModal, setLogOutModal] = React.useState(false)
   const [snackOpen, setSnackOpen] = React.useState(false);
+  const [userId, setUserId] = React.useState<string | undefined>();
 
   React.useEffect(() => {
-    
+    updateUserId()
   }, [logOut])
+
+  const updateUserId = () => {
+    setUserId(Cookies.get("userId"))
+  }
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -126,8 +131,9 @@ function NavBar() {
       .then(() => {
           setLogOutModal(false);
           setLogOut(true);
-          setUserId("0")
+          setUserId(undefined)
           Cookies.remove('X-Authorization');
+          Cookies.remove('userId');
           handleSnackOpen()
       })
   }
@@ -150,7 +156,7 @@ function NavBar() {
   }
 
   const userInfo = () => {
-    if (userId === "0") {
+    if (userId === undefined) {
       return (
           <Box>
             <Button

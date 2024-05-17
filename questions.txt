@@ -6,7 +6,8 @@ How to get around the async, when trying to get similar petitions. Have two hook
 
 Deleting support tiers on create petition should delete the grid that u select delete for.
 Need to display default images if 404
-Similar petitions include petitions by the same owner
 Need to convert petitions page to have cards
-Dont display own petition in similar petition
 Need to fix pagination
+Need default petitions image
+Money raised, should say 0 if none
+Need to change links to navigate to
