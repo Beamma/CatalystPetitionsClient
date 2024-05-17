@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Typography, Container, Grid, IconButton, Snackbar, Alert } from '@mui/material';
+import { TextField, Button, Typography, Container, Grid, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import NavBar from "./NavBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Delete } from '@mui/icons-material';
@@ -19,6 +19,11 @@ interface PetitionFormData {
     supportTiers: SupportTier[];
 }
 
+interface Category {
+    categoryId: number;
+    name: string;
+}
+
 const Create = () => {
     const [formData, setFormData] = useState<PetitionFormData>({
         title: '',
@@ -29,6 +34,23 @@ const Create = () => {
     const [snackMessage, setSnackMessage] = React.useState("")
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
+    const [categories, setCategories] = React.useState<Category[]>([]);
+    const [error, setError] = React.useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = React.useState<string>("");
+
+    React.useEffect(() => {
+        getCategories()
+    }, [])
+
+    const getCategories = () => {
+        axios.get(`http://localhost:4941/api/v1/petitions/categories/`)
+            .then((response) => {
+                setCategories(response.data);
+            }, (error) => {
+                setError(true);
+                setErrorMessage(error.statusText)
+        })
+    }
 
     const handleSnackCloseSuccess = (event?: React.SyntheticEvent | Event, reason?: string) => {
       if (reason === 'clickaway') {
@@ -44,12 +66,19 @@ const Create = () => {
       setSnackOpenFail(false);
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<number>) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: name === 'categoryId' ? parseInt(value, 10) : value
-        }));
+        if (name === 'categoryId') {
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: Number(value)
+            }));
+        } else {
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: value
+            }));
+        }
     };
 
     const handleTierChange = (index: number, field: string, value: string | number) => {
@@ -121,16 +150,23 @@ const Create = () => {
                         multiline
                         rows={4}
                     />
-                    <TextField
-                        fullWidth
-                        required
-                        type="number"
-                        label="Category ID"
-                        name="categoryId"
-                        value={formData.categoryId}
-                        onChange={handleChange}
-                        margin="normal"
-                    />
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="category-label">Category</InputLabel>
+                        <Select
+                            labelId="category-label"
+                            id="category"
+                            value={formData.categoryId}
+                            onChange={handleChange}
+                            name="categoryId"
+                            required
+                        >
+                            {categories.map((category) => (
+                                <MenuItem key={category.categoryId} value={category.categoryId}>
+                                    {category.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <Grid container spacing={2}>
                         {formData.supportTiers.map((tier, index) => (
                             <Grid item xs={12} sm={4} key={index} >

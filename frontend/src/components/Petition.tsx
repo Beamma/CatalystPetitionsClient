@@ -67,16 +67,19 @@ const Petition = () => {
         getPeitionInfo()
         getSupporters()
         getCategories()
-        getSimilarPetitions()
     }, [])
 
-    const updateSimilarPetition = (toAdd: SimilarPetition[]) => {
-        let tempSimilar = similarPetitions
-        tempSimilar = tempSimilar.concat(toAdd)
-        console.log(similarPetitions)
-        console.log(toAdd)
-        setSimilarPetitions(tempSimilar)
-    }
+    React.useEffect(() => {
+        getSimilarPetitions()
+    }, [petition])
+
+    // const updateSimilarPetition = (toAdd: SimilarPetition[]) => {
+    //     let tempSimilar = similarPetitions
+    //     tempSimilar = tempSimilar.concat(toAdd)
+    //     console.log(similarPetitions)
+    //     console.log(toAdd)
+    //     setSimilarPetitions(tempSimilar)
+    // }
 
     const getPeitionInfo = async () => {
         if (! id?.match(/^\d+$/)) {
@@ -122,23 +125,24 @@ const Petition = () => {
         if (! id?.match(/^\d+$/)) {
             setError(true);
             setErrorMessage("404 Not Found");
-        } else {
-            axios.get(`http://localhost:4941/api/v1/petitions/`, { params: { categoryIds: petition?.categoryId, count: 20 } })
-            .then((response) => {
-                updateSimilarPetition(response.data.petitions);
-            }, (error) => {
-                setError(true);
-                setErrorMessage(error.statusText)
-            })
+        } 
+        
+        try {
+            const [response1, response2] = await Promise.all([
+                axios.get<{ petitions: SimilarPetition[] }>('http://localhost:4941/api/v1/petitions/', { params: { categoryIds: petition?.categoryId, count: 20 } }),
+                axios.get<{ petitions: SimilarPetition[] }>('http://localhost:4941/api/v1/petitions/', { params: { ownerId: petition?.ownerId, count: 20 } })
+            ]);
             
-            axios.get(`http://localhost:4941/api/v1/petitions/`, { params: { ownerId: petition?.ownerId, count: 20 } })
-            .then((response) => {
-                updateSimilarPetition(response.data.petitions);
-            }, (error) => {
-                setError(true);
-                setErrorMessage(error.statusText)
-            })
+            const combinedPetitions = [...response1.data.petitions, ...response2.data.petitions];
+            const uniquePetitions = Array.from(
+                new Map(combinedPetitions.map((petition) => [petition.petitionId, petition])).values()
+            );
+            const filteredPetitions = uniquePetitions.filter(p => p.petitionId !== Number(id));
 
+            setSimilarPetitions(filteredPetitions);
+        } catch (error) {
+            setError(true);
+            setErrorMessage("An error occured while trying to get similar petitions");
         }
     }
 
