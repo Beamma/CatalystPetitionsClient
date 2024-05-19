@@ -2,6 +2,7 @@ What is best way to handle nav bar, with users and ids? When I go to the route v
 Does it need to be reactive to mobile. Full screen and 50%
 For similar petitions can I display just 3? Or does it have to be all of them? Way I have it should be fine
 How to get around the async, when trying to get similar petitions. Have two hooks
+Image doesnt change straight away?
 
 
 Deleting support tiers on create petition should delete the grid that u select delete for.

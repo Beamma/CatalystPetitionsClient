@@ -67,7 +67,7 @@ const EditPetition = () => {
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
     const [ownerId, setOwnerId] = React.useState<number | null>()
-    const [updateFlag, setUpdateFlag] = React.useState<boolean>(false)
+    const [updateFlag, setUpdateFlag] = React.useState<number>(1)
     const [photoExists, setPhotoExists] = React.useState(false);
     const [cancel, setCancel] = React.useState<number>(1);
 
@@ -143,9 +143,9 @@ const EditPetition = () => {
                 categoryId: 0
             })
             if (selectedFile !== null) {
-                axios.put(`http://localhost:4941/api/v1/petitions/${response.data.petitionId}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": selectedFile.type}})
+                axios.put(`http://localhost:4941/api/v1/petitions/${id}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": selectedFile.type}})
                 .then((response) => {
-
+                    setUpdateFlag(updateFlag * -1)
                 }, (error) => {
                     setSnackMessage(error.response.statusText)
                     setSnackOpenFail(true)
@@ -154,7 +154,7 @@ const EditPetition = () => {
             setSnackOpenFail(false)
             setSnackOpenSuccess(true)
             setSnackMessage("Successfully Updated Petition")
-            setUpdateFlag(true)
+            setUpdateFlag(updateFlag * -1)
         }, (error) => {
             setSnackMessage(error.response.statusText)
             setSnackOpenFail(true)
