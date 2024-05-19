@@ -3,6 +3,8 @@ import NavBar from './NavBar';
 import { Link, useParams } from "react-router-dom";
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Avatar, Button, Card, CardContent, CardMedia, Container, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import Cookies from 'js-cookie';
 
 interface SupportTier {
     title: string;
@@ -160,6 +162,22 @@ const Petition = () => {
             categoryMap[category.categoryId] = category.name;
     });
 
+    const edit = () => {
+
+    }
+
+    const displayEditButton= (ownerId: number) => {
+        if (Number(Cookies.get("userId")) === ownerId) {
+            return (
+                <Button onClick={edit} variant="outlined" startIcon={<EditIcon />} color="primary">
+                    Edit Petition
+                </Button>
+            )
+        } else {
+            return
+        }
+    }
+
     const displaySimilarPetitions = () => {
 
 
@@ -227,7 +245,7 @@ const Petition = () => {
                         <Typography variant="h2" component="h1" gutterBottom>
                             {petition.title}
                         </Typography>
-                        <Grid container spacing={2} >
+                        <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <img src={'http://localhost:4941/api/v1/petitions/' + petition.petitionId +'/image'} width="80%" ></img>
                             </Grid>
@@ -261,11 +279,13 @@ const Petition = () => {
                                 <Typography variant="body1" align='left'>
                                     <b>Money Raised:</b> ${petition.moneyRaised}
                                 </Typography>
+                                {displayEditButton(petition.ownerId)}
+                                
                             </Grid>
                         </Grid>
                         <CardContent>
                             <Typography variant="h5" component="h3" gutterBottom>
-                            Support Tiers
+                                Support Tiers
                             </Typography>
                             <Grid container spacing={2}>
                                 {petition.supportTiers.map((tier) => (
