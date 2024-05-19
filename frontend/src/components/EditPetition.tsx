@@ -28,6 +28,10 @@ interface PetitionFormData {
     categoryId: number;
 }
 
+interface TierData {
+    supportTiers: SupportTier[]
+}
+
 interface SupportTier {
     title: string;
     description: string;
@@ -58,6 +62,8 @@ const EditPetition = () => {
         description: '',
         categoryId: 0
     });
+
+    const [tierData, setTeirData] = React.useState<TierData>({supportTiers: []});
     const [error, setError] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState("");
     const [categories, setCategories] = React.useState<Category[]>([]);
@@ -88,6 +94,10 @@ const EditPetition = () => {
                     title: response.data.title,
                     description: response.data.description,
                     categoryId: response.data.categoryId
+                })
+
+                setTeirData({
+                    supportTiers: response.data.supportTiers
                 })
                 setOwnerId(response.data.ownerId)
             }, (error) => {
@@ -159,6 +169,8 @@ const EditPetition = () => {
             setSnackMessage(error.response.statusText)
             setSnackOpenFail(true)
         })
+
+        
     };
 
     const handleCancel = () => {
@@ -203,6 +215,30 @@ const EditPetition = () => {
     const changeUpdateImage = () => {
         setPhotoExists(false)
     }
+
+    const handleTierChange = (index: number, field: string, value: string | number) => {
+        setTeirData((prevData) => {
+            const updatedTiers = [...prevData.supportTiers];
+            updatedTiers[index] = { ...updatedTiers[index], [field]: value };
+            return { ...prevData, supportTiers: updatedTiers };
+        });
+    };
+
+    const handleAddTier = () => {
+        if (tierData.supportTiers.length < 3) {
+            setTeirData((prevData) => ({
+                ...prevData,
+                supportTiers: [...prevData.supportTiers, { title: '', description: '', cost: 0, supportTierId: 0 }],
+            }));
+        }
+    };
+
+    const handleRemoveTier = (index: number) => {
+        setTeirData((prevData) => ({
+            ...prevData,
+            supportTiers: prevData.supportTiers.filter((_, i) => i !== index),
+        }));
+    };
 
     const displayPetitionDetails = () => {
         return (
@@ -249,58 +285,58 @@ const EditPetition = () => {
         )
     }
 
-    // const displayTiers = () => {
-    //     return (
-    //         <Card variant="outlined">
-    //             <div className="scrollable-container">
-    //                 {formData.supportTiers.map((tier, index) => (
-    //                     <Container>
-    //                         <Typography variant="h6">
-    //                             Support Tier {index + 1}
-    //                             {formData.supportTiers.length > 1 && (
-    //                                 <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
-    //                                     <Delete />
-    //                                 </IconButton>
-    //                             )}
-    //                         </Typography>
-    //                         <TextField
-    //                             fullWidth
-    //                             required
-    //                             label="Title"
-    //                             value={tier.title}
-    //                             onChange={(e) => handleTierChange(index, 'title', e.target.value)}
-    //                             margin="normal"
-    //                         />
-    //                         <TextField
-    //                             fullWidth
-    //                             required
-    //                             label="Description"
-    //                             value={tier.description}
-    //                             onChange={(e) => handleTierChange(index, 'description', e.target.value)}
-    //                             margin="normal"
-    //                             multiline
-    //                             rows={4}
-    //                         />
-    //                         <TextField
-    //                             fullWidth
-    //                             required
-    //                             type="number"
-    //                             label="Cost"
-    //                             value={tier.cost}
-    //                             onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
-    //                             margin="normal"
-    //                         />
-    //                     </Container>
-    //                 ))}
-    //                 {formData.supportTiers.length < 3 && (
-    //                     <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
-    //                         Add Support Tier
-    //                     </Button>
-    //                 )}
-    //             </div>
-    //         </Card>
-    //     )
-    // }
+    const displayTiers = () => {
+        return (
+            <Card variant="outlined">
+                <div className="scrollable-container">
+                    {tierData.supportTiers.map((tier, index) => (
+                        <Container>
+                            <Typography variant="h6">
+                                Support Tier {index + 1}
+                                {tierData.supportTiers.length > 1 && (
+                                    <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
+                                        <Delete />
+                                    </IconButton>
+                                )}
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                required
+                                label="Title"
+                                value={tier.title}
+                                onChange={(e) => handleTierChange(index, 'title', e.target.value)}
+                                margin="normal"
+                            />
+                            <TextField
+                                fullWidth
+                                required
+                                label="Description"
+                                value={tier.description}
+                                onChange={(e) => handleTierChange(index, 'description', e.target.value)}
+                                margin="normal"
+                                multiline
+                                rows={4}
+                            />
+                            <TextField
+                                fullWidth
+                                required
+                                type="number"
+                                label="Cost"
+                                value={tier.cost}
+                                onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
+                                margin="normal"
+                            />
+                        </Container>
+                    ))}
+                    {tierData.supportTiers.length < 3 && (
+                        <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
+                            Add Support Tier
+                        </Button>
+                    )}
+                </div>
+            </Card>
+        )
+    }
 
     const displayImage = () => {
         console.log(updateFlag)
@@ -396,7 +432,7 @@ const EditPetition = () => {
                     </Container>
                 </Grid>
                 <Grid item xs={12} sm={6} justifyContent="center">
-                    {/* {displayTiers()} */}
+                    {displayTiers()}
                 </Grid>
             </Grid>
             {displaySnack()}
