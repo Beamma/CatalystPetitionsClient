@@ -1,6 +1,6 @@
 import React from 'react';
 import NavBar from './NavBar';
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Avatar, Button, Card, CardContent, CardMedia, Container, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -64,6 +64,7 @@ const Petition = () => {
     const [similarPetitions, setSimilarPetitions] = React.useState<SimilarPetition[]>([]);
     const [showAllPetitions, setShowAllPetitions] = React.useState<boolean>(false);
     const [categories, setCategories] = React.useState<Category[]>([]);
+    const [editFlag, setEditFlag] = React.useState<boolean>(false);
 
     React.useEffect(() => {
         getPeitionInfo()
@@ -75,13 +76,9 @@ const Petition = () => {
         getSimilarPetitions()
     }, [petition])
 
-    // const updateSimilarPetition = (toAdd: SimilarPetition[]) => {
-    //     let tempSimilar = similarPetitions
-    //     tempSimilar = tempSimilar.concat(toAdd)
-    //     console.log(similarPetitions)
-    //     console.log(toAdd)
-    //     setSimilarPetitions(tempSimilar)
-    // }
+    React.useEffect(() => {
+
+    }, [editFlag])
 
     const getPeitionInfo = async () => {
         if (! id?.match(/^\d+$/)) {
@@ -163,7 +160,7 @@ const Petition = () => {
     });
 
     const edit = () => {
-
+        setEditFlag(true)
     }
 
     const displayEditButton= (ownerId: number) => {
@@ -179,8 +176,6 @@ const Petition = () => {
     }
 
     const displaySimilarPetitions = () => {
-
-
         return (
             <div>
                 <Typography variant="h5" component="h3" gutterBottom>
@@ -356,6 +351,12 @@ const Petition = () => {
                 {displaySimilarPetitions()}
             </Container>
         );
+    }
+
+    if (editFlag) {
+        return (
+            <Navigate to = {{ pathname: `/petitions/${id}/edit` }} />
+        )
     }
 
     if (error) {
