@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Typography, Container, Grid, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import NavBar from "./NavBar";
@@ -29,7 +29,7 @@ const Create = () => {
         title: '',
         description: '',
         categoryId: 0,
-        supportTiers: [],
+        supportTiers: [{ title: '', description: '', cost: 0 }],
     });
     const [snackMessage, setSnackMessage] = React.useState("")
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
@@ -37,6 +37,7 @@ const Create = () => {
     const [categories, setCategories] = React.useState<Category[]>([]);
     const [error, setError] = React.useState<boolean>(false);
     const [errorMessage, setErrorMessage] = React.useState<string>("");
+    const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
 
     React.useEffect(() => {
         getCategories()
@@ -123,13 +124,25 @@ const Create = () => {
         })
     };
 
+    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+          setSelectedFile(event.target.files[0]);
+        }
+    };
+
     const displayTiers = () => {
         return (
             <div>
-            <Grid container spacing={2}>
                 {formData.supportTiers.map((tier, index) => (
-                    <Grid item xs={12} sm={4} key={index} >
-                        <Typography variant="h6">Support Tier {index + 1}</Typography>
+                    <Container>
+                        <Typography variant="h6">
+                            Support Tier {index + 1}
+                            {formData.supportTiers.length > 1 && (
+                                <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
+                                    <Delete />
+                                </IconButton>
+                            )}
+                        </Typography>
                         <TextField
                             fullWidth
                             required
@@ -157,19 +170,13 @@ const Create = () => {
                             onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
                             margin="normal"
                         />
-                        <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
-                            <Delete />
-                        </IconButton>
-                    </Grid>
+                    </Container>
                 ))}
                 {formData.supportTiers.length < 3 && (
-                    <Grid item xs={12} style={{ justifyContent: 'center' }}>
                         <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
                             Add Support Tier
                         </Button>
-                    </Grid>
                 )}
-            </Grid>
             </div>
         )
     }
@@ -185,6 +192,12 @@ const Create = () => {
                     value={formData.title}
                     onChange={handleChange}
                     margin="normal"
+                />
+                <TextField
+                    fullWidth
+                    color="secondary"
+                    type="file" 
+                    onChange={handleFileChange}
                 />
                 <TextField
                     fullWidth
@@ -246,23 +259,25 @@ const Create = () => {
     return (
         <div>
             <NavBar></NavBar>
-            {/* <Container maxWidth="xl"> */}
                 <Typography variant="h4" gutterBottom>
                     Create a Petition
                 </Typography>
-                <Grid container spacing={12}>
+                <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
-                        {displayPetitionDetails()}
+                        <Container>
+                            <Typography variant="h6">
+                                Support Tier
+                            </Typography>
+                            {displayPetitionDetails()}
+                            <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
+                                Create Petition
+                            </Button>
+                        </Container>
                     </Grid>
-                    <Grid item xs={6} sm={4}>
+                    <Grid item xs={12} sm={6} justifyContent="center">
                         {displayTiers()}
                     </Grid>
                 </Grid>
-                
-                    <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
-                        Create Petition
-                    </Button>
-            {/* </Container> */}
             {displaySnack()}
         </div>
     );
