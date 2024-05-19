@@ -123,6 +123,124 @@ const Create = () => {
         })
     };
 
+    const displayTiers = () => {
+        return (
+            <Grid container spacing={2}>
+                {formData.supportTiers.map((tier, index) => (
+                    <Grid item xs={12} sm={4} key={index} >
+                        <Typography variant="h6">Support Tier {index + 1}</Typography>
+                        <TextField
+                            fullWidth
+                            required
+                            label="Title"
+                            value={tier.title}
+                            onChange={(e) => handleTierChange(index, 'title', e.target.value)}
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            required
+                            label="Description"
+                            value={tier.description}
+                            onChange={(e) => handleTierChange(index, 'description', e.target.value)}
+                            margin="normal"
+                            multiline
+                            rows={4}
+                        />
+                        <TextField
+                            fullWidth
+                            required
+                            type="number"
+                            label="Cost"
+                            value={tier.cost}
+                            onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
+                            margin="normal"
+                        />
+                        <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
+                            <Delete />
+                        </IconButton>
+                    </Grid>
+                ))}
+                {formData.supportTiers.length < 3 && (
+                    <Grid item xs={12} style={{ justifyContent: 'center' }}>
+                        <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
+                            Add Support Tier
+                        </Button>
+                    </Grid>
+                )}
+            </Grid>
+        )
+    }
+
+    const displayPetitionDetails = () => {
+        return (
+            <div>
+                <TextField
+                    fullWidth
+                    required
+                    label="Title"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    margin="normal"
+                />
+                <TextField
+                    fullWidth
+                    required
+                    label="Description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    margin="normal"
+                    multiline
+                    rows={4}
+                />
+                <FormControl fullWidth margin="normal">
+                    <InputLabel id="category-label">Category</InputLabel>
+                    <Select
+                        labelId="category-label"
+                        id="category"
+                        value={formData.categoryId}
+                        onChange={handleChange}
+                        name="categoryId"
+                        required
+                    >
+                        {categories.map((category) => (
+                            <MenuItem key={category.categoryId} value={category.categoryId}>
+                                {category.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </div>
+        )
+    }
+
+    const displaySnack = () => {
+        return (
+            <div>
+                <Snackbar
+                    autoHideDuration={6000}
+                    open={snackOpenSuccess}
+                    onClose={handleSnackCloseSuccess}
+                    key={snackMessage}>
+                    <Alert onClose={handleSnackCloseSuccess} severity="success" sx={{width: '100%'}}>
+                        {snackMessage}
+                    </Alert>
+                </Snackbar>
+                <Snackbar
+                    autoHideDuration={6000}
+                    open={snackOpenFail}
+                    onClose={handleSnackCloseFail}
+                    key={snackMessage}>
+                    <Alert onClose={handleSnackCloseFail} severity="error" sx={{width: '100%'}}>
+                        {snackMessage}
+                    </Alert>
+                </Snackbar>
+            </div>
+        )
+    }
+
     return (
         <div>
             <NavBar></NavBar>
@@ -130,109 +248,13 @@ const Create = () => {
                 <Typography variant="h4" gutterBottom>
                     Create a Petition
                 </Typography>
-                    <TextField
-                        fullWidth
-                        required
-                        label="Title"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        required
-                        label="Description"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        margin="normal"
-                        multiline
-                        rows={4}
-                    />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel id="category-label">Category</InputLabel>
-                        <Select
-                            labelId="category-label"
-                            id="category"
-                            value={formData.categoryId}
-                            onChange={handleChange}
-                            name="categoryId"
-                            required
-                        >
-                            {categories.map((category) => (
-                                <MenuItem key={category.categoryId} value={category.categoryId}>
-                                    {category.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <Grid container spacing={2}>
-                        {formData.supportTiers.map((tier, index) => (
-                            <Grid item xs={12} sm={4} key={index} >
-                                <Typography variant="h6">Support Tier {index + 1}</Typography>
-                                <TextField
-                                    fullWidth
-                                    required
-                                    label="Title"
-                                    value={tier.title}
-                                    onChange={(e) => handleTierChange(index, 'title', e.target.value)}
-                                    margin="normal"
-                                />
-                                <TextField
-                                    fullWidth
-                                    required
-                                    label="Description"
-                                    value={tier.description}
-                                    onChange={(e) => handleTierChange(index, 'description', e.target.value)}
-                                    margin="normal"
-                                    multiline
-                                    rows={4}
-                                />
-                                <TextField
-                                    fullWidth
-                                    required
-                                    type="number"
-                                    label="Cost"
-                                    value={tier.cost}
-                                    onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
-                                    margin="normal"
-                                />
-                                <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
-                                    <Delete />
-                                </IconButton>
-                            </Grid>
-                        ))}
-                        {formData.supportTiers.length < 3 && (
-                            <Grid item xs={12} style={{ justifyContent: 'center' }}>
-                                <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
-                                    Add Support Tier
-                                </Button>
-                            </Grid>
-                        )}
-                    </Grid>
+                    {displayPetitionDetails()}
+                    {displayTiers()}
                     <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
                         Create Petition
                     </Button>
             </Container>
-            <Snackbar
-                autoHideDuration={6000}
-                open={snackOpenSuccess}
-                onClose={handleSnackCloseSuccess}
-                key={snackMessage}>
-                <Alert onClose={handleSnackCloseSuccess} severity="success" sx={{width: '100%'}}>
-                    {snackMessage}
-                </Alert>
-            </Snackbar>
-            <Snackbar
-                autoHideDuration={6000}
-                open={snackOpenFail}
-                onClose={handleSnackCloseFail}
-                key={snackMessage}>
-                <Alert onClose={handleSnackCloseFail} severity="error" sx={{width: '100%'}}>
-                    {snackMessage}
-                </Alert>
-            </Snackbar>
+            {displaySnack()}
         </div>
     );
 }
