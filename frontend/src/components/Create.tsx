@@ -1,10 +1,11 @@
 import React, { ChangeEvent, useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Typography, Container, Grid, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { TextField, Button, Typography, Container, Grid, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Card, Paper } from '@mui/material';
 import NavBar from "./NavBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Delete } from '@mui/icons-material';
 import Cookies from 'js-cookie';
+import './styles.css'; // Import the CSS file
 
 interface SupportTier {
     title: string;
@@ -132,52 +133,54 @@ const Create = () => {
 
     const displayTiers = () => {
         return (
-            <div>
-                {formData.supportTiers.map((tier, index) => (
-                    <Container>
-                        <Typography variant="h6">
-                            Support Tier {index + 1}
-                            {formData.supportTiers.length > 1 && (
-                                <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
-                                    <Delete />
-                                </IconButton>
-                            )}
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            required
-                            label="Title"
-                            value={tier.title}
-                            onChange={(e) => handleTierChange(index, 'title', e.target.value)}
-                            margin="normal"
-                        />
-                        <TextField
-                            fullWidth
-                            required
-                            label="Description"
-                            value={tier.description}
-                            onChange={(e) => handleTierChange(index, 'description', e.target.value)}
-                            margin="normal"
-                            multiline
-                            rows={4}
-                        />
-                        <TextField
-                            fullWidth
-                            required
-                            type="number"
-                            label="Cost"
-                            value={tier.cost}
-                            onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
-                            margin="normal"
-                        />
-                    </Container>
-                ))}
-                {formData.supportTiers.length < 3 && (
+            <Card variant="outlined">
+                <div className="scrollable-container">
+                    {formData.supportTiers.map((tier, index) => (
+                        <Container>
+                            <Typography variant="h6">
+                                Support Tier {index + 1}
+                                {formData.supportTiers.length > 1 && (
+                                    <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
+                                        <Delete />
+                                    </IconButton>
+                                )}
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                required
+                                label="Title"
+                                value={tier.title}
+                                onChange={(e) => handleTierChange(index, 'title', e.target.value)}
+                                margin="normal"
+                            />
+                            <TextField
+                                fullWidth
+                                required
+                                label="Description"
+                                value={tier.description}
+                                onChange={(e) => handleTierChange(index, 'description', e.target.value)}
+                                margin="normal"
+                                multiline
+                                rows={4}
+                            />
+                            <TextField
+                                fullWidth
+                                required
+                                type="number"
+                                label="Cost"
+                                value={tier.cost}
+                                onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
+                                margin="normal"
+                            />
+                        </Container>
+                    ))}
+                    {formData.supportTiers.length < 3 && (
                         <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
                             Add Support Tier
                         </Button>
-                )}
-            </div>
+                    )}
+                </div>
+            </Card>
         )
     }
 
