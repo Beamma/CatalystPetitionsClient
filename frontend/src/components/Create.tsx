@@ -125,6 +125,7 @@ const Create = () => {
 
     const displayTiers = () => {
         return (
+            <div>
             <Grid container spacing={2}>
                 {formData.supportTiers.map((tier, index) => (
                     <Grid item xs={12} sm={4} key={index} >
@@ -169,6 +170,7 @@ const Create = () => {
                     </Grid>
                 )}
             </Grid>
+            </div>
         )
     }
 
@@ -244,16 +246,23 @@ const Create = () => {
     return (
         <div>
             <NavBar></NavBar>
-            <Container maxWidth="md">
+            {/* <Container maxWidth="xl"> */}
                 <Typography variant="h4" gutterBottom>
                     Create a Petition
                 </Typography>
-                    {displayPetitionDetails()}
-                    {displayTiers()}
+                <Grid container spacing={12}>
+                    <Grid item xs={12} sm={6}>
+                        {displayPetitionDetails()}
+                    </Grid>
+                    <Grid item xs={6} sm={4}>
+                        {displayTiers()}
+                    </Grid>
+                </Grid>
+                
                     <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
                         Create Petition
                     </Button>
-            </Container>
+            {/* </Container> */}
             {displaySnack()}
         </div>
     );
