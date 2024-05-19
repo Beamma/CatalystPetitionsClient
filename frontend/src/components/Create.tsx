@@ -271,25 +271,25 @@ const Create = () => {
     return (
         <div>
             <NavBar></NavBar>
-                <Typography variant="h4" gutterBottom>
-                    Create a Petition
-                </Typography>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <Container>
-                            <Typography variant="h6">
-                                Support Tier
-                            </Typography>
-                            {displayPetitionDetails()}
-                            <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
-                                Create Petition
-                            </Button>
-                        </Container>
-                    </Grid>
-                    <Grid item xs={12} sm={6} justifyContent="center">
-                        {displayTiers()}
-                    </Grid>
+            <Typography variant="h4" gutterBottom>
+                Create a Petition
+            </Typography>
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                    <Container>
+                        <Typography variant="h6">
+                            Support Tier
+                        </Typography>
+                        {displayPetitionDetails()}
+                        <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
+                            Create Petition
+                        </Button>
+                    </Container>
                 </Grid>
+                <Grid item xs={12} sm={6} justifyContent="center">
+                    {displayTiers()}
+                </Grid>
+            </Grid>
             {displaySnack()}
         </div>
     );

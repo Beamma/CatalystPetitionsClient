@@ -75,7 +75,6 @@ const EditProfile = () => {
             })
 
             
-            console.log(`http://localhost:4941/api/v1/users/${id}/image`);
             axios.get(`http://localhost:4941/api/v1/users/${id}/image`)
                 .then((response) => {
                     console.log(response.status)
