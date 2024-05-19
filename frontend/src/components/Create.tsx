@@ -114,8 +114,17 @@ const Create = () => {
                 title: '',
                 description: '',
                 categoryId: 0,
-                supportTiers: [],
+                supportTiers: [{ title: '', description: '', cost: 0 }],
             })
+            if (selectedFile !== null) {
+                axios.put(`http://localhost:4941/api/v1/petitions/${response.data.petitionId}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": selectedFile.type}})
+                .then((response) => {
+
+                }, (error) => {
+                    setSnackMessage(error.response.statusText)
+                    setSnackOpenFail(true)
+                })
+            }
             setSnackOpenFail(false)
             setSnackOpenSuccess(true)
             setSnackMessage("Successfully Created Petition")

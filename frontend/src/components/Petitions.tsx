@@ -27,7 +27,7 @@ const Petitions = () => {
     const [filteredCost, setFilteredCost] = React.useState<number>(100);
     const [sort, setSort] = React.useState('');
     const [petitionCount, setPetitionCount] = React.useState(0);
-    const [page, setPage] = React.useState(1);
+    const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const updateFilterCats = (event: SelectChangeEvent<typeof filterCats>) => {
