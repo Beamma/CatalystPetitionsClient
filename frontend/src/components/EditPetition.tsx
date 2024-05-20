@@ -4,7 +4,7 @@ import { Navigate, useParams } from 'react-router-dom';
 import NavBar from './NavBar';
 import NotFound from './NotFound';
 import axios from 'axios';
-import { Alert, Button, Card, Container, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography } from '@mui/material';
+import { Alert, Avatar, Button, Card, Container, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Delete } from '@mui/icons-material';
 
@@ -175,6 +175,7 @@ const EditPetition = () => {
 
     const handleCancel = () => {
         setCancel(cancel * -1)
+        setSelectedFile(null)
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<number>) => {
@@ -339,7 +340,6 @@ const EditPetition = () => {
     }
 
     const displayImage = () => {
-        console.log(updateFlag)
         if (photoExists) {
             return (
                 <div>
@@ -357,13 +357,30 @@ const EditPetition = () => {
                 
             )
         } else {
-            return (
-                <TextField
-                fullWidth
-                color="secondary"
-                type="file"
-                onChange={handleFileChange}/>
-            )
+            if (selectedFile) {
+                return(
+                    <div>
+                        <img src={URL.createObjectURL(selectedFile) || ""} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
+                        <TextField
+                        fullWidth
+                        color="secondary"
+                        type="file"
+                        onChange={handleFileChange}/>
+                    </div>
+                    
+                )
+            } else {
+                return (
+                    <div>
+                        <TextField
+                        fullWidth
+                        color="secondary"
+                        type="file"
+                        onChange={handleFileChange}/>
+                    </div>
+                    
+                )
+            }
         }
         
     }
