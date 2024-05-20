@@ -2,9 +2,22 @@ import React from 'react';
 import NavBar from './NavBar';
 import { Link, Navigate, useParams } from "react-router-dom";
 import axios, { AxiosResponse } from 'axios';
-import { Alert, Avatar, Button, Card, CardContent, CardMedia, Container, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Container, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Modal, Snackbar, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
+
+const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};    
 
 interface SupportTier {
     title: string;
@@ -65,6 +78,12 @@ const Petition = () => {
     const [showAllPetitions, setShowAllPetitions] = React.useState<boolean>(false);
     const [categories, setCategories] = React.useState<Category[]>([]);
     const [editFlag, setEditFlag] = React.useState<boolean>(false);
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+    const [snackMessage, setSnackMessage] = React.useState("")
+    const [snackOpenFail, setSnackOpenFail] = React.useState(false)
+    const [redriect, setRedirect] = React.useState(false)
 
     React.useEffect(() => {
         getPeitionInfo()
@@ -78,7 +97,7 @@ const Petition = () => {
 
     React.useEffect(() => {
 
-    }, [editFlag])
+    }, [editFlag, redriect])
 
     const getPeitionInfo = async () => {
         if (! id?.match(/^\d+$/)) {
@@ -163,15 +182,67 @@ const Petition = () => {
         setEditFlag(true)
     }
 
+    const deletePetition = () => {
+        axios.delete(`http://localhost:4941/api/v1/petitions/${id}`, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+        .then((response) => {
+            setRedirect(true)
+        }, (error) => {
+            setSnackMessage(error.response.statusText)
+            setSnackOpenFail(true)
+        })
+    }
+
+    const handleSnackCloseFail = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackOpenFail(false);
+      };
+
+    const displaySnack = () => {
+        return (
+            <div>
+                <Snackbar
+                    autoHideDuration={6000}
+                    open={snackOpenFail}
+                    onClose={handleSnackCloseFail}
+                    key={snackMessage}>
+                    <Alert onClose={handleSnackCloseFail} severity="error" sx={{width: '100%'}}>
+                        {snackMessage}
+                    </Alert>
+                </Snackbar>
+            </div>
+        )
+    }
+
     const displayEditButton= (ownerId: number) => {
         if (Number(Cookies.get("userId")) === ownerId) {
             return (
-                <Button onClick={edit} variant="outlined" startIcon={<EditIcon />} color="primary">
-                    Edit Petition
-                </Button>
+                <div>
+                    <Button onClick={edit} variant="outlined" startIcon={<EditIcon />} color="primary">
+                        Edit Petition
+                    </Button>
+                    {displayDelete()}
+                </div>
             )
         } else {
             return
+        }
+    }
+
+    const displayDelete = () => {
+        if (supporters.length === 0) {
+            return (
+                <Button onClick={handleOpen} variant="outlined" startIcon={<DeleteIcon />} color="primary">
+                    Delete Petition
+                </Button>
+            )
+        } else {
+            return (
+                <Button onClick={handleOpen} variant="outlined" startIcon={<DeleteIcon />} color="primary" disabled>
+                    Delete Petition
+                </Button>
+            )
         }
     }
 
@@ -230,6 +301,29 @@ const Petition = () => {
                 )}
             </div>
         );
+    }
+
+    const modal = () => {
+        return (
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        Are you sure you want to delete this petition?
+                    </Typography>
+                    <Button onClick={deletePetition} variant="contained" startIcon={<DeleteIcon />} color="primary">
+                        Confirm
+                    </Button>
+                    <Button onClick={handleClose} variant="outlined" startIcon={<DeleteIcon />} color="primary">
+                        Cancel
+                    </Button>
+                </Box>
+            </Modal>
+        )
     }
 
     const displayPetitionInfo = () => {
@@ -349,8 +443,15 @@ const Petition = () => {
                     </Card>
                 )}
                 {displaySimilarPetitions()}
+                {modal()}
+                {displaySnack()}
             </Container>
         );
+    }
+    if (redriect) {
+        return (
+            <Navigate to = {{ pathname: `/petitions` }} />
+        )
     }
 
     if (editFlag) {
