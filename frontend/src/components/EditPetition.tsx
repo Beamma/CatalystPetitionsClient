@@ -428,7 +428,7 @@ const EditPetition = () => {
                             Revert Changes
                         </Button>
                         <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
-                            Create Petition
+                            Submit Changes
                         </Button>
                     </Container>
                 </Grid>
