@@ -340,47 +340,31 @@ const EditPetition = () => {
     }
 
     const displayImage = () => {
-        if (photoExists) {
-            return (
+        if (selectedFile) {
+            return(
                 <div>
-                    <img src={`http://localhost:4941/api/v1/petitions/${id}/image`} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
-                    <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    onClick={changeUpdateImage}
-                    >
-                        Change Image
-                    </Button>
+                    <img src={URL.createObjectURL(selectedFile) || ""} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
+                    <TextField
+                        fullWidth
+                        color="secondary"
+                        type="file"
+                        onChange={handleFileChange}
+                    />
                 </div>
                 
             )
         } else {
-            if (selectedFile) {
-                return(
-                    <div>
-                        <img src={URL.createObjectURL(selectedFile) || ""} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
-                        <TextField
+            return (
+                <div>
+                    <img src={`http://localhost:4941/api/v1/petitions/${id}/image`} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
+                    <TextField
                         fullWidth
                         color="secondary"
                         type="file"
-                        onChange={handleFileChange}/>
-                    </div>
-                    
-                )
-            } else {
-                return (
-                    <div>
-                        <TextField
-                        fullWidth
-                        color="secondary"
-                        type="file"
-                        onChange={handleFileChange}/>
-                    </div>
-                    
-                )
-            }
+                        onChange={handleFileChange}
+                    />
+                </div>
+            )
         }
         
     }
