@@ -77,15 +77,52 @@ const EditPetition = () => {
     const [updateFlag, setUpdateFlag] = React.useState<number>(1)
     const [photoExists, setPhotoExists] = React.useState(false);
     const [cancel, setCancel] = React.useState<number>(1);
-    const [deleted, setDeleted] = React.useState<number[]>([]);
-    const [added, setAdded] = React.useState<number[]>([]);
-    const [changed, setChanged] = React.useState<number[]>([]);
 
     React.useEffect(() => {
         getPeitionInfo()
         getSupporters()
         getCategories()
     }, [updateFlag, cancel])
+
+    const compareTiers = () => {
+        const newSupportTiers: SupportTier[] = [];
+        const changedSupportTiers: SupportTier[] = [];
+        const deletedSupportTiers: SupportTier[] = [];
+    
+        // Iterate over tierData support tiers
+        tierData.supportTiers.forEach(tier => {
+            // Find the corresponding support tier in staticTierData
+            const staticTier = staticTierData.supportTiers.find(staticTier => staticTier.supportTierId === tier.supportTierId);
+    
+            if (!staticTier) {
+                // If the support tier doesn't exist in staticTierData, it's new
+                newSupportTiers.push(tier);
+            } else if (
+                tier.title !== staticTier.title ||
+                tier.description !== staticTier.description ||
+                tier.cost !== staticTier.cost
+            ) {
+                // If the support tier exists in staticTierData but has changed, add it to changedSupportTiers
+                changedSupportTiers.push(tier);
+            }
+        });
+    
+        // Iterate over staticTierData support tiers to find deleted support tiers
+        staticTierData.supportTiers.forEach(staticTier => {
+            const existingTier = tierData.supportTiers.find(tier => tier.supportTierId === staticTier.supportTierId);
+            if (!existingTier) {
+                // If the support tier from staticTierData doesn't exist in tierData, it's deleted
+                deletedSupportTiers.push(staticTier);
+            }
+        });
+    
+        // Return the result
+        return {
+            newSupportTiers,
+            changedSupportTiers,
+            deletedSupportTiers
+        };
+    };
 
     const getPeitionInfo = async () => {
         if (! id?.match(/^\d+$/)) {
@@ -168,10 +205,19 @@ const EditPetition = () => {
                     setSnackOpenFail(true)
                 })
             }
+            
+            const { newSupportTiers, changedSupportTiers, deletedSupportTiers } = compareTiers();
+            deletedSupportTiers.forEach(deletedTier => {
+                axios.delete(`http://localhost:4941/api/v1/petitions/${id}/supportTiers/${deletedTier.supportTierId}`, {headers: {'X-Authorization': Cookies.get("X-Authorization")}});
+            });
 
-            if (deleted.length !== 0) {
-                axios.delete(`http://localhost:4941/api/v1/petitions/${id}/supportTiers/${staticTierData.supportTiers[0].supportTierId}`, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
-            }
+            newSupportTiers.forEach(newTier => {
+                axios.put(`http://localhost:4941/api/v1/petitions/${id}/supportTiers`,newTier, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+            });
+
+            changedSupportTiers.forEach(changedTier => {
+                axios.patch(`http://localhost:4941/api/v1/petitions/${id}/supportTiers/${changedTier.supportTierId}`,changedTier, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+            });
 
             setSnackOpenFail(false)
             setSnackOpenSuccess(true)
@@ -188,9 +234,6 @@ const EditPetition = () => {
     const handleCancel = () => {
         setCancel(cancel * -1)
         setSelectedFile(null)
-        setDeleted([])
-        setAdded([])
-        setChanged([])
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<number>) => {
@@ -234,8 +277,6 @@ const EditPetition = () => {
             updatedTiers[index] = { ...updatedTiers[index], [field]: value };
             return { ...prevData, supportTiers: updatedTiers };
         });
-
-        setChanged(prevChanged => [...prevChanged, index])
     };
 
     const handleAddTier = () => {
@@ -245,7 +286,6 @@ const EditPetition = () => {
                 supportTiers: [...prevData.supportTiers, { title: '', description: '', cost: 0, supportTierId: 0 }],
             }));
 
-            setAdded(prevAdded => [...prevAdded, tierData.supportTiers.length-1])
         }
     };
 
@@ -255,7 +295,6 @@ const EditPetition = () => {
             supportTiers: prevData.supportTiers.filter((_, i) => i !== index),
         }));
 
-        setDeleted(prevDeleted => [...prevDeleted, index]);
     };
 
     const hasSupporters = (supportTierId: number): boolean => {
