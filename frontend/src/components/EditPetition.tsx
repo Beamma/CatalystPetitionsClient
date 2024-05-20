@@ -64,6 +64,7 @@ const EditPetition = () => {
     });
 
     const [tierData, setTeirData] = React.useState<TierData>({supportTiers: []});
+    const [staticTierData, setStaticTeirData] = React.useState<TierData>({supportTiers: []});
     const [error, setError] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState("");
     const [categories, setCategories] = React.useState<Category[]>([]);
@@ -76,6 +77,9 @@ const EditPetition = () => {
     const [updateFlag, setUpdateFlag] = React.useState<number>(1)
     const [photoExists, setPhotoExists] = React.useState(false);
     const [cancel, setCancel] = React.useState<number>(1);
+    const [deleted, setDeleted] = React.useState<number[]>([]);
+    const [added, setAdded] = React.useState<number[]>([]);
+    const [changed, setChanged] = React.useState<number[]>([]);
 
     React.useEffect(() => {
         getPeitionInfo()
@@ -97,6 +101,9 @@ const EditPetition = () => {
                 })
 
                 setTeirData({
+                    supportTiers: response.data.supportTiers
+                })
+                setStaticTeirData({
                     supportTiers: response.data.supportTiers
                 })
                 setOwnerId(response.data.ownerId)
@@ -161,6 +168,11 @@ const EditPetition = () => {
                     setSnackOpenFail(true)
                 })
             }
+
+            if (deleted.length !== 0) {
+                axios.delete(`http://localhost:4941/api/v1/petitions/${id}/supportTiers/${staticTierData.supportTiers[0].supportTierId}`, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+            }
+
             setSnackOpenFail(false)
             setSnackOpenSuccess(true)
             setSnackMessage("Successfully Updated Petition")
@@ -176,6 +188,9 @@ const EditPetition = () => {
     const handleCancel = () => {
         setCancel(cancel * -1)
         setSelectedFile(null)
+        setDeleted([])
+        setAdded([])
+        setChanged([])
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<number>) => {
@@ -213,16 +228,14 @@ const EditPetition = () => {
     setSnackOpenFail(false);
     };
 
-    const changeUpdateImage = () => {
-        setPhotoExists(false)
-    }
-
     const handleTierChange = (index: number, field: string, value: string | number) => {
         setTeirData((prevData) => {
             const updatedTiers = [...prevData.supportTiers];
             updatedTiers[index] = { ...updatedTiers[index], [field]: value };
             return { ...prevData, supportTiers: updatedTiers };
         });
+
+        setChanged(prevChanged => [...prevChanged, index])
     };
 
     const handleAddTier = () => {
@@ -231,6 +244,8 @@ const EditPetition = () => {
                 ...prevData,
                 supportTiers: [...prevData.supportTiers, { title: '', description: '', cost: 0, supportTierId: 0 }],
             }));
+
+            setAdded(prevAdded => [...prevAdded, tierData.supportTiers.length-1])
         }
     };
 
@@ -239,6 +254,12 @@ const EditPetition = () => {
             ...prevData,
             supportTiers: prevData.supportTiers.filter((_, i) => i !== index),
         }));
+
+        setDeleted(prevDeleted => [...prevDeleted, index]);
+    };
+
+    const hasSupporters = (supportTierId: number): boolean => {
+        return supporters.some(supporter => supporter.supportTierId === supportTierId);
     };
 
     const displayPetitionDetails = () => {
@@ -294,7 +315,7 @@ const EditPetition = () => {
                         <Container>
                             <Typography variant="h6">
                                 Support Tier {index + 1}
-                                {tierData.supportTiers.length > 1 && (
+                                {tierData.supportTiers.length > 1 && !hasSupporters(tier.supportTierId) && (
                                     <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
                                         <Delete />
                                     </IconButton>
@@ -406,6 +427,7 @@ const EditPetition = () => {
     if (error) {
         return (
             <div>
+                <NavBar />
                 {errorMessage}
             </div>
         )
