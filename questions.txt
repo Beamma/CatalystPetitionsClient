@@ -11,3 +11,6 @@ Need default petitions image
 Money raised, should say 0 if none
 Need to change links to navigate to
 Possibly have to window reload on log out, for things like support Tier Button
+If logged out dont display My Petitions
+Fix aligment on pagination and on signin button
+Supporters only shows if there is supporters
