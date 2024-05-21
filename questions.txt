@@ -1,5 +1,6 @@
 Does it need to be reactive to mobile. Full screen and 50%
 Image doesnt change straight away?
+For petition card, when I delete is there a way to talk back to the parent component to say to reload or something
 
 
 Deleting support tiers on create petition should delete the grid that u select delete for.
