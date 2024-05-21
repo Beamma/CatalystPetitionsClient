@@ -11,6 +11,7 @@ import Petitions from './components/Petitions';
 import Petition from './components/Petition';
 import Create from './components/Create';
 import EditPetition from './components/EditPetition';
+import MyPetitions from './components/MyPetitions';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/petitions/:id" element={<Petition/>}/>
             <Route path="/petitions/create" element={<Create/>}/>
             <Route path="/petitions/:id/edit" element={<EditPetition/>}/>
+            <Route path="/user/petitions" element={<MyPetitions/>}/>
           </Routes>
         </div>
       </Router>

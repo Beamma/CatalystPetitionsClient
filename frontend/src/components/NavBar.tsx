@@ -21,7 +21,7 @@ import {useSearchStore} from "../store";
 import {useUserStore} from "../store/user";
 import Cookies from 'js-cookie';
 
-const pages = [{ title: "Petitions", link: "../petitions"}, { title: "Create Petition", link: "../petitions/create"}];
+const pages = [{ title: "Petitions", link: "../petitions"}, {title: "My Petitions", link: "../user/petitions"},{ title: "Create Petition", link: "../petitions/create"}];
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
