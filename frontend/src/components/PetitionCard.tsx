@@ -141,45 +141,49 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
     
     return (
         <div>
-            <Card sx={{ marginBottom: 2 }}>
-              <a href={`/petitions/${petitionId}`} style={linkStyle}>
-              {imageUrl && (
-                <CardMedia
-                  component="img"
-                  height="250"
-                  image={imageUrl}
-                  alt={`${title} image`}
-                />
-              )}
-              <CardContent>
-                  <Typography variant="h5" component="div">
-                      {title}
-                  </Typography>
-                <Box display="flex" alignItems="center" justifyContent={'center'}>
-                  {ownerProfilePictureUrl && (
-                    <Avatar alt={`${ownerFirstName} ${ownerLastName}`} src={ownerProfilePictureUrl} sx={{ marginRight: 2 }} />
-                  )}
-                  <Box>
-                    <Typography variant="body2" color="text.secondary">
-                      {ownerFirstName} {ownerLastName}
-                    </Typography>
-                  </Box>
+            <Card sx={{ marginBottom: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 500  }}>
+                <a href={`/petitions/${petitionId}`} style={linkStyle}>
+                    <Box sx={{ flexGrow: 1 }}>
+                        {imageUrl && (
+                            <CardMedia
+                            component="img"
+                            height="250"
+                            image={imageUrl}
+                            alt={`${title} image`}
+                            />
+                        )}
+                        <CardContent sx={{ paddingBottom: '0 !important' }}>
+                            <Typography variant="h5" component="div">
+                                {title}
+                            </Typography>
+                            <Box display="flex" alignItems="center" justifyContent={'center'}>
+                            {ownerProfilePictureUrl && (
+                                <Avatar alt={`${ownerFirstName} ${ownerLastName}`} src={ownerProfilePictureUrl} sx={{ marginRight: 2 }} />
+                            )}
+                            <Box>
+                                <Typography variant="body2" color="text.secondary">
+                                {ownerFirstName} {ownerLastName}
+                                </Typography>
+                            </Box>
+                            </Box>
+                            <Typography variant="body2" color="text.secondary">
+                            Supporters: {numberOfSupporters}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                            Created on: {formattedDate}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Cost: ${supportingCost}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                <Chip label={categoryName} variant="filled" sx={{backgroundColor: numberToRGB(categoryId), color: "white"}}></Chip>
+                            </Typography>
+                        </CardContent>
+                    </Box>
+                </a>
+                <Box>
+                    {displayCardButtons()}
                 </Box>
-                <Typography variant="body2" color="text.secondary">
-                  Supporters: {numberOfSupporters}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Created on: {formattedDate}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                      Cost: ${supportingCost}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    <Chip label={categoryName} variant="filled" sx={{backgroundColor: numberToRGB(categoryId), color: "white"}}></Chip>
-                </Typography>
-              </CardContent>
-              </a>
-              {displayCardButtons()}
             </Card>
             <Dialog
                 open={open}
