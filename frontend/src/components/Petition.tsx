@@ -2,7 +2,7 @@ import React from 'react';
 import NavBar from './NavBar';
 import { Link, Navigate, useParams } from "react-router-dom";
 import axios, { AxiosResponse } from 'axios';
-import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Modal, Snackbar, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Modal, Snackbar, TextField, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
@@ -88,6 +88,7 @@ const Petition = () => {
     const [supportOpen, setSupportOpen] = React.useState(false);
     const [reload, setReload] = React.useState(1)
     const [tierToSupport, setTierToSupport] = React.useState(0);
+    const [supportMessage, setSupportMessage] = React.useState("");
 
     React.useEffect(() => {
         getPeitionInfo()
@@ -364,12 +365,20 @@ const Petition = () => {
     const handleSupportConfirm = () => {
         // Handle support confirmation logic here
         setSupportOpen(false);
-        axios.post(`http://localhost:4941/api/v1/petitions/${id}/supporters`, {supportTierId: tierToSupport, message: "Good"}, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+        let data = {}
+        if (supportMessage === "") {
+            data = {supportTierId: tierToSupport}
+        } else {
+            data = {supportTierId: tierToSupport, message: supportMessage}
+        }
+        
+        axios.post(`http://localhost:4941/api/v1/petitions/${id}/supporters`, data, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
         .then((response) => {
             setReload(reload * -1)
             setSnackMessage("You succesfully supported this petition")
             setSnackOpenSuccess(true)
             console.log("Success Support")
+            setSupportMessage("")
         }, (error) => {
             setSnackMessage(error.response.statusText)
             setSnackOpenFail(true)
@@ -422,6 +431,10 @@ const Petition = () => {
         }
     }
 
+    const handleSupportInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSupportMessage(event.target.value);
+      };
+
     const supportTierButton = (tierId: number) => {
         return (
             <div key={tierId}>
@@ -432,6 +445,15 @@ const Petition = () => {
                     <DialogContentText>
                         Are you sure you want to support this tier?
                     </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Message"
+                        type="text"
+                        fullWidth
+                        value={supportMessage}
+                        onChange={handleSupportInputChange}
+                    />
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={handleSupportClose} color="primary">
