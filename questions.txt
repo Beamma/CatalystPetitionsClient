@@ -11,7 +11,6 @@ Need to change links to navigate to
 Possibly have to window reload on log out, for things like support Tier Button
 If logged out dont display My Petitions
 Fix aligment on pagination and on signin button
-Supporters only shows if there is supporters
 Date on petitions is wrong
 Need to display page number itself
 Indicate last page

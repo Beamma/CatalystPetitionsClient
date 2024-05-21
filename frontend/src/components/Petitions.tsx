@@ -74,6 +74,11 @@ const Petitions = () => {
         fetchPetitions()
     }, [search, filterCats, filteredCost, sort, page, rowsPerPage])
 
+    React.useEffect(() => {
+        setPage(0)
+        fetchPetitions()
+    }, [search, filterCats, filteredCost, sort])
+
     const fetchPetitions = async () => {
         try {
             const parsedCatergories = parseCategories()
@@ -86,6 +91,8 @@ const Petitions = () => {
                 axios.get<PetitionsResponse>(url),
                 axios.get<Category[]>('http://localhost:4941/api/v1/petitions/categories/')
             ]);
+            
+            setPetitionCount(petitionsResponse.data.count)
 
             const petitionsData = petitionsResponse.data.petitions;
             const categoriesData = categoriesResponse.data;
@@ -306,6 +313,7 @@ const Petitions = () => {
                             </ Grid>
                         ))}
                     </Grid>
+                    {pagination()}
                 </Container>
         </div>
     )
