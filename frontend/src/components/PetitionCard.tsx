@@ -18,6 +18,17 @@ interface PetitionCardProps {
 }
 
 const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, ownerLastName, numberOfSupporters, creationDate, imageUrl, categoryName, ownerProfilePictureUrl, supportingCost }) => {
+    
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    }).format(new Date(creationDate));
+    
+    
     return (
       <Card sx={{ marginBottom: 2 }}>
         {imageUrl && (
@@ -49,7 +60,7 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
             Supporters: {numberOfSupporters}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Created on: {new Date(creationDate).toLocaleDateString()}
+            Created on: {formattedDate}
           </Typography>
           <Typography variant="body2" color="text.secondary">
                 Cost: ${supportingCost}

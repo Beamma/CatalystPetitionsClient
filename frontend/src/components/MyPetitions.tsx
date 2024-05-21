@@ -4,7 +4,7 @@ import PetitionCard from './PetitionCard';
 import axios from 'axios';
 import { Cookie } from '@mui/icons-material';
 import Cookies from 'js-cookie';
-import { Container } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 
 interface Petition {
     petitionId: number;
@@ -65,20 +65,24 @@ const MyPetitions = () => {
         <div>
             <NavBar />
             <Container>
-                {petitions.map((petition) => (
-                    <PetitionCard
-                        key={petition.petitionId}
-                        title={petition.title}
-                        ownerFirstName={petition.ownerFirstName}
-                        ownerLastName={petition.ownerLastName}
-                        numberOfSupporters={petition.numberOfSupporters}
-                        creationDate={petition.creationDate}
-                        imageUrl={`http://localhost:4941/api/v1/petitions/${petition.petitionId}/image` || ''}
-                        categoryName={petition.categoryName || 'Unknown'}
-                        ownerProfilePictureUrl={petition.ownerProfilePictureUrl || ''}
-                        supportingCost={petition.supportingCost}
-                    />
-                 ))}
+                <Grid container spacing={3}>
+                    {petitions.map((petition) => (
+                        <Grid item xs={12} sm={6} md={3} key={petition.petitionId}>
+                            <PetitionCard
+                                key={petition.petitionId}
+                                title={petition.title}
+                                ownerFirstName={petition.ownerFirstName}
+                                ownerLastName={petition.ownerLastName}
+                                numberOfSupporters={petition.numberOfSupporters}
+                                creationDate={petition.creationDate}
+                                imageUrl={`http://localhost:4941/api/v1/petitions/${petition.petitionId}/image` || ''}
+                                categoryName={petition.categoryName || 'Unknown'}
+                                ownerProfilePictureUrl={petition.ownerProfilePictureUrl || ''}
+                                supportingCost={petition.supportingCost}
+                            />
+                        </ Grid>
+                    ))}
+                </Grid>
             </Container>
         </div>
     )
