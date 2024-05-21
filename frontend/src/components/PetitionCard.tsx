@@ -3,7 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Avatar, Box } from '@mui/material';
+import { Avatar, Box, Chip } from '@mui/material';
 
 interface PetitionCardProps {
     title: string;
@@ -14,11 +14,23 @@ interface PetitionCardProps {
     imageUrl: string;
     categoryName: string;
     ownerProfilePictureUrl?: string;
-    supportingCost: number
+    supportingCost: number,
+    categoryId: number
 }
 
-const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, ownerLastName, numberOfSupporters, creationDate, imageUrl, categoryName, ownerProfilePictureUrl, supportingCost }) => {
-    
+const numberToRGB = (num: number): string => {
+    const r = (num*137.5) % 256
+    const g = (num*137.5) % 256
+    const b = (num*137.5) % 256
+    return `rgb(${r},${g},${b})`;
+};
+
+const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, ownerLastName, numberOfSupporters, creationDate, imageUrl, categoryName, ownerProfilePictureUrl, supportingCost, categoryId }) => {
+    const color = numberToRGB(categoryId);
+    const chipStyle: React.CSSProperties = {
+      backgroundColor: color,
+    };
+
     const formattedDate = new Intl.DateTimeFormat('en-US', {
         year: 'numeric',
         month: 'short',
@@ -49,10 +61,7 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
                 {title}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Category: {categoryName}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                By: {ownerFirstName} {ownerLastName}
+                {ownerFirstName} {ownerLastName}
               </Typography>
             </Box>
           </Box>
@@ -65,6 +74,9 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
           <Typography variant="body2" color="text.secondary">
                 Cost: ${supportingCost}
           </Typography>
+            <Typography variant="body2" color="text.secondary">
+                <Chip label={categoryName} variant="filled" sx={{backgroundColor: numberToRGB(categoryId)}}></Chip>
+            </Typography>
         </CardContent>
       </Card>
     );

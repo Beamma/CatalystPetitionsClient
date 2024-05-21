@@ -103,7 +103,6 @@ const MyPetitions = () => {
                     </Box>
                 )
             }
-            
         }
     
     
@@ -126,6 +125,7 @@ const MyPetitions = () => {
                                 categoryName={petition.categoryName || 'Unknown'}
                                 ownerProfilePictureUrl={petition.ownerProfilePictureUrl || ''}
                                 supportingCost={petition.supportingCost}
+                                categoryId={petition.categoryId}
                             />
                         </ Grid>
                     ))}
