@@ -40,16 +40,22 @@ const MyPetitions = () => {
     }, [])
 
     useEffect(() => {
-        
+        fetchPetitions();
     }, [petitionPage])
 
     const fetchPetitions = async () => {
         try {
-            const [petitionsResponse, categoriesResponse] = await Promise.all([
-              axios.get<PetitionsResponse>(`http://localhost:4941/api/v1/petitions?ownerId=${Cookies.get("userId")}`),
-              axios.get<Category[]>('http://localhost:4941/api/v1/petitions/categories/')
-            ]);
+            let url = ""
+            if (petitionPage === "Supported") {
+                url = `http://localhost:4941/api/v1/petitions?supporterId=${Cookies.get("userId")}`
+            } else {
+                url = `http://localhost:4941/api/v1/petitions?ownerId=${Cookies.get("userId")}`
+            }
 
+            const [petitionsResponse, categoriesResponse] = await Promise.all([
+                axios.get<PetitionsResponse>(url),
+                axios.get<Category[]>('http://localhost:4941/api/v1/petitions/categories/')
+            ]);
             const petitionsData = petitionsResponse.data.petitions;
             const categoriesData = categoriesResponse.data;
 
