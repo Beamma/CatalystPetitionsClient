@@ -146,7 +146,7 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
               {imageUrl && (
                 <CardMedia
                   component="img"
-                  height="140"
+                  height="250"
                   image={imageUrl}
                   alt={`${title} image`}
                 />

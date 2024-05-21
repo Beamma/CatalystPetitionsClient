@@ -2,7 +2,7 @@ import React from 'react';
 import NavBar from './NavBar';
 import { Link, Navigate, useParams } from "react-router-dom";
 import axios, { AxiosResponse } from 'axios';
-import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Container, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Modal, Snackbar, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Modal, Snackbar, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
@@ -83,13 +83,18 @@ const Petition = () => {
     const handleClose = () => setOpen(false);
     const [snackMessage, setSnackMessage] = React.useState("")
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
+    const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [redriect, setRedirect] = React.useState(false)
+    const [supportOpen, setSupportOpen] = React.useState(false);
+    const [reload, setReload] = React.useState(1)
+    const [tierToSupport, setTierToSupport] = React.useState(0);
 
     React.useEffect(() => {
         getPeitionInfo()
         getSupporters()
         getCategories()
-    }, [])
+        displayPetitionInfo()
+    }, [reload])
 
     React.useEffect(() => {
         getSimilarPetitions()
@@ -98,6 +103,9 @@ const Petition = () => {
     React.useEffect(() => {
 
     }, [editFlag, redriect])
+
+    React.useEffect(() => {
+    }, [reload])
 
     const getPeitionInfo = async () => {
         if (! id?.match(/^\d+$/)) {
@@ -199,9 +207,25 @@ const Petition = () => {
         setSnackOpenFail(false);
       };
 
+      const handleSnackCloseSuccess = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackOpenSuccess(false);
+    };
+
     const displaySnack = () => {
         return (
             <div>
+                <Snackbar
+                    autoHideDuration={6000}
+                    open={snackOpenSuccess}
+                    onClose={handleSnackCloseSuccess}
+                    key={snackMessage}>
+                    <Alert onClose={handleSnackCloseSuccess} severity="success" sx={{width: '100%'}}>
+                        {snackMessage}
+                    </Alert>
+                </Snackbar>
                 <Snackbar
                     autoHideDuration={6000}
                     open={snackOpenFail}
@@ -326,6 +350,103 @@ const Petition = () => {
         )
     }
 
+    const handleSupportClickOpen = (tierId: number) => {
+        console.log("Test")
+        console.log(tierId)
+        setTierToSupport(tierId)
+        setSupportOpen(true);
+    };
+
+    const handleSupportClose = () => {
+        setSupportOpen(false);
+    };
+
+    const handleSupportConfirm = () => {
+        // Handle support confirmation logic here
+        setSupportOpen(false);
+        axios.post(`http://localhost:4941/api/v1/petitions/${id}/supporters`, {supportTierId: tierToSupport, message: "Good"}, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+        .then((response) => {
+            setReload(reload * -1)
+            setSnackMessage("You succesfully supported this petition")
+            setSnackOpenSuccess(true)
+            console.log("Success Support")
+        }, (error) => {
+            setSnackMessage(error.response.statusText)
+            setSnackOpenFail(true)
+        })
+    };
+
+    const supportTierButtonHandler = (tierId: number) => {
+        let result = '';
+        supporters.forEach(supporter => {
+            console.log("supporter.tierId: " + supporter.supportTierId)
+            console.log("tierId: " + tierId)
+            console.log("supporter.supporterId: " + supporter.supporterId)
+            console.log("userId: " + Number(Cookies.get("userId")))
+            console.log(Number(supporter.supportTierId) === Number(tierId))
+            console.log(Number(supporter.supporterId) === Number(Cookies.get("userId")))
+            console.log("")
+            if (Number(supporter.supportTierId) === Number(tierId) && Number(supporter.supporterId) === Number(Cookies.get("userId"))) {
+                console.log("You support")
+                result = 'Match';
+            }
+        });
+
+        if (result === 'Match') {
+            return (
+                <Button variant="text" disabled>
+                    You support this petition
+                </Button>
+            )
+        }
+        if (Number(Cookies.get('userId')) === petition?.ownerId) {
+            return (
+                <Button variant="text" disabled>
+                    You own this petition
+                </Button>
+            )
+        }
+
+        if (Cookies.get('X-Authorization')) {
+            return (
+                <Button variant="outlined" onClick={() => handleSupportClickOpen(tierId)}>
+                    Support Tier
+                </Button>
+            ) 
+        } else {
+            return (
+                <Button variant="text" disabled>
+                    Login / Register to support petitions
+                </Button>
+            )
+        }
+    }
+
+    const supportTierButton = (tierId: number) => {
+        return (
+            <div key={tierId}>
+                {supportTierButtonHandler(tierId)}
+                <Dialog open={supportOpen} onClose={handleSupportClose}>
+                    <DialogTitle>Confirm Support</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to support this tier?
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleSupportClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={() => handleSupportConfirm()} color="primary" autoFocus>
+                        Confirm
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        )
+        
+    }
+
     const displayPetitionInfo = () => {
         return (
             <Container>
@@ -388,7 +509,8 @@ const Petition = () => {
                                                 <Typography variant="body2">
                                                     Cost: ${tier.cost}
                                                 </Typography>
-                                         </CardContent>
+                                                {supportTierButton(tier.supportTierId)}
+                                            </CardContent>
                                         </Card>
                                     </Grid>
                                 ))}

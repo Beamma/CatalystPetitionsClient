@@ -10,3 +10,4 @@ Need to fix pagination
 Need default petitions image
 Money raised, should say 0 if none
 Need to change links to navigate to
+Possibly have to window reload on log out, for things like support Tier Button

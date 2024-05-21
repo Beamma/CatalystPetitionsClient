@@ -51,9 +51,7 @@ const Login = () => {
     };
 
     React.useEffect(() => {
-        const getUsers = () => {
-        }
-        getUsers()
+        
     }, [updateFlag])
 
     const handleSubmit = () => {
