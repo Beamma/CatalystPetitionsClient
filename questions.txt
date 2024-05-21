@@ -42,3 +42,4 @@ Need to update how User Profile page looks
 Need to display default profile pic if none exists
 Bug when editing profile page, profile picture disapears once confirm edit
 Password update doesnt actually work
+Chips should have Xs

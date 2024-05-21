@@ -66,10 +66,10 @@ const MyPetitions = () => {
                 return { ...petition, ownerProfilePictureUrl, categoryName: category ? category.name : 'Unknown' };
             }));
               setPetitions(petitionsWithCategories);
-            } catch (error) {
+        } catch (error) {
               console.error('Error fetching petitions or categories:', error);
-            }
         }
+    }
 
         const changeButtonsSupported = () => {
             setPetitionPage("Supported")

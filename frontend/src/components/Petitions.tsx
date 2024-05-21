@@ -1,4 +1,4 @@
-import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
+import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Container } from "@mui/material";
 import axios from "axios";
 import React from "react";
 import NavBar from './NavBar';
@@ -6,6 +6,8 @@ import CSS from 'csstype';
 import {useSearchStore} from "../store";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import PetitionCard from "./PetitionCard";
+import Cookies from "js-cookie";
 
 const POS_TAG_HEIGHT = 48;
 const POS_TAG_PADDING_TOP = 8;
@@ -18,17 +20,40 @@ const MenuProps = {
     },
 };
 
+interface Petition {
+    petitionId: number;
+    title: string;
+    categoryId: number;
+    ownerId: number;
+    ownerFirstName: string;
+    ownerLastName: string;
+    numberOfSupporters: number;
+    creationDate: string;
+    supportingCost: number;
+    categoryName?: string; // Add categoryName property
+    ownerProfilePictureUrl?: string;
+}
+
+interface PetitionsResponse {
+    petitions: Petition[];
+    count: number;
+}
+
+interface Category {
+    categoryId: number;
+    name: string;
+}
 
 const Petitions = () => {
     const search = useSearchStore(state => state.search)
-    const [petitions, setPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
-    const [categories, setCategories] = React.useState<category[]>([]);
     const [filterCats, setFilterCats] = React.useState<String[]>([]);
     const [filteredCost, setFilteredCost] = React.useState<number>(100);
     const [sort, setSort] = React.useState('');
     const [petitionCount, setPetitionCount] = React.useState(0);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [petitions, setPetitions] = React.useState<Petition[]>([]);
+    const [categories, setCategories] = React.useState<Category[]>([]);
 
     const updateFilterCats = (event: SelectChangeEvent<typeof filterCats>) => {
         const {
@@ -40,30 +65,51 @@ const Petitions = () => {
         );
       };
 
-    interface HeadCell {
-        id: string;
-        label: string;
-        numeric: boolean;
-    }
-    
-    const headCells: readonly HeadCell[] = [
-        {id: 'Image', label: 'Image', numeric: false},
-        { id: 'Title', label: 'Title', numeric: false },
-        { id: 'CreationDate', label: 'Creation Date', numeric: false },
-        { id: 'Category', label: 'Category', numeric: false },
-        { id: 'Cost', label: 'Cost', numeric: false },
-        { id: 'Owner', label: 'Owner', numeric: false },
-    ];
-
     const card: CSS.Properties = {
         padding: "10px",
         margin: "20px",
     }
 
     React.useEffect(() => {
-        getAllPetitions()
-        getCategories()
+        fetchPetitions()
     }, [search, filterCats, filteredCost, sort, page, rowsPerPage])
+
+    const fetchPetitions = async () => {
+        try {
+            const parsedCatergories = parseCategories()
+            const parsedCost = parseCost()
+            const parsedSearch = parseSearch()
+
+            const url = "http://localhost:4941/api/v1/petitions?count=" + rowsPerPage + parsedCatergories + parsedCost + sort + "&startIndex=" + (rowsPerPage * page) + parsedSearch
+
+            const [petitionsResponse, categoriesResponse] = await Promise.all([
+                axios.get<PetitionsResponse>(url),
+                axios.get<Category[]>('http://localhost:4941/api/v1/petitions/categories/')
+            ]);
+
+            const petitionsData = petitionsResponse.data.petitions;
+            const categoriesData = categoriesResponse.data;
+            setCategories(categoriesResponse.data)
+
+            const petitionsWithCategories = await Promise.all(petitionsData.map(async (petition) => {
+                const ownerProfilePictureUrl = `http://localhost:4941/api/v1/users/${Cookies.get("userId")}/image`
+                const category = categoriesData.find(cat => cat.categoryId === petition.categoryId);
+                return { ...petition, ownerProfilePictureUrl, categoryName: category ? category.name : 'Unknown' };
+            }));
+            
+              setPetitions(petitionsWithCategories);
+        } catch (error) {
+              console.error('Error fetching petitions or categories:', error);
+        }
+    }
+
+    const parseSearch = () => {
+        if (search === "") {
+            return ""
+        } else {
+            return `&q=${search}`
+        }
+    }
 
     const parseCategories = () => {
         let resultString = ""
@@ -116,22 +162,7 @@ const Petitions = () => {
         return category ? category.name : undefined;
     }
 
-    const petition_rows = () => {
-        return petitions.petitions.map((row: petition) =>
-            <TableRow hover
-                tabIndex={-1}
-                key={row.petitionId}>
-                <TableCell align="left"><a href={'/petitions/' + row.petitionId}><img src={'http://localhost:4941/api/v1/petitions/' + row.petitionId +'/image'} width={150} height={150}></img></a></TableCell>
-                <TableCell align="left"><a href={'/petitions/' + row.petitionId}>{row.title}</a></TableCell>
-                <TableCell align="left">{new Date(row.creationDate).toLocaleDateString()}</TableCell>
-                <TableCell align="left">{getCategoryName(row.categoryId)}</TableCell>
-                <TableCell align="left">{row.supportingCost}</TableCell>
-                <TableCell align="left">{row.ownerFirstName} {row.ownerLastName} <img src={'http://localhost:4941/api/v1/users/' + row.ownerId +'/image'} width={50} height={50} style={{ borderRadius: '50%' }} alt='Hero'></img></TableCell>
-            </TableRow>
-        )
-    }
-
-    const FilterCategories = () => {
+    const filterCategories = () => {
         return (
             <FormControl fullWidth>
                 <InputLabel id="demo-multiple-chip-label">Categories</InputLabel>
@@ -242,7 +273,7 @@ const Petitions = () => {
                 <h3>Filter</h3>
                 <Grid container spacing={20}>
                     <Grid item xs={4}>
-                        <FilterCategories />
+                        {filterCategories()}
                     </Grid>
                     <Grid item xs={4}>
                         {filterCost()}
@@ -252,30 +283,30 @@ const Petitions = () => {
                     </Grid>
                 </Grid>
             </Paper>
-            <Paper elevation={3} style={card}>
                 <h1>Petitions</h1>
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                {headCells.map((headCell) => (
-                                    <TableCell
-                                        key={headCell.id}
-                                        padding={'normal'}>
-                                        {headCell.label}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                    <TableBody>
-                        {petition_rows()}
-                    </TableBody>
-                    <TableFooter>
-                        {pagination()}
-                    </TableFooter>
-                    </Table>
-                </TableContainer>
-            </Paper>
+                <Container maxWidth="xl">
+                    <Grid container spacing={3}>
+                        {petitions.map((petition) => (
+                            <Grid item xs={12} sm={6} md={3} key={petition.petitionId}>
+                                <PetitionCard
+                                    key={petition.petitionId}
+                                    title={petition.title}
+                                    ownerFirstName={petition.ownerFirstName}
+                                    ownerLastName={petition.ownerLastName}
+                                    numberOfSupporters={petition.numberOfSupporters}
+                                    creationDate={petition.creationDate}
+                                    imageUrl={`http://localhost:4941/api/v1/petitions/${petition.petitionId}/image` || ''}
+                                    categoryName={petition.categoryName || 'Unknown'}
+                                    ownerProfilePictureUrl={petition.ownerProfilePictureUrl || ''}
+                                    supportingCost={petition.supportingCost}
+                                    categoryId={petition.categoryId}
+                                    petitionId={petition.petitionId}
+                                    ownerId={petition.ownerId}
+                                />
+                            </ Grid>
+                        ))}
+                    </Grid>
+                </Container>
         </div>
     )
 }
