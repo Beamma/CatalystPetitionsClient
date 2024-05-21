@@ -6,6 +6,7 @@ import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Container, Di
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
+import { Margin } from '@mui/icons-material';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -272,8 +273,11 @@ const Petition = () => {
     }
 
     const displaySimilarPetitions = () => {
+        if (similarPetitions.length === 0) {
+            return
+        }
         return (
-            <div>
+            <div style={{ paddingBottom: '20px' }}>
                 <Typography variant="h5" component="h3" gutterBottom>
                     Similar Petitions
                 </Typography>
@@ -469,11 +473,68 @@ const Petition = () => {
         
     }
 
+    const supportersDisplay = () => {
+        if (supporters.length === 0) {
+            return
+        } else {
+            return (
+                <div>
+                    <Typography variant="h5" component="h3" gutterBottom>
+                                    Supporters
+                    </Typography>
+                    <List>
+                        {displaySupporters.map((supporter) => (
+                            <React.Fragment key={supporter.supportId}>
+                                <ListItem alignItems="flex-start">
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            alt={`${supporter.supporterFirstName} ${supporter.supporterLastName}`}
+                                            src={`http://localhost:4941/api/v1/users/${supporter.supporterId}/image` || '/default-profile.png'}
+                                        />
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                    primary={`${supporter.supporterFirstName} ${supporter.supporterLastName}`}
+                                    secondary={
+                                        <>
+                                        <Typography
+                                            sx={{ display: 'inline' }}
+                                            component="span"
+                                            variant="body2"
+                                            color="text.primary"
+                                        >
+                                            {getSupportTierTitle(supporter.supportTierId)}
+                                        </Typography>
+                                        {` — ${supporter.message || 'No message provided'}`}
+                                        <br />
+                                        <Typography
+                                            sx={{ display: 'inline' }}
+                                            component="span"
+                                            variant="body2"
+                                            color="text.secondary"
+                                        >
+                                            {new Date(supporter.timestamp).toLocaleString()}
+                                        </Typography>
+                                        </>
+                                    }
+                                    />
+                                </ListItem>
+                                <Divider variant="inset" component="li" />
+                            </React.Fragment>
+                        ))}
+                    </List>
+                    {!showAllSupporters && supporters.length > 5 && (
+                        <Button onClick={() => setShowAllSupporters(true)}>View More Supporters</Button>
+                    )}
+                </div>
+            )
+        }
+    }
+
     const displayPetitionInfo = () => {
         return (
             <Container>
                 {petition && (
-                    <Card sx={{ marginTop: 4 }}>
+                    <Card sx={{ marginTop: 4, marginBottom: '20px' }}>
                         <Typography variant="h2" component="h1" gutterBottom>
                             {petition.title}
                         </Typography>
@@ -509,7 +570,7 @@ const Petition = () => {
                                     <b>Description:</b> {petition.description}
                                 </Typography>
                                 <Typography variant="body1" align='left'>
-                                    <b>Money Raised:</b> ${petition.moneyRaised}
+                                    <b>Money Raised:</b> ${petition.moneyRaised || "0"}
                                 </Typography>
                                 {displayEditButton(petition.ownerId)}
                                 
@@ -537,52 +598,7 @@ const Petition = () => {
                                     </Grid>
                                 ))}
                             </Grid>
-                            <Typography variant="h5" component="h3" gutterBottom>
-                                Supporters
-                            </Typography>
-                            <List>
-                                {displaySupporters.map((supporter) => (
-                                    <React.Fragment key={supporter.supportId}>
-                                        <ListItem alignItems="flex-start">
-                                            <ListItemAvatar>
-                                                <Avatar
-                                                    alt={`${supporter.supporterFirstName} ${supporter.supporterLastName}`}
-                                                    src={`http://localhost:4941/api/v1/users/${supporter.supporterId}/image` || '/default-profile.png'}
-                                                />
-                                            </ListItemAvatar>
-                                            <ListItemText
-                                            primary={`${supporter.supporterFirstName} ${supporter.supporterLastName}`}
-                                            secondary={
-                                                <>
-                                                <Typography
-                                                    sx={{ display: 'inline' }}
-                                                    component="span"
-                                                    variant="body2"
-                                                    color="text.primary"
-                                                >
-                                                    {getSupportTierTitle(supporter.supportTierId)}
-                                                </Typography>
-                                                {` — ${supporter.message || 'No message provided'}`}
-                                                <br />
-                                                <Typography
-                                                    sx={{ display: 'inline' }}
-                                                    component="span"
-                                                    variant="body2"
-                                                    color="text.secondary"
-                                                >
-                                                    {new Date(supporter.timestamp).toLocaleString()}
-                                                </Typography>
-                                                </>
-                                            }
-                                            />
-                                        </ListItem>
-                                        <Divider variant="inset" component="li" />
-                                    </React.Fragment>
-                                ))}
-                            </List>
-                            {!showAllSupporters && supporters.length > 5 && (
-                                <Button onClick={() => setShowAllSupporters(true)}>View More Supporters</Button>
-                            )}
+                            {supportersDisplay()}
                         </CardContent>
                     </Card>
                 )}

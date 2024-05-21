@@ -5,10 +5,8 @@ For petition card, when I delete is there a way to talk back to the parent compo
 
 Deleting support tiers on create petition should delete the grid that u select delete for.
 Need to display default images if 404
-Need to convert petitions page to have cards
 Need to fix pagination
 Need default petitions image
-Money raised, should say 0 if none
 Need to change links to navigate to
 Possibly have to window reload on log out, for things like support Tier Button
 If logged out dont display My Petitions
@@ -43,3 +41,9 @@ Need to display default profile pic if none exists
 Bug when editing profile page, profile picture disapears once confirm edit
 Password update doesnt actually work
 Chips should have Xs
+Need view less petitions button
+Need View less supporters button
+Fix all console errors
+Align edit and delete buttons for petition
+Make support tier cards the same height
+Change YOU SUPPORT THIS PETITION to TIER
