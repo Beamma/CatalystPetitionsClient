@@ -126,6 +126,8 @@ const MyPetitions = () => {
                                 ownerProfilePictureUrl={petition.ownerProfilePictureUrl || ''}
                                 supportingCost={petition.supportingCost}
                                 categoryId={petition.categoryId}
+                                petitionId={petition.petitionId}
+                                ownerId={petition.ownerId}
                             />
                         </ Grid>
                     ))}
