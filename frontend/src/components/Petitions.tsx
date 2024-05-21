@@ -227,6 +227,9 @@ const Petitions = () => {
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                showFirstButton
+                showLastButton
+                rowsPerPageOptions={[5, 6, 7, 8, 9, 10]}
                 />
             
           );

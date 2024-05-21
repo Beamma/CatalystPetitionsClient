@@ -4,7 +4,7 @@ import PetitionCard from './PetitionCard';
 import axios from 'axios';
 import { Cookie } from '@mui/icons-material';
 import Cookies from 'js-cookie';
-import { Container, Grid } from '@mui/material';
+import { Box, Button, Container, Grid } from '@mui/material';
 
 interface Petition {
     petitionId: number;
@@ -33,10 +33,15 @@ interface Category {
 const MyPetitions = () => {
     const [petitions, setPetitions] = useState<Petition[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [petitionPage, setPetitionPage] = useState<string>("Owned");
 
     useEffect(() => {
         fetchPetitions();
     }, [])
+
+    useEffect(() => {
+        
+    }, [petitionPage])
 
     const fetchPetitions = async () => {
         try {
@@ -59,11 +64,47 @@ const MyPetitions = () => {
               console.error('Error fetching petitions or categories:', error);
             }
         }
+
+        const changeButtonsSupported = () => {
+            setPetitionPage("Supported")
+        }
+
+        const changeButtonsOwned = () => {
+            setPetitionPage("Owned")
+        }
+
+        const displayTopButtons = () => {
+            if (petitionPage === "Owned") {
+                return (
+                    <Box width="100%" p={2} mb={2} display="flex" justifyContent="center" alignItems="center">
+                        <Box width="30%" m={2}>
+                            <Button variant="outlined" size="large" fullWidth disabled>Owned</Button>
+                        </Box>
+                        <Box width="30%" m={2}>
+                            <Button variant="contained" size="large" fullWidth onClick={changeButtonsSupported}>Supported</Button>
+                        </Box>
+                    </Box>
+                )
+            } else {
+                return (
+                    <Box width="100%" p={2} mb={2} display="flex" justifyContent="center" alignItems="center">
+                        <Box width="30%" m={2}>
+                            <Button variant="contained" size="large" fullWidth onClick={changeButtonsOwned}>Owned</Button>
+                        </Box>
+                        <Box width="30%" m={2}>
+                            <Button variant="outlined" size="large" fullWidth disabled>Supported</Button>
+                        </Box>
+                    </Box>
+                )
+            }
+            
+        }
     
     
     return (
         <div>
             <NavBar />
+            {displayTopButtons()}
             <Container maxWidth="xl">
                 <Grid container spacing={3}>
                     {petitions.map((petition) => (
