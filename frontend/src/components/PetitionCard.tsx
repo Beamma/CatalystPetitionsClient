@@ -118,16 +118,29 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
 
     const displayCardButtons = () => {
         if (ownerId === Number(Cookies.get("userId"))) {
-            return (
-                <div>
-                    <IconButton onClick={handleClickOpen}>
-                        <DeleteIcon />
-                    </IconButton>
-                    <IconButton onClick={editPetition}>
-                        <EditIcon />
-                    </IconButton>
-                </div>
-            )
+            if (numberOfSupporters === 0) {
+                return (
+                    <div>
+                        <IconButton onClick={handleClickOpen}>
+                            <DeleteIcon />
+                        </IconButton>
+                        <IconButton onClick={editPetition}>
+                            <EditIcon />
+                        </IconButton>
+                    </div>
+                )
+            } else {
+                return (
+                    <div>
+                        <IconButton onClick={handleClickOpen} disabled>
+                            <DeleteIcon />
+                        </IconButton>
+                        <IconButton onClick={editPetition}>
+                            <EditIcon />
+                        </IconButton>
+                    </div>
+                )
+            }
         } else {
             return
         }
