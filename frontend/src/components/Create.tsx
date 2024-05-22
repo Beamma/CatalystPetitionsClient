@@ -1,11 +1,14 @@
 import React, { ChangeEvent, useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Typography, Container, Grid, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Card, Paper } from '@mui/material';
+import { TextField, Button, Typography, Grid, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Card, Paper, Container, Box, styled, CardContent } from '@mui/material';
 import NavBar from "./NavBar";
 import AddIcon from '@mui/icons-material/Add';
-import { Delete } from '@mui/icons-material';
+import { Delete, Padding } from '@mui/icons-material';
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
 import './styles.css'; // Import the CSS file
+import NotFound from './NotFound';
 
 interface SupportTier {
     title: string;
@@ -24,6 +27,24 @@ interface Category {
     categoryId: number;
     name: string;
 }
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
+
+const CenteredGridItem = styled(Grid)({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+});
 
 const Create = () => {
     const [formData, setFormData] = useState<PetitionFormData>({
@@ -108,6 +129,30 @@ const Create = () => {
     };
 
     const handleSubmit = async () => {
+        if (formData.title === "" || formData.description === "" || formData.categoryId === 0) {
+            setSnackMessage("Please input all fields")
+            setSnackOpenFail(true)
+            return
+        }
+
+        if (selectedFile === null || !(["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(selectedFile.type))) {
+            setSnackMessage("Please upload a file of type jpg, png of gif")
+            setSnackOpenFail(true)
+            return
+        }
+
+        const checkedTiers = formData.supportTiers.map((tier) => {
+            if (tier.cost < 0 || tier.description === "" || tier.title === "") {
+                return false;
+            }
+        });
+
+        if (checkedTiers.includes(false)) {
+            setSnackMessage("Please fill out all fields the support tiers")
+            setSnackOpenFail(true)
+            return
+        }
+
         axios.post(`http://localhost:4941/api/v1/petitions/`, formData, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
         .then((response) => {
             setFormData({
@@ -119,7 +164,7 @@ const Create = () => {
             if (selectedFile !== null) {
                 axios.put(`http://localhost:4941/api/v1/petitions/${response.data.petitionId}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": selectedFile.type}})
                 .then((response) => {
-
+                    setSelectedFile(null)
                 }, (error) => {
                     setSnackMessage(error.response.statusText)
                     setSnackOpenFail(true)
@@ -139,109 +184,6 @@ const Create = () => {
           setSelectedFile(event.target.files[0]);
         }
     };
-
-    const displayTiers = () => {
-        return (
-            <Card variant="outlined">
-                <div className="scrollable-container">
-                    {formData.supportTiers.map((tier, index) => (
-                        <Container>
-                            <Typography variant="h6">
-                                Support Tier {index + 1}
-                                {formData.supportTiers.length > 1 && (
-                                    <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
-                                        <Delete />
-                                    </IconButton>
-                                )}
-                            </Typography>
-                            <TextField
-                                fullWidth
-                                required
-                                label="Title"
-                                value={tier.title}
-                                onChange={(e) => handleTierChange(index, 'title', e.target.value)}
-                                margin="normal"
-                            />
-                            <TextField
-                                fullWidth
-                                required
-                                label="Description"
-                                value={tier.description}
-                                onChange={(e) => handleTierChange(index, 'description', e.target.value)}
-                                margin="normal"
-                                multiline
-                                rows={4}
-                            />
-                            <TextField
-                                fullWidth
-                                required
-                                type="number"
-                                label="Cost"
-                                value={tier.cost}
-                                onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
-                                margin="normal"
-                            />
-                        </Container>
-                    ))}
-                    {formData.supportTiers.length < 3 && (
-                        <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
-                            Add Support Tier
-                        </Button>
-                    )}
-                </div>
-            </Card>
-        )
-    }
-
-    const displayPetitionDetails = () => {
-        return (
-            <div>
-                <TextField
-                    fullWidth
-                    required
-                    label="Title"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    margin="normal"
-                />
-                <TextField
-                    fullWidth
-                    color="secondary"
-                    type="file" 
-                    onChange={handleFileChange}
-                />
-                <TextField
-                    fullWidth
-                    required
-                    label="Description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    margin="normal"
-                    multiline
-                    rows={4}
-                />
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="category-label">Category</InputLabel>
-                    <Select
-                        labelId="category-label"
-                        id="category"
-                        value={formData.categoryId}
-                        onChange={handleChange}
-                        name="categoryId"
-                        required
-                    >
-                        {categories.map((category) => (
-                            <MenuItem key={category.categoryId} value={category.categoryId}>
-                                {category.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </div>
-        )
-    }
 
     const displaySnack = () => {
         return (
@@ -268,31 +210,229 @@ const Create = () => {
         )
     }
 
+    const handleRemoveImage = () => {
+        setSelectedFile(null)
+    }
+
+    const displayImageUpload = () => {
+        if (selectedFile === null) {
+
+            return (
+                <div>
+                    <Box
+                        sx={{
+                            width: '80%',
+                            paddingTop: '60%', // 1:1 aspect ratio
+                            position: 'relative',
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '75%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <Button
+                                component="label"
+                                role={undefined}
+                                variant="text"
+                                tabIndex={-1}
+                                startIcon={<InsertPhotoIcon />}
+                            >
+                                Upload Petition Image
+                                <VisuallyHiddenInput type="file" onChange={handleFileChange}/>
+                            </Button>
+                        </Box>
+                    </Box>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                        <img src={URL.createObjectURL(selectedFile) || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<DeleteIcon />}
+                            onClick={handleRemoveImage}
+                            sx={{ marginTop: "10px"}}
+                        >
+                            Remove Image
+                        </Button>
+                </div>
+            )
+            
+        }
+    }
+
+    const displayPetitionInfo = () => {
+        return (
+            <Grid container direction="column" spacing={2}>
+                    <Grid item>
+                        <TextField
+                            fullWidth
+                            required
+                            label="Description"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            margin="normal"
+                            multiline
+                            rows={4}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel id="category-label">Category</InputLabel>
+                            <Select
+                                labelId="category-label"
+                                id="category"
+                                value={formData.categoryId}
+                                onChange={handleChange}
+                                name="categoryId"
+                                required
+                            >
+                                {categories.map((category) => (
+                                    <MenuItem key={category.categoryId} value={category.categoryId}>
+                                        {category.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+        )
+    }
+
+    const displayAddSupportTier = () => {
+        return (
+            <Grid container spacing={2}>
+                {formData.supportTiers.map((tier, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                        <Typography variant="h6">
+                            Support Tier {index + 1}
+                            {formData.supportTiers.length > 1 && (
+                                <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
+                                    <Delete />
+                                </IconButton>
+                            )}
+                        </Typography>
+                        <TextField
+                            fullWidth
+                            required
+                            label="Title"
+                            value={tier.title}
+                            onChange={(e) => handleTierChange(index, 'title', e.target.value)}
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            required
+                            label="Description"
+                            value={tier.description}
+                            onChange={(e) => handleTierChange(index, 'description', e.target.value)}
+                            margin="normal"
+                            multiline
+                            rows={4}
+                        />
+                        <TextField
+                            fullWidth
+                            required
+                            type="number"
+                            label="Cost"
+                            value={tier.cost}
+                            onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
+                            margin="normal"
+                        />
+                    </Grid>
+                ))}
+                {formData.supportTiers.length < 3 && (
+                    <CenteredGridItem xs={12} sm={6} md={4}>
+                        <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
+                            Add Support Tier
+                        </Button>
+                    </CenteredGridItem>
+                )}
+            </Grid>
+        )
+    }
+
+    const displayPetitionCreateBody = () => {
+        return (
+            <Container>
+                <Card sx={{ marginTop: 4, marginBottom: '20px', padding: 2}}>
+                    <Grid container justifyContent="center">
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                required
+                                label="Title"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleChange}
+                                margin="normal"
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container justifyContent="center" spacing={2} sx={{ padding: "10px"}}>
+                        <Grid item xs={12} sm={6}>
+                            {displayImageUpload()}
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            {displayPetitionInfo()}
+                        </Grid>
+                    </Grid>
+                    <CardContent>
+                        <Typography variant="h5" component="h3" gutterBottom>
+                            Support Tiers
+                        </Typography>
+                        <Grid container spacing={2}>
+                            {displayAddSupportTier()}
+                        </Grid>
+                    </CardContent>
+                    <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
+                        Create Petition
+                    </Button>
+                </Card>
+            </Container>
+        )
+
+    }
+
+    if (!Number(Cookies.get("userId"))) {
+        return(
+            <div>
+                <NavBar />
+                <NotFound />
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div>
+                <NavBar></NavBar>
+                {errorMessage}
+            </div>
+        )
+    }
+
     return (
         <div>
             <NavBar></NavBar>
-            <Typography variant="h4" gutterBottom>
-                Create a Petition
+            <Typography variant="h2" component="h1">
+                Create A Petition
             </Typography>
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <Container>
-                        <Typography variant="h6">
-                            Support Tier
-                        </Typography>
-                        {displayPetitionDetails()}
-                        <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
-                            Create Petition
-                        </Button>
-                    </Container>
-                </Grid>
-                <Grid item xs={12} sm={6} justifyContent="center">
-                    {displayTiers()}
-                </Grid>
-            </Grid>
+            {displayPetitionCreateBody()}
             {displaySnack()}
         </div>
-    );
+    )
 }
 
 export default Create;
