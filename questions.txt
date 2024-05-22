@@ -1,11 +1,11 @@
 Does it need to be reactive to mobile. Full screen and 50%
 Image doesnt change straight away? - easier to show now
 For petition card, when I delete is there a way to talk back to the parent component to say to reload or something
+Delayed image when registering
 
 
 Deleting support tiers on create petition should delete the grid that u select delete for.
 Need to display default images if 404
-Need to fix pagination
 Need default petitions image
 Need to change links to navigate to
 Possibly have to window reload on log out, for things like support Tier Button

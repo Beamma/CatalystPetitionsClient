@@ -283,7 +283,7 @@ const Petitions = () => {
                         </Select>
                     </FormControl>
                     <Pagination 
-                        count={Math.floor(petitionCount/rowsPerPage)+1} 
+                        count={Math.floor((petitionCount-1)/rowsPerPage)+1} 
                         page={page} 
                         onChange={handleChangePage}
                         showFirstButton

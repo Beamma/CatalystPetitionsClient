@@ -1,17 +1,33 @@
-import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme} from "@mui/material";
+import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, IconButton, InputAdornment, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme, styled} from "@mui/material";
 import axios from "axios";
 import React, { ChangeEvent } from "react";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import UploadIcon from '@mui/icons-material/Upload';
 import { Navigate } from "react-router-dom";
 import Cookies from 'js-cookie';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import NavBar from "./NavBar";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
 
 const Register = () => {
-    const [updateFlag, setUpdateFlag] = React.useState(true);
+    const [updateFlag, setUpdateFlag] = React.useState(1);
     const [fname, setFname] = React.useState("");
     const [lname, setLname] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [showPassword, setShowPassword] = React.useState<boolean>(false);
     const [snackMessage, setSnackMessage] = React.useState("")
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
@@ -34,7 +50,8 @@ const Register = () => {
 
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
-          setSelectedFile(event.target.files[0]);
+            setSelectedFile(event.target.files[0]);
+            setUpdateFlag(updateFlag * -1)
         }
     };
 
@@ -42,12 +59,28 @@ const Register = () => {
 
     }, [updateFlag])
 
+    const handleClickShowPassword = () => setShowPassword((prev: any) => !prev);
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+
     const parseUser = () => {
         if (fname === "" || lname === "" || password === "" || email === "") {
-            alert("Please input all fields!")
+            setSnackMessage("Please input all required fields")
+            setSnackOpenFail(true)
         } else if (password.length < 6) {
-            alert("Password must be at least 6 characters long")
+            setSnackMessage("Password must be at least 6 characters long")
+            setSnackOpenFail(true)
         } else {
+            if (selectedFile !== null) {
+                console.log(selectedFile.type)
+                if (!["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(selectedFile.type)) {
+                    setSnackMessage("Invalid file type, must be jpg, png or gif")
+                    setSnackOpenFail(true)
+                    return
+                }
+            }
+
             axios.post('http://localhost:4941/api/v1/users/register', { "firstName": fname, "lastName": lname, "email": email, "password": password})
                 .then(() => {
                     setSnackOpenFail(false)
@@ -55,7 +88,7 @@ const Register = () => {
 
                     axios.post('http://localhost:4941/api/v1/users/login', { "email": email, "password": password})
                     .then((response) => {
-                        setUpdateFlag(true);
+                        setUpdateFlag(updateFlag * -1);
                         setFname("");
                         setLname("");
                         setEmail("");
@@ -68,6 +101,8 @@ const Register = () => {
                         setResponse(true)
 
                         if (selectedFile !== null) {
+                            
+
                             axios.put(`http://localhost:4941/api/v1/users/${Cookies.get('userId')}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": selectedFile.type}})
                                 .then((res) => {
                                     setSelectedFile(null);
@@ -99,6 +134,41 @@ const Register = () => {
         return false;
     }
 
+    const displayImageUpload = () => {
+        if (selectedFile === null) {
+            return (
+                <Button
+                    fullWidth
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                    startIcon={<CloudUploadIcon />}
+                >
+                    Upload file
+                    <VisuallyHiddenInput type="file" onChange={handleFileChange}/>
+                </Button>
+            )
+        } else {
+            return (
+                <div>
+                    <img src={URL.createObjectURL(selectedFile) || ""} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
+                    <Button
+                        fullWidth
+                        component="label"
+                        role={undefined}
+                        variant="contained"
+                        tabIndex={-1}
+                        startIcon={<CloudUploadIcon />}
+                    >
+                        Upload file
+                        <VisuallyHiddenInput type="file" onChange={handleFileChange}/>
+                    </Button>
+                </div>
+            )
+        }
+    }
+
     const defaultTheme = createTheme();
     if (response) {
         return (<Navigate to = {{ pathname: "/home" }} />)
@@ -107,6 +177,7 @@ const Register = () => {
     } else {
         return (
             <div>
+                <NavBar></NavBar>
                 <ThemeProvider theme={defaultTheme}>
                     <Container component="main" maxWidth="xs">
                         <CssBaseline />
@@ -164,24 +235,34 @@ const Register = () => {
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
+                                <TextField
                                     required
                                     fullWidth
                                     name="password"
                                     label="Password"
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     id="password"
                                     autoComplete="new-password"
                                     value={password}
                                     onChange={(event) => setPassword(event.target.value)}
-                                    />
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
                                 </Grid>
                                 <Grid item xs={12}>
-                                        <TextField
-                                        fullWidth
-                                        color="secondary"
-                                        type="file" 
-                                        onChange={handleFileChange}/>
+                                    {displayImageUpload()}
                                 </Grid>
                             </Grid>
                                 <Button
