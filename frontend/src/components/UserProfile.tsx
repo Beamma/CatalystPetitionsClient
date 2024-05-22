@@ -1,9 +1,10 @@
 import * as React from 'react';
 import axios from "axios";
-import { Button} from "@mui/material";
+import { Box, Button, Card, Container, Grid, IconButton, Typography} from "@mui/material";
 import { Navigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import NavBar from './NavBar';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 const UserProfile = () => {
@@ -69,22 +70,42 @@ const UserProfile = () => {
         return (
             <div>
                 <NavBar></NavBar>
-                <h1>UserProfile</h1>
-                <div>
-                    <img src={photoUrl} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
-                </div>
-                <div>
-                    Name: {fname + " " + lname}
-                </div>
-
-                <div>
-                    Email: {email}
-                </div>
-
-                <div>
-                    <Button onClick={handleEdit}>Edit</Button>
-                </div>
-                
+                <Container>
+                    <Card sx={{marginTop: "50px"}}>
+                        <Typography variant="h2">
+                            User Profile
+                        </Typography>
+                        <Grid container spacing={2} sx={{ paddingBottom: "50px", paddingTop: "20px"}}>
+                            <Grid item xs={12} sm={6} md={6}>
+                                <img src={ photoUrl || `https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png`} style={{ width: "80%", borderRadius: "10px" }} ></img>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={6}>
+                                <Box sx={{paddingBottom: "20px"}}>
+                                    <Typography variant="h3">
+                                        {fname}
+                                    </Typography>
+                                    <Typography variant="h3">
+                                        {lname}
+                                    </Typography>
+                                </Box>
+                                <Typography variant="body1">
+                                    <b>Email: </b>{email}
+                                </Typography>
+                                <Button
+                                    component="label"
+                                    role={undefined}
+                                    variant="outlined"
+                                    tabIndex={-1}
+                                    startIcon={<EditIcon />}
+                                    sx={{ margin: "20px"}}
+                                    onClick={handleEdit}
+                                >
+                                    Edit Profile
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Card>
+                </Container>
             </div>
         )
     }
