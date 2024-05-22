@@ -94,7 +94,6 @@ const EditProfile = () => {
             
             axios.get(`http://localhost:4941/api/v1/users/${id}/image`)
                 .then((response) => {
-                    console.log(response.status)
                     if (response.status === 404) {
                         setPhotoExists(false);
                     } else {
@@ -274,7 +273,7 @@ const EditProfile = () => {
                     autoHideDuration={6000}
                     open={snackOpenSuccess}
                     onClose={handleSnackCloseSuccess}
-                    key={snackMessage}>
+                    >
                     <Alert onClose={handleSnackCloseSuccess} severity="success" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>
@@ -283,7 +282,7 @@ const EditProfile = () => {
                     autoHideDuration={6000}
                     open={snackOpenFail}
                     onClose={handleSnackCloseFail}
-                    key={snackMessage}>
+                    >
                     <Alert onClose={handleSnackCloseFail} severity="error" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>
@@ -312,7 +311,7 @@ const EditProfile = () => {
                             <Grid item xs={12} sm={6} md={6}>
                                 {displayImage()}
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6} >
+                            <Grid item xs={12} sm={6} md={6}>
                                 <Box sx={{paddingBottom: "20px", padding: "20px"}}>
                                     <TextField
                                         autoComplete="given-name"

@@ -70,14 +70,14 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
         setSnackOpenSuccess(false);
     };
 
-  const displaySnack = () => {
+  const displaySnack = (id: number) => {
       return (
           <div>
               <Snackbar
                   autoHideDuration={6000}
                   open={snackOpenSuccess}
                   onClose={handleSnackCloseSuccess}
-                  key={snackMessage}>
+                  key={"Success" + id}>
                   <Alert onClose={handleSnackCloseSuccess} severity="success" sx={{width: '100%'}}>
                       {snackMessage}
                   </Alert>
@@ -86,7 +86,7 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
                   autoHideDuration={6000}
                   open={snackOpenFail}
                   onClose={handleSnackCloseFail}
-                  key={snackMessage}>
+                  key={"Fail" + id}>
                   <Alert onClose={handleSnackCloseFail} severity="error" sx={{width: '100%'}}>
                       {snackMessage}
                   </Alert>
@@ -154,7 +154,7 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
     const linkToPetition = () => {
         navigate(`/petitions/${petitionId}`)
     }
-    
+
     return (
         <div>
             <Card sx={{ marginBottom: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 500  }}>
@@ -191,9 +191,7 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
                             <Typography variant="body2" color="text.secondary">
                                 Cost: ${supportingCost}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <Chip label={categoryName} variant="filled" sx={{backgroundColor: numberToRGB(categoryId), color: "white"}}></Chip>
-                            </Typography>
+                            <Chip label={categoryName} variant="filled" sx={{backgroundColor: numberToRGB(categoryId), color: "white"}}></Chip>
                         </CardContent>
                     </Box>
                 </CardActionArea>
@@ -206,6 +204,7 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
+                key={petitionId}
             >
                 <DialogTitle id="alert-dialog-title">{"Are you sure you want to delete this petition?"}</DialogTitle>
                 <DialogContent>
@@ -222,7 +221,7 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
                     </Button>
                 </DialogActions>
             </Dialog>
-            {displaySnack()}
+            {displaySnack(petitionId)}
         </div>
     );
   }

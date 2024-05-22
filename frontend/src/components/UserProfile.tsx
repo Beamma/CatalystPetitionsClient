@@ -44,7 +44,6 @@ const UserProfile = () => {
                 setFname(response.data.firstName);
                 setLname(response.data.lastName);
                 setEmail(response.data.email);
-                console.log(response.data.email)
                 if (response.data.email === undefined) {
                     setError(true)
                     setErrorMessage("403 Forbidden")

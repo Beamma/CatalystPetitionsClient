@@ -61,7 +61,7 @@ const MyPetitions = () => {
 
             const petitionsWithCategories = await Promise.all(petitionsData.map(async (petition) => {
                 
-                const ownerProfilePictureUrl = `http://localhost:4941/api/v1/users/${Cookies.get("userId")}/image`
+                const ownerProfilePictureUrl = `http://localhost:4941/api/v1/users/${petition.ownerId}/image`
                 const category = categoriesData.find(cat => cat.categoryId === petition.categoryId);
                 return { ...petition, ownerProfilePictureUrl, categoryName: category ? category.name : 'Unknown' };
             }));
