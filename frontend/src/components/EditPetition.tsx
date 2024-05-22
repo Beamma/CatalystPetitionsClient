@@ -534,16 +534,16 @@ const EditPetition = () => {
         } else {
             return (
                 <div>
-                        <img src={URL.createObjectURL(selectedFile) || ""} width="80%" style={{ borderRadius: '5px' }}></img>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            startIcon={<DeleteIcon />}
-                            onClick={handleRemoveImage}
-                            sx={{ marginTop: "10px"}}
-                        >
-                            Remove Image
-                        </Button>
+                    <img src={URL.createObjectURL(selectedFile) || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<DeleteIcon />}
+                        onClick={handleRemoveImage}
+                        sx={{ marginTop: "10px"}}
+                    >
+                        Remove Image
+                    </Button>
                 </div>
             )
         }
@@ -674,7 +674,10 @@ const EditPetition = () => {
                             {displayAddSupportTier()}
                         </Grid>
                     </CardContent>
-                    <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
+                    <Button type="submit" variant="outlined" color="primary" onClick={handleCancel} sx={{ margin: "5px"}}>
+                        Revert Changes
+                    </Button>
+                    <Button type="submit" variant="contained" color="primary" onClick={handleSubmit} sx={{ margin: "5px"}}>
                         Edit Petition
                     </Button>
                 </Card>
