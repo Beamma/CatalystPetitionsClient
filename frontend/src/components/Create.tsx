@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Typography, Grid, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Card, Paper, Container, Box, styled } from '@mui/material';
+import { TextField, Button, Typography, Grid, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Card, Paper, Container, Box, styled, CardContent } from '@mui/material';
 import NavBar from "./NavBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Delete, Padding } from '@mui/icons-material';
@@ -320,7 +320,7 @@ const Create = () => {
                     <Box
                         sx={{
                             width: '80%',
-                            paddingTop: '80%', // 1:1 aspect ratio
+                            paddingTop: '60%', // 1:1 aspect ratio
                             position: 'relative',
                         }}
                     >
@@ -333,10 +333,7 @@ const Create = () => {
                                 height: '75%',
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: 'rgba(0, 0, 0, 0)',
-                                border: '1px solid grey',
-                                borderRadius: '5px'
+                                justifyContent: 'center'
                             }}
                         >
                             <Button
@@ -356,38 +353,16 @@ const Create = () => {
         } else {
             return (
                 <div>
-                    <Box
-                        sx={{
-                            width: '80%',
-                            paddingTop: '80%', // 1:1 aspect ratio
-                            position: 'relative',
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                width: '100%',
-                                height: '70%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: 'rgba(0, 0, 0, 0)',
-                                
-                            }}
-                        >   
-                            <img src={URL.createObjectURL(selectedFile) || ""} width="120%" height={"75%"} style={{ borderRadius: '5px' }}></img>
-                        </Box>
+                            <img src={URL.createObjectURL(selectedFile) || ""} width="80%" style={{ borderRadius: '5px' }}></img>
                         <Button
                             variant="contained"
                             color="secondary"
                             startIcon={<DeleteIcon />}
                             onClick={handleRemoveImage}
+                            sx={{ marginTop: "10px"}}
                         >
                             Remove Image
                         </Button>
-                    </Box>
                 </div>
             )
             
@@ -433,6 +408,57 @@ const Create = () => {
         )
     }
 
+    const displayAddSupportTier = () => {
+        return (
+            <div>
+                {formData.supportTiers.map((tier, index) => (
+                    <Container>
+                        <Typography variant="h6">
+                            Support Tier {index + 1}
+                            {formData.supportTiers.length > 1 && (
+                                <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
+                                    <Delete />
+                                </IconButton>
+                            )}
+                        </Typography>
+                        <TextField
+                            fullWidth
+                            required
+                            label="Title"
+                            value={tier.title}
+                            onChange={(e) => handleTierChange(index, 'title', e.target.value)}
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            required
+                            label="Description"
+                            value={tier.description}
+                            onChange={(e) => handleTierChange(index, 'description', e.target.value)}
+                            margin="normal"
+                            multiline
+                            rows={4}
+                        />
+                        <TextField
+                            fullWidth
+                            required
+                            type="number"
+                            label="Cost"
+                            value={tier.cost}
+                            onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
+                            margin="normal"
+                        />
+                    </Container>
+                ))}
+                {formData.supportTiers.length < 3 && (
+                    <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
+                        Add Support Tier
+                    </Button>
+                )}
+            </div>
+        )
+    }
+
     const displayPetitionCreateBody = () => {
         return (
             <Container>
@@ -458,6 +484,14 @@ const Create = () => {
                             {displayPetitionInfo()}
                         </Grid>
                     </Grid>
+                    <CardContent>
+                        <Typography variant="h5" component="h3" gutterBottom>
+                            Support Tiers
+                        </Typography>
+                        <Grid container spacing={2}>
+                            {displayAddSupportTier()}
+                        </Grid>
+                    </CardContent>
                 </Card>
             </Container>
         )
