@@ -39,3 +39,4 @@ Align edit and delete buttons for petition
 Make support tier cards the same height
 Change YOU SUPPORT THIS PETITION to TIER
 Make buttons consistent
+Home page

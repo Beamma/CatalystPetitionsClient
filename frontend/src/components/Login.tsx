@@ -3,10 +3,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from "axios";
-import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme} from "@mui/material";
+import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, IconButton, InputAdornment, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme} from "@mui/material";
 import { Navigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import {useUserStore} from "../store/user";
+import NavBar from './NavBar';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 
 function Copyright(props: any) {
@@ -29,12 +31,18 @@ const Login = () => {
     const [updateFlag, setUpdateFlag] = React.useState(true);
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [showPassword, setShowPassword] = React.useState<boolean>(false);
     const [snackMessage, setSnackMessage] = React.useState("")
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
     const [response, setResponse] = React.useState(false);
     const userId = useUserStore(state => state.id)
     const setUserId = useUserStore(state => state.setUser)
+
+    const handleClickShowPassword = () => setShowPassword((prev) => !prev);
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
 
     const handleSnackCloseSuccess = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -56,7 +64,8 @@ const Login = () => {
 
     const handleSubmit = () => {
         if (email === null || password === null || email === undefined || password === undefined || email === "" || password === "" ) {
-            alert("Please input all fields!")
+            setSnackMessage("Please input all required fields")
+            setSnackOpenFail(true)
         } else {
             axios.post('http://localhost:4941/api/v1/users/login', { "email": email, "password": password})
                 .then((response) => {
@@ -94,6 +103,7 @@ const Login = () => {
     } else {
         return (
             <ThemeProvider theme={defaultTheme}>
+              <NavBar></NavBar>
               <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -124,16 +134,29 @@ const Login = () => {
                       onChange={(event) => setEmail(event.target.value)}
                     />
                     <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      name="password"
-                      label="Password"
-                      type="password"
-                      id="password"
-                      autoComplete="current-password"
-                      value={password}
-                    onChange={(event) => setPassword(event.target.value)}
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type={showPassword ? 'text' : 'password'}
+                        id="password"
+                        autoComplete="new-password"
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
                     />
                     <FormControlLabel
                       control={<Checkbox value="remember" color="primary" />}
