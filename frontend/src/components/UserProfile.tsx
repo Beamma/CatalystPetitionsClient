@@ -42,8 +42,14 @@ const UserProfile = () => {
                     setError(true)
                     setErrorMessage("403 Forbidden")
                 }
+
+                axios.get(`http://localhost:4941/api/v1/users/${id}/image`)
+                .then((response) => {
+                    setPhotoUrl('http://localhost:4941/api/v1/users/' + id +'/image')
+                }, (error) => {
+                    setPhotoUrl("")
+                })
                 setPhotoUrl('http://localhost:4941/api/v1/users/' + id +'/image')
-                // getUserPhoto()
 
             }, (error) => {
                 setError(true);

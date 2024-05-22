@@ -3,14 +3,25 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from "axios";
-import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme} from "@mui/material";
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Alert, Avatar, Box, Button, Card, Container, CssBaseline, Grid, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme, styled} from "@mui/material";
 import { Navigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { ChangeEvent } from 'react';
 import NavBar from './NavBar';
 
-
-
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
 
 const EditProfile = () => {
     const [updateFlag, setUpdateFlag] = React.useState(true);
@@ -28,6 +39,7 @@ const EditProfile = () => {
     const [snackMessage, setSnackMessage] = React.useState("")
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
+    const [deletePhoto, setDeletePhoto] = React.useState(false);
 
     const handleSnackCloseSuccess = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -46,11 +58,16 @@ const EditProfile = () => {
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
           setSelectedFile(event.target.files[0]);
+          setDeletePhoto(false)
         }
     };
 
     React.useEffect(() => {
         getUserInfo()
+    }, [updateFlag])
+
+    React.useEffect(() => {
+
     }, [updateFlag])
 
     const getUserInfo = () => {
@@ -90,7 +107,41 @@ const EditProfile = () => {
     }
 
     const editUserInfo = () => {
+        if (deletePhoto) {
+            deleteImage()
+        }
+
+        if (email === "" || fname === "" || lname === "") {
+            setSnackMessage("Please ensure First name, Last name and email are populated")
+            setSnackOpenFail(true)
+            return
+        }
+
+        if (oldPassword !== "" && newPassword === "") {
+            setSnackMessage("To change password you must supply both new and old passwords")
+            setSnackOpenFail(true)
+            return
+        }
+
+        if (oldPassword == "" && newPassword !== "") {
+            setSnackMessage("To change password you must supply both new and old passwords")
+            setSnackOpenFail(true)
+            return
+        }
+
+        if (newPassword !== "" && newPassword.length < 6) {
+            setSnackMessage("Your password must be atleast 6 characters long")
+            setSnackOpenFail(true)
+            return
+        }
+
         if (selectedFile !== null) {
+            if (selectedFile === null || !(["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(selectedFile.type))) {
+                setSnackMessage("Please upload a file of type jpg, png of gif")
+                setSnackOpenFail(true)
+                return
+            }
+
             axios.put(`http://localhost:4941/api/v1/users/${id}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": selectedFile.type}})
                 .then((res) => {
                     setSelectedFile(null);
@@ -103,18 +154,23 @@ const EditProfile = () => {
                     setSnackOpenFail(true)
                 })
         } 
+
+        let body = {}
+        if (oldPassword !== "" && newPassword !== "") {
+            body = {"email": email, "firstName": fname, "lastName": lname, "password": newPassword, "currentPassword": oldPassword}
+        } else {
+            body = {"email": email, "firstName": fname, "lastName": lname}
+        }
         
-        axios.patch(`http://localhost:4941/api/v1/users/${id}`, {"email": email, "firstName": fname, "lastName": lname}, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+        axios.patch(`http://localhost:4941/api/v1/users/${id}`, body, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
             .then((res) => {
                 setSnackOpenFail(false)
                 setSnackOpenSuccess(true)
-                setPhotoExists(false)
                 setSnackMessage("Successfully updated user")
             }, (error) => {
                 setSnackMessage(error.response.statusText)
                 setSnackOpenFail(true)
             })
-        
     }
 
     const deleteImage = () => {
@@ -127,129 +183,90 @@ const EditProfile = () => {
             })
     }
 
+    const handleCancel = () => {
+        setSelectedFile(null)
+        setUpdateFlag(prev => !prev)
+    }
+
+    const handleRemoveImage = () => {
+        setSelectedFile(null)
+        setPhotoExists(false)
+        setDeletePhoto(true)
+    }
+
     const displayImage = () => {
-        if (photoExists) {
+        if (photoExists === true) {
             return (
                 <div>
-                    <img src={photoUrl} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
+                    <img src={`http://localhost:4941/api/v1/users/${id}/image` || ""} width="80%" style={{ borderRadius: '5px' }}></img>
                     <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    onClick={() => { deleteImage() }}
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<DeleteIcon />}
+                        onClick={handleRemoveImage}
+                        sx={{ marginTop: "10px"}}
                     >
-                        Delete Image
+                        Remove Image
                     </Button>
                 </div>
-                
+            )
+        } else if (selectedFile === null) {
+            return (
+                <div>
+                    <Box
+                        sx={{
+                            width: '80%',
+                            paddingTop: '60%', // 1:1 aspect ratio
+                            position: 'relative',
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '75%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <Button
+                                component="label"
+                                role={undefined}
+                                variant="text"
+                                tabIndex={-1}
+                                startIcon={<InsertPhotoIcon />}
+                            >
+                                Upload Petition Image
+                                <VisuallyHiddenInput type="file" onChange={handleFileChange}/>
+                            </Button>
+                        </Box>
+                    </Box>
+                </div>
             )
         } else {
             return (
-                <TextField
-                fullWidth
-                color="secondary"
-                type="file"
-                onChange={handleFileChange}/>
+                <div>
+                    <img src={URL.createObjectURL(selectedFile) || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<DeleteIcon />}
+                        onClick={handleRemoveImage}
+                        sx={{ marginTop: "10px"}}
+                    >
+                        Remove Image
+                    </Button>
+                </div>
             )
         }
-        
     }
-    
-    if (error) {
+
+    const displaySnack = () => {
         return (
             <div>
-                <h1>Error</h1>
-                {errorMessage}
-            </div>
-        )
-    } else {
-        return (
-            <div>
-                <NavBar></NavBar>
-                <h1>Edit Your Profile</h1>
-                <Container component="main" maxWidth="xs">
-                    <Box sx={{ mt: 3 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                autoComplete="given-name"
-                                name="firstName"
-                                required
-                                fullWidth
-                                id="firstName"
-                                label="First Name"
-                                autoFocus
-                                value={fname} 
-                                onChange={(event) => setFname(event.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                required
-                                fullWidth
-                                id="lastName"
-                                label="Last Name"
-                                name="lastName"
-                                autoComplete="family-name"
-                                value={lname} 
-                                onChange={(event) => setLname(event.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                value={email} 
-                                onChange={(event) => setEmail(event.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                required
-                                fullWidth
-                                name="newPassword"
-                                label="New Password"
-                                type="password"
-                                id="newPassword"
-                                autoComplete="new-password"
-                                value={newPassword}
-                                onChange={(event) => setNewPassword(event.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                required
-                                fullWidth
-                                name="oldPassword"
-                                label="Old Password"
-                                type="password"
-                                id="oldPassword"
-                                autoComplete="old-password"
-                                value={oldPassword}
-                                onChange={(event) => setOldPassword(event.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                {displayImage()}
-                            </Grid>
-                        </Grid>
-                        <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                        onClick={() => { editUserInfo() }}
-                        >
-                            Edit
-                        </Button>
-                        
-                    </Box>
-                </Container>
                 <Snackbar
                     autoHideDuration={6000}
                     open={snackOpenSuccess}
@@ -268,6 +285,114 @@ const EditProfile = () => {
                         {snackMessage}
                     </Alert>
                 </Snackbar>
+            </div>
+        )
+    }
+    
+    if (error) {
+        return (
+            <div>
+                <h1>Error</h1>
+                {errorMessage}
+            </div>
+        )
+    } else {
+        return (
+            <div>
+                <NavBar></NavBar>
+                <Container>
+                    <Card sx={{marginTop: "50px", padding: "20px"}}>
+                        <Typography variant="h2">
+                            Edit User Profile
+                        </Typography>
+                        <Grid container spacing={2} sx={{ paddingBottom: "50px", paddingTop: "20px"}}>
+                            <Grid item xs={12} sm={6} md={6}>
+                                {displayImage()}
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={6} >
+                                <Box sx={{paddingBottom: "20px", padding: "20px"}}>
+                                    <TextField
+                                        autoComplete="given-name"
+                                        name="firstName"
+                                        required
+                                        fullWidth
+                                        id="firstName"
+                                        label="First Name"
+                                        autoFocus
+                                        value={fname} 
+                                        onChange={(event) => setFname(event.target.value)}
+                                        sx={{ marginBottom: "20px" }}
+                                    /> 
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        id="lastName"
+                                        label="Last Name"
+                                        name="lastName"
+                                        autoComplete="family-name"
+                                        value={lname} 
+                                        onChange={(event) => setLname(event.target.value)}
+                                        sx={{ marginBottom: "20px" }}
+                                    />
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        id="email"
+                                        label="Email Address"
+                                        name="email"
+                                        autoComplete="email"
+                                        value={email} 
+                                        onChange={(event) => setEmail(event.target.value)}
+                                        sx={{ marginBottom: "20px" }}
+                                    />
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        name="newPassword"
+                                        label="New Password"
+                                        type="password"
+                                        id="newPassword"
+                                        autoComplete="new-password"
+                                        value={newPassword}
+                                        onChange={(event) => setNewPassword(event.target.value)}
+                                        sx={{ marginBottom: "20px" }}
+                                    />
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        name="oldPassword"
+                                        label="Old Password"
+                                        type="password"
+                                        id="oldPassword"
+                                        autoComplete="old-password"
+                                        value={oldPassword}
+                                        onChange={(event) => setOldPassword(event.target.value)}
+                                        sx={{ marginBottom: "20px" }}
+                                    />
+                                </Box>
+                            </Grid>
+                        </Grid>
+                        <Button
+                            type="submit"
+                            variant="outlined"
+                            sx={{ mt: 3, mb: 2 }}
+                            onClick={() => { (handleCancel()) }}
+                            style={{ width: "20%", margin: "10px" }}
+                        >
+                            Revert
+                        </Button>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                            onClick={() => { editUserInfo() }}
+                            style={{ width: "20%", margin: "10px" }}
+                        >
+                            Submit
+                        </Button>
+                    </Card>
+                </Container>
+                {displaySnack()}
             </div>
         )
     }

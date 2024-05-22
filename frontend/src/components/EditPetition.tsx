@@ -648,7 +648,7 @@ const EditPetition = () => {
         <div>
             <NavBar></NavBar>
             <Typography variant="h2" component="h1">
-                Create A Petition
+                Edit Petition
             </Typography>
             {displayPetitionCreateBody()}
             {displaySnack()}

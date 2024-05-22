@@ -1,11 +1,10 @@
-Does it need to be reactive to mobile. Full screen and 50%
-Image doesnt change straight away? - easier to show now
+
+Image doesnt change straight away? - easier to show now (Registering, and sometimes editing profile)
 For petition card, when I delete is there a way to talk back to the parent component to say to reload or something
-Delayed image when registering
+Console errors
 
 
-Need to display default images if 404
-Need default petitions image
+
 Need to change links to navigate to
 Possibly have to window reload on log out, for things like support Tier Button
 Need to add Success / failure snack bars
@@ -13,8 +12,6 @@ type checking for image uploading
 checking inputs for validness
 Need to make sure page restrictions are all handled correctly
 When logout while on petition page, try and reload the petition page so support tiers buttons update
-    Bug when editing profile page, profile picture disapears once confirm edit
-    Password update doesnt actually work
 Chips should have Xs
 Fix all console errors
 Make buttons consistent
@@ -22,3 +19,5 @@ Nav bar should display initials when no profile pic
 When logout on page, should redirect user away from sensitive pages
 When scale page to small for petitions, it should go to 2 or 3
 When layering snacks, cant close the bottom one
+Possibly change image links to be local
+Update filtering box on Petitions page
