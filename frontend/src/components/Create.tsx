@@ -128,6 +128,30 @@ const Create = () => {
     };
 
     const handleSubmit = async () => {
+        if (formData.title === "" || formData.description === "" || formData.categoryId === 0) {
+            setSnackMessage("Please input all fields")
+            setSnackOpenFail(true)
+            return
+        }
+
+        if (selectedFile === null || !(["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(selectedFile.type))) {
+            setSnackMessage("Please upload a file of type jpg, png of gif")
+            setSnackOpenFail(true)
+            return
+        }
+
+        const checkedTiers = formData.supportTiers.map((tier) => {
+            if (tier.cost < 0 || tier.description === "" || tier.title === "") {
+                return false;
+            }
+        });
+
+        if (checkedTiers.includes(false)) {
+            setSnackMessage("Please fill out all fields the support tiers")
+            setSnackOpenFail(true)
+            return
+        }
+
         axios.post(`http://localhost:4941/api/v1/petitions/`, formData, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
         .then((response) => {
             setFormData({
@@ -500,6 +524,9 @@ const Create = () => {
                             {displayAddSupportTier()}
                         </Grid>
                     </CardContent>
+                    <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
+                        Create Petition
+                    </Button>
                 </Card>
             </Container>
         )
@@ -513,6 +540,7 @@ const Create = () => {
                 Create A Petition
             </Typography>
             {displayPetitionCreateBody()}
+            {displaySnack()}
         </div>
     )
 }
