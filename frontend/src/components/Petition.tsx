@@ -383,15 +383,7 @@ const Petition = () => {
     const supportTierButtonHandler = (tierId: number) => {
         let result = '';
         supporters.forEach(supporter => {
-            console.log("supporter.tierId: " + supporter.supportTierId)
-            console.log("tierId: " + tierId)
-            console.log("supporter.supporterId: " + supporter.supporterId)
-            console.log("userId: " + Number(Cookies.get("userId")))
-            console.log(Number(supporter.supportTierId) === Number(tierId))
-            console.log(Number(supporter.supporterId) === Number(Cookies.get("userId")))
-            console.log("")
             if (Number(supporter.supportTierId) === Number(tierId) && Number(supporter.supporterId) === Number(Cookies.get("userId"))) {
-                console.log("You support")
                 result = 'Match';
             }
         });
@@ -399,7 +391,7 @@ const Petition = () => {
         if (result === 'Match') {
             return (
                 <Button variant="text" disabled>
-                    You support this petition
+                    You support this tier
                 </Button>
             )
         }

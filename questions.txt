@@ -9,35 +9,23 @@ Need to display default images if 404
 Need default petitions image
 Need to change links to navigate to
 Possibly have to window reload on log out, for things like support Tier Button
-Date on petitions is wrong
-Creation date in for petitions needs to be of correct form
-Need to alter creation date for similar petitions, petition view, and list of petitions
-Need to fix navbar profile image, so it dispalys correct initials
 Need to add Success / failure snack bars
-Need to display image when added on register page.
-Add navbar to login / register pages
 type checking for image uploading
 checking inputs for validness
-Password too small length, displays different error message
 Need to make sure page restrictions are all handled correctly
 When creating petition need to require image
 need to change how create/ edit petition looks
-need to add edit and delete icons for all owned petition cards on all pages
-Make cards all same height
 Petition support tiers may only be updated if they currently have no supporters
 Once a supporter has supported at any teir, cant delete petition. Currently delete Icon is there, however maybe it shouldnt be? as it is grayed out on petition page
 When logout while on petition page, try and reload the petition page so support tiers buttons update
 Need to update how User Profile page looks
-Need to display default profile pic if none exists
 Bug when editing profile page, profile picture disapears once confirm edit
 Password update doesnt actually work
 Chips should have Xs
-Need view less petitions button
-Need View less supporters button
+        Need view less petitions button
+        Need View less supporters button
 Fix all console errors
-Align edit and delete buttons for petition
-Make support tier cards the same height
-Change YOU SUPPORT THIS PETITION to TIER
+        Align edit and delete buttons for petition
 Make buttons consistent
 Home page
-In my petitions when I click on one it reloads page. Maybe use the navigate tag instead, using an onClick
+    In my petitions when I click on one it reloads page. Maybe use the navigate tag instead, using an onClick
