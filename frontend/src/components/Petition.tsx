@@ -100,7 +100,9 @@ const Petition = () => {
         getSupporters()
         getCategories()
         displayPetitionInfo()
-    }, [reload])
+        setShowAllSupporters(false)
+        setShowAllPetitions(false)
+    }, [reload, id])
 
     React.useEffect(() => {
         getSimilarPetitions()

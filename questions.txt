@@ -28,4 +28,3 @@ Home page
 Support tier boxxes same height
 Nav bar should display initials when no profile pic
 When logout on page, should redirect user away from sensitive pages
-When clicking on Similar petitions, it does not navigate correctly
