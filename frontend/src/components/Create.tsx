@@ -184,109 +184,6 @@ const Create = () => {
         }
     };
 
-    const displayTiers = () => {
-        return (
-            <Card variant="outlined">
-                <div className="scrollable-container">
-                    {formData.supportTiers.map((tier, index) => (
-                        <Container>
-                            <Typography variant="h6">
-                                Support Tier {index + 1}
-                                {formData.supportTiers.length > 1 && (
-                                    <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
-                                        <Delete />
-                                    </IconButton>
-                                )}
-                            </Typography>
-                            <TextField
-                                fullWidth
-                                required
-                                label="Title"
-                                value={tier.title}
-                                onChange={(e) => handleTierChange(index, 'title', e.target.value)}
-                                margin="normal"
-                            />
-                            <TextField
-                                fullWidth
-                                required
-                                label="Description"
-                                value={tier.description}
-                                onChange={(e) => handleTierChange(index, 'description', e.target.value)}
-                                margin="normal"
-                                multiline
-                                rows={4}
-                            />
-                            <TextField
-                                fullWidth
-                                required
-                                type="number"
-                                label="Cost"
-                                value={tier.cost}
-                                onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
-                                margin="normal"
-                            />
-                        </Container>
-                    ))}
-                    {formData.supportTiers.length < 3 && (
-                        <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
-                            Add Support Tier
-                        </Button>
-                    )}
-                </div>
-            </Card>
-        )
-    }
-
-    const displayPetitionDetails = () => {
-        return (
-            <div>
-                <TextField
-                    fullWidth
-                    required
-                    label="Title"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    margin="normal"
-                />
-                <TextField
-                    fullWidth
-                    color="secondary"
-                    type="file" 
-                    onChange={handleFileChange}
-                />
-                <TextField
-                    fullWidth
-                    required
-                    label="Description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    margin="normal"
-                    multiline
-                    rows={4}
-                />
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="category-label">Category</InputLabel>
-                    <Select
-                        labelId="category-label"
-                        id="category"
-                        value={formData.categoryId}
-                        onChange={handleChange}
-                        name="categoryId"
-                        required
-                    >
-                        {categories.map((category) => (
-                            <MenuItem key={category.categoryId} value={category.categoryId}>
-                                {category.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </div>
-        )
-    }
-
     const displaySnack = () => {
         return (
             <div>
@@ -311,32 +208,6 @@ const Create = () => {
             </div>
         )
     }
-
-    // return (
-    //     <div>
-    //         <NavBar></NavBar>
-    //         <Typography variant="h4" gutterBottom>
-    //             Create a Petition
-    //         </Typography>
-    //         <Grid container spacing={2}>
-    //             <Grid item xs={12} sm={6}>
-    //                 <Container>
-    //                     <Typography variant="h6">
-    //                         Create Petition
-    //                     </Typography>
-    //                     {displayPetitionDetails()}
-    //                     <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
-    //                         Create Petition
-    //                     </Button>
-    //                 </Container>
-    //             </Grid>
-    //             <Grid item xs={12} sm={6} justifyContent="center">
-    //                 {displayTiers()}
-    //             </Grid>
-    //         </Grid>
-    //         {displaySnack()}
-    //     </div>
-    // );
 
     const handleRemoveImage = () => {
         setSelectedFile(null)
@@ -531,6 +402,15 @@ const Create = () => {
             </Container>
         )
 
+    }
+
+    if (error) {
+        return (
+            <div>
+                <NavBar></NavBar>
+                {error}
+            </div>
+        )
     }
 
     return (
