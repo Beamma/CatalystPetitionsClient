@@ -21,3 +21,4 @@ When scale page to small for petitions, it should go to 2 or 3
 When layering snacks, cant close the bottom one
 Possibly change image links to be local
 Update filtering box on Petitions page
+Change SupportTier Cost to be input instead of slider
