@@ -4,9 +4,11 @@ import { Navigate, useParams } from 'react-router-dom';
 import NavBar from './NavBar';
 import NotFound from './NotFound';
 import axios from 'axios';
-import { Alert, Avatar, Button, Card, Container, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardContent, Container, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography, styled } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Delete } from '@mui/icons-material';
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface Petition {
     petitionId: number;
@@ -55,6 +57,24 @@ interface Supporter {
     supporterImageUrl?: string; // Add optional supporter image URL
 }
 
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
+
+const CenteredGridItem = styled(Grid)({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+});
+
 const EditPetition = () => {
     const {id} = useParams();
     const [petitionData, setPetitionData] = React.useState<PetitionFormData>({
@@ -75,7 +95,7 @@ const EditPetition = () => {
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
     const [ownerId, setOwnerId] = React.useState<number | null>()
     const [updateFlag, setUpdateFlag] = React.useState<number>(1)
-    const [photoExists, setPhotoExists] = React.useState(false);
+    const [photoExists, setPhotoExists] = React.useState(true);
     const [cancel, setCancel] = React.useState<number>(1);
 
     React.useEffect(() => {
@@ -301,133 +321,133 @@ const EditPetition = () => {
         return supporters.some(supporter => supporter.supportTierId === supportTierId);
     };
 
-    const displayPetitionDetails = () => {
-        return (
-            <div>
-                <TextField
-                    fullWidth
-                    required
-                    label="Title"
-                    name="title"
-                    value={petitionData.title}
-                    onChange={handleChange}
-                    margin="normal"
-                />
-                <TextField
-                    fullWidth
-                    required
-                    label="Description"
-                    name="description"
-                    value={petitionData.description}
-                    onChange={handleChange}
-                    margin="normal"
-                    multiline
-                    rows={4}
-                />
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="category-label">Category</InputLabel>
-                    <Select
-                        labelId="category-label"
-                        id="category"
-                        value={petitionData.categoryId}
-                        onChange={handleChange}
-                        name="categoryId"
-                        required
-                    >
-                        {categories.map((category) => (
-                            <MenuItem key={category.categoryId} value={category.categoryId}>
-                                {category.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                {displayImage()}
-            </div>
-        )
-    }
+    // const displayPetitionDetails = () => {
+    //     return (
+    //         <div>
+    //             <TextField
+    //                 fullWidth
+    //                 required
+    //                 label="Title"
+    //                 name="title"
+    //                 value={petitionData.title}
+    //                 onChange={handleChange}
+    //                 margin="normal"
+    //             />
+    //             <TextField
+    //                 fullWidth
+    //                 required
+    //                 label="Description"
+    //                 name="description"
+    //                 value={petitionData.description}
+    //                 onChange={handleChange}
+    //                 margin="normal"
+    //                 multiline
+    //                 rows={4}
+    //             />
+    //             <FormControl fullWidth margin="normal">
+    //                 <InputLabel id="category-label">Category</InputLabel>
+    //                 <Select
+    //                     labelId="category-label"
+    //                     id="category"
+    //                     value={petitionData.categoryId}
+    //                     onChange={handleChange}
+    //                     name="categoryId"
+    //                     required
+    //                 >
+    //                     {categories.map((category) => (
+    //                         <MenuItem key={category.categoryId} value={category.categoryId}>
+    //                             {category.name}
+    //                         </MenuItem>
+    //                     ))}
+    //                 </Select>
+    //             </FormControl>
+    //             {displayImage()}
+    //         </div>
+    //     )
+    // }
 
-    const displayTiers = () => {
-        return (
-            <Card variant="outlined">
-                <div className="scrollable-container">
-                    {tierData.supportTiers.map((tier, index) => (
-                        <Container>
-                            <Typography variant="h6">
-                                Support Tier {index + 1}
-                                {tierData.supportTiers.length > 1 && !hasSupporters(tier.supportTierId) && (
-                                    <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
-                                        <Delete />
-                                    </IconButton>
-                                )}
-                            </Typography>
-                            <TextField
-                                fullWidth
-                                required
-                                label="Title"
-                                value={tier.title}
-                                onChange={(e) => handleTierChange(index, 'title', e.target.value)}
-                                margin="normal"
-                            />
-                            <TextField
-                                fullWidth
-                                required
-                                label="Description"
-                                value={tier.description}
-                                onChange={(e) => handleTierChange(index, 'description', e.target.value)}
-                                margin="normal"
-                                multiline
-                                rows={4}
-                            />
-                            <TextField
-                                fullWidth
-                                required
-                                type="number"
-                                label="Cost"
-                                value={tier.cost}
-                                onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
-                                margin="normal"
-                            />
-                        </Container>
-                    ))}
-                    {tierData.supportTiers.length < 3 && (
-                        <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
-                            Add Support Tier
-                        </Button>
-                    )}
-                </div>
-            </Card>
-        )
-    }
+    // const displayTiers = () => {
+    //     return (
+    //         <Card variant="outlined">
+    //             <div className="scrollable-container">
+    //                 {tierData.supportTiers.map((tier, index) => (
+    //                     <Container>
+    //                         <Typography variant="h6">
+    //                             Support Tier {index + 1}
+    //                             {tierData.supportTiers.length > 1 && !hasSupporters(tier.supportTierId) && (
+    //                                 <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
+    //                                     <Delete />
+    //                                 </IconButton>
+    //                             )}
+    //                         </Typography>
+    //                         <TextField
+    //                             fullWidth
+    //                             required
+    //                             label="Title"
+    //                             value={tier.title}
+    //                             onChange={(e) => handleTierChange(index, 'title', e.target.value)}
+    //                             margin="normal"
+    //                         />
+    //                         <TextField
+    //                             fullWidth
+    //                             required
+    //                             label="Description"
+    //                             value={tier.description}
+    //                             onChange={(e) => handleTierChange(index, 'description', e.target.value)}
+    //                             margin="normal"
+    //                             multiline
+    //                             rows={4}
+    //                         />
+    //                         <TextField
+    //                             fullWidth
+    //                             required
+    //                             type="number"
+    //                             label="Cost"
+    //                             value={tier.cost}
+    //                             onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
+    //                             margin="normal"
+    //                         />
+    //                     </Container>
+    //                 ))}
+    //                 {tierData.supportTiers.length < 3 && (
+    //                     <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
+    //                         Add Support Tier
+    //                     </Button>
+    //                 )}
+    //             </div>
+    //         </Card>
+    //     )
+    // }
 
-    const displayImage = () => {
-        if (selectedFile) {
-            return(
-                <div>
-                    <img src={URL.createObjectURL(selectedFile) || ""} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
-                    <TextField
-                        fullWidth
-                        color="secondary"
-                        type="file"
-                        onChange={handleFileChange}
-                    />
-                </div>
+    // const displayImage = () => {
+    //     if (selectedFile) {
+    //         return(
+    //             <div>
+    //                 <img src={URL.createObjectURL(selectedFile) || ""} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
+    //                 <TextField
+    //                     fullWidth
+    //                     color="secondary"
+    //                     type="file"
+    //                     onChange={handleFileChange}
+    //                 />
+    //             </div>
                 
-            )
-        } else {
-            return (
-                <div>
-                    <img src={`http://localhost:4941/api/v1/petitions/${id}/image`} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
-                    <TextField
-                        fullWidth
-                        color="secondary"
-                        type="file"
-                        onChange={handleFileChange}
-                    />
-                </div>
-            )
-        }
+    //         )
+    //     } else {
+    //         return (
+    //             <div>
+    //                 <img src={`http://localhost:4941/api/v1/petitions/${id}/image`} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
+    //                 <TextField
+    //                     fullWidth
+    //                     color="secondary"
+    //                     type="file"
+    //                     onChange={handleFileChange}
+    //                 />
+    //             </div>
+    //         )
+    //     }
         
-    }
+    // }
 
     const displaySnack = () => {
         return (
@@ -454,6 +474,214 @@ const EditPetition = () => {
         )
     }
 
+    const handleRemoveImage = () => {
+        setSelectedFile(null)
+        setPhotoExists(false)
+    }
+
+    const displayImageUpload = () => {
+        if (photoExists === true) {
+            return (
+                <div>
+                        <img src={`http://localhost:4941/api/v1/petitions/${id}/image` || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<DeleteIcon />}
+                            onClick={handleRemoveImage}
+                            sx={{ marginTop: "10px"}}
+                        >
+                            Remove Image
+                        </Button>
+                </div>
+            )
+        } else if (selectedFile === null) {
+            return (
+                <div>
+                    <Box
+                        sx={{
+                            width: '80%',
+                            paddingTop: '60%', // 1:1 aspect ratio
+                            position: 'relative',
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '75%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <Button
+                                component="label"
+                                role={undefined}
+                                variant="text"
+                                tabIndex={-1}
+                                startIcon={<InsertPhotoIcon />}
+                            >
+                                Upload Petition Image
+                                <VisuallyHiddenInput type="file" onChange={handleFileChange}/>
+                            </Button>
+                        </Box>
+                    </Box>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                        <img src={URL.createObjectURL(selectedFile) || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            startIcon={<DeleteIcon />}
+                            onClick={handleRemoveImage}
+                            sx={{ marginTop: "10px"}}
+                        >
+                            Remove Image
+                        </Button>
+                </div>
+            )
+        }
+    }
+
+    const displayPetitionInfo = () => {
+        return (
+            <Grid container direction="column" spacing={2}>
+                    <Grid item>
+                        <TextField
+                            fullWidth
+                            required
+                            label="Description"
+                            name="description"
+                            value={petitionData.description}
+                            onChange={handleChange}
+                            margin="normal"
+                            multiline
+                            rows={4}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel id="category-label">Category</InputLabel>
+                            <Select
+                                labelId="category-label"
+                                id="category"
+                                value={petitionData.categoryId}
+                                onChange={handleChange}
+                                name="categoryId"
+                                required
+                            >
+                                {categories.map((category) => (
+                                    <MenuItem key={category.categoryId} value={category.categoryId}>
+                                        {category.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+        )
+    }
+
+    const displayAddSupportTier = () => {
+        return (
+            <Grid container spacing={2}>
+                {tierData.supportTiers.map((tier, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                        <Typography variant="h6">
+                            Support Tier {index + 1}
+                            {tierData.supportTiers.length > 1 && (
+                                <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
+                                    <Delete />
+                                </IconButton>
+                            )}
+                        </Typography>
+                        <TextField
+                            fullWidth
+                            required
+                            label="Title"
+                            value={tier.title}
+                            onChange={(e) => handleTierChange(index, 'title', e.target.value)}
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            required
+                            label="Description"
+                            value={tier.description}
+                            onChange={(e) => handleTierChange(index, 'description', e.target.value)}
+                            margin="normal"
+                            multiline
+                            rows={4}
+                        />
+                        <TextField
+                            fullWidth
+                            required
+                            type="number"
+                            label="Cost"
+                            value={tier.cost}
+                            onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
+                            margin="normal"
+                        />
+                    </Grid>
+                ))}
+                {tierData.supportTiers.length < 3 && (
+                    <CenteredGridItem xs={12} sm={6} md={4}>
+                        <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
+                            Add Support Tier
+                        </Button>
+                    </CenteredGridItem>
+                )}
+            </Grid>
+        )
+    }
+
+    const displayPetitionCreateBody = () => {
+        return (
+            <Container>
+                <Card sx={{ marginTop: 4, marginBottom: '20px', padding: 2}}>
+                    <Grid container justifyContent="center">
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                required
+                                label="Title"
+                                name="title"
+                                value={petitionData.title}
+                                onChange={handleChange}
+                                margin="normal"
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container justifyContent="center" spacing={2} sx={{ padding: "10px"}}>
+                        <Grid item xs={12} sm={6}>
+                            {displayImageUpload()}
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            {displayPetitionInfo()}
+                        </Grid>
+                    </Grid>
+                    <CardContent>
+                        <Typography variant="h5" component="h3" gutterBottom>
+                            Support Tiers
+                        </Typography>
+                        <Grid container spacing={2}>
+                            {displayAddSupportTier()}
+                        </Grid>
+                    </CardContent>
+                    <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
+                        Edit Petition
+                    </Button>
+                </Card>
+            </Container>
+        )
+    }
+
     if (Number(Cookies.get("userId")) !== ownerId) {
         return(
             <div>
@@ -466,37 +694,19 @@ const EditPetition = () => {
     if (error) {
         return (
             <div>
-                <NavBar />
-                {errorMessage}
+                <NavBar></NavBar>
+                {error}
             </div>
         )
     }
 
     return (
         <div>
-            <NavBar />
-            <Typography variant="h4" gutterBottom>
-                Edit Petition
+            <NavBar></NavBar>
+            <Typography variant="h2" component="h1">
+                Create A Petition
             </Typography>
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <Container>
-                        <Typography variant="h6">
-                            Support Tier
-                        </Typography>
-                        {displayPetitionDetails()}
-                        <Button type="submit" variant="outlined" color="primary" onClick={handleCancel}>
-                            Revert Changes
-                        </Button>
-                        <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
-                            Submit Changes
-                        </Button>
-                    </Container>
-                </Grid>
-                <Grid item xs={12} sm={6} justifyContent="center">
-                    {displayTiers()}
-                </Grid>
-            </Grid>
+            {displayPetitionCreateBody()}
             {displaySnack()}
         </div>
     )

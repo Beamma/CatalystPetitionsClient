@@ -8,6 +8,7 @@ import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
 import './styles.css'; // Import the CSS file
+import NotFound from './NotFound';
 
 interface SupportTier {
     title: string;
@@ -163,7 +164,7 @@ const Create = () => {
             if (selectedFile !== null) {
                 axios.put(`http://localhost:4941/api/v1/petitions/${response.data.petitionId}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": selectedFile.type}})
                 .then((response) => {
-
+                    setSelectedFile(null)
                 }, (error) => {
                     setSnackMessage(error.response.statusText)
                     setSnackOpenFail(true)
@@ -402,6 +403,15 @@ const Create = () => {
             </Container>
         )
 
+    }
+
+    if (!Number(Cookies.get("userId"))) {
+        return(
+            <div>
+                <NavBar />
+                <NotFound />
+            </div>
+        )
     }
 
     if (error) {
