@@ -7,6 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
 import { Margin } from '@mui/icons-material';
+import PetitionCard from './PetitionCard';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -59,8 +60,11 @@ interface SimilarPetition {
     ownerId: number;
     ownerFirstName: string;
     ownerLastName: string;
+    numberOfSupporters: number;
     creationDate: string;
     supportingCost: number;
+    categoryName?: string; // Add categoryName property
+    ownerProfilePictureUrl?: string;
 }
 
 interface Category {
@@ -159,11 +163,6 @@ const Petition = () => {
     }).format(new Date(petition?.creationDate || "2024-01-01"));
 
     const getSimilarPetitions = async () => {
-        if (! id?.match(/^\d+$/)) {
-            setError(true);
-            setErrorMessage("404 Not Found");
-        } 
-        
         try {
             const [response1, response2] = await Promise.all([
                 axios.get<{ petitions: SimilarPetition[] }>('http://localhost:4941/api/v1/petitions/', { params: { categoryIds: petition?.categoryId, count: 20 } }),
@@ -175,8 +174,14 @@ const Petition = () => {
                 new Map(combinedPetitions.map((petition) => [petition.petitionId, petition])).values()
             );
             const filteredPetitions = uniquePetitions.filter(p => p.petitionId !== Number(id));
+            
+            const petitionsWithCategories = await Promise.all(filteredPetitions.map(async (petition) => {
+                const ownerProfilePictureUrl = `http://localhost:4941/api/v1/users/${petition.ownerId}/image`
+                const category = categories.find(cat => cat.categoryId === petition.categoryId);
+                return { ...petition, ownerProfilePictureUrl, categoryName: category ? category.name : 'Unknown' };
+            }));
 
-            setSimilarPetitions(filteredPetitions);
+            setSimilarPetitions(petitionsWithCategories);
         } catch (error) {
             setError(true);
             setErrorMessage("An error occured while trying to get similar petitions");
@@ -293,45 +298,22 @@ const Petition = () => {
                 <Grid container spacing={2}>
                     {displayPetitions.map((similarPetition) => (
                         <Grid item xs={12} sm={6} md={4} key={similarPetition.petitionId}>
-                            <a href={`/petitions/${similarPetition.petitionId}`}>
-                                <Card>
-                                    <CardMedia
-                                        component="img"
-                                        height="140"
-                                        image={`http://localhost:4941/api/v1/petitions/${similarPetition.petitionId}/image`}
-                                        alt="Petition Image"
-                                    />
-                                    <CardContent>
-                                        <Typography variant="h6" gutterBottom>
-                                            {similarPetition.title}
-                                        </Typography>
-                                        <Typography variant="body2" color="textSecondary" gutterBottom>
-                                            Creation Date: {new Date(similarPetition.creationDate).toLocaleDateString()}
-                                        </Typography>
-                                        <Typography variant="body2" color="textSecondary" gutterBottom>
-                                            Category: {categoryMap[similarPetition.categoryId]}
-                                        </Typography>
-                                        <Grid container alignItems="center" justifyContent="center">
-                                            <Grid item>
-                                                <Avatar
-                                                alt={`${similarPetition.ownerFirstName} ${similarPetition.ownerLastName}`}
-                                                src={`http://localhost:4941/api/v1/users/${similarPetition.ownerId}/image` || '/default-profile.png'}
-                                                sx={{ width: 24, height: 24, marginRight: 1 }}
-                                                />
-                                            </Grid>
-                                            <Grid item>
-                                                <Typography variant="body2" color="textSecondary" gutterBottom>
-                                                    Owner: {similarPetition.ownerFirstName} {similarPetition.ownerLastName}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                        <Typography variant="body2" color="textSecondary">
-                                            Supporting Cost: ${similarPetition.supportingCost}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </ a>
-                        </Grid>
+                            <PetitionCard
+                                key={similarPetition.petitionId}
+                                title={similarPetition.title}
+                                ownerFirstName={similarPetition.ownerFirstName}
+                                ownerLastName={similarPetition.ownerLastName}
+                                numberOfSupporters={similarPetition.numberOfSupporters}
+                                creationDate={similarPetition.creationDate}
+                                imageUrl={`http://localhost:4941/api/v1/petitions/${similarPetition.petitionId}/image` || ''}
+                                categoryName={similarPetition.categoryName || 'Unknown'}
+                                ownerProfilePictureUrl={similarPetition.ownerProfilePictureUrl || ''}
+                                supportingCost={similarPetition.supportingCost}
+                                categoryId={similarPetition.categoryId}
+                                petitionId={similarPetition.petitionId}
+                                ownerId={similarPetition.ownerId}
+                            />
+                        </ Grid>
                     ))}
                 </Grid>
                 {!showAllPetitions && similarPetitions.length > 3 && (
@@ -617,6 +599,7 @@ const Petition = () => {
             </Container>
         );
     }
+
     if (redriect) {
         return (
             <Navigate to = {{ pathname: `/petitions` }} />

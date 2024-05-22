@@ -40,3 +40,4 @@ Make support tier cards the same height
 Change YOU SUPPORT THIS PETITION to TIER
 Make buttons consistent
 Home page
+In my petitions when I click on one it reloads page. Maybe use the navigate tag instead, using an onClick
