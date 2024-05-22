@@ -3,7 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Alert, Avatar, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Snackbar } from '@mui/material';
+import { Alert, Avatar, Box, Button, CardActionArea, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Snackbar } from '@mui/material';
 import { white } from 'material-ui/styles/colors';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -138,11 +138,14 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
         color: 'inherit',
     };
     
+    const linkToPetition = () => {
+        navigate(`/petitions/${petitionId}`)
+    }
     
     return (
         <div>
             <Card sx={{ marginBottom: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 500  }}>
-                <a href={`/petitions/${petitionId}`} style={linkStyle}>
+                <CardActionArea onClick={linkToPetition}>
                     <Box sx={{ flexGrow: 1 }}>
                         {imageUrl && (
                             <CardMedia
@@ -180,7 +183,7 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
                             </Typography>
                         </CardContent>
                     </Box>
-                </a>
+                </CardActionArea>
                 <Box>
                     {displayCardButtons()}
                 </Box>

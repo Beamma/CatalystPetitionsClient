@@ -4,7 +4,7 @@ For petition card, when I delete is there a way to talk back to the parent compo
 Delayed image when registering
 
 
-Deleting support tiers on create petition should delete the grid that u select delete for.
+    Deleting support tiers on create petition should delete the grid that u select delete for.
 Need to display default images if 404
 Need default petitions image
 Need to change links to navigate to
@@ -13,9 +13,9 @@ Need to add Success / failure snack bars
 type checking for image uploading
 checking inputs for validness
 Need to make sure page restrictions are all handled correctly
-When creating petition need to require image
-need to change how create/ edit petition looks
-Petition support tiers may only be updated if they currently have no supporters
+    When creating petition need to require image
+    need to change how create/ edit petition looks
+    Petition support tiers may only be updated if they currently have no supporters
 Once a supporter has supported at any teir, cant delete petition. Currently delete Icon is there, however maybe it shouldnt be? as it is grayed out on petition page
 When logout while on petition page, try and reload the petition page so support tiers buttons update
 Need to update how User Profile page looks
@@ -23,7 +23,8 @@ Bug when editing profile page, profile picture disapears once confirm edit
 Password update doesnt actually work
 Chips should have Xs
 Fix all console errors
-        Align edit and delete buttons for petition
 Make buttons consistent
 Home page
-    In my petitions when I click on one it reloads page. Maybe use the navigate tag instead, using an onClick
+Support tier boxxes same height
+Nav bar should display initials when no profile pic
+When logout on page, should redirect user away from sensitive pages

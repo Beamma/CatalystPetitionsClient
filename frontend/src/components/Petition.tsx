@@ -2,7 +2,7 @@ import React from 'react';
 import NavBar from './NavBar';
 import { Link, Navigate, useParams } from "react-router-dom";
 import axios, { AxiosResponse } from 'axios';
-import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Modal, Snackbar, TextField, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemText, Modal, Snackbar, TextField, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
@@ -258,10 +258,10 @@ const Petition = () => {
     const displayEditButton= (ownerId: number) => {
         if (Number(Cookies.get("userId")) === ownerId) {
             return (
-                <div>
-                    <Button onClick={edit} variant="outlined" startIcon={<EditIcon />} color="primary">
-                        Edit Petition
-                    </Button>
+                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    <IconButton onClick={edit} color="primary">
+                        <EditIcon />
+                    </IconButton>
                     {displayDelete()}
                 </div>
             )
@@ -273,15 +273,15 @@ const Petition = () => {
     const displayDelete = () => {
         if (supporters.length === 0) {
             return (
-                <Button onClick={handleOpen} variant="outlined" startIcon={<DeleteIcon />} color="primary">
-                    Delete Petition
-                </Button>
+                <IconButton onClick={handleOpen} color="primary" >
+                    <DeleteIcon />
+                </IconButton>
             )
         } else {
             return (
-                <Button onClick={handleOpen} variant="outlined" startIcon={<DeleteIcon />} color="primary" disabled>
-                    Delete Petition
-                </Button>
+                <IconButton onClick={handleOpen} color="primary" disabled>
+                    <DeleteIcon />
+                </IconButton>
             )
         }
     }
@@ -555,7 +555,7 @@ const Petition = () => {
                                 <Typography variant="body1" align='left'>
                                     <b>Created On:</b> {formattedDate}
                                 </Typography>
-                                <Typography variant="body1" paragraph align='left'>
+                                <Typography variant="body1" align='left'>
                                     <b>Description:</b> {petition.description}
                                 </Typography>
                                 <Typography variant="body1" align='left'>
