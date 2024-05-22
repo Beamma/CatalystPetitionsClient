@@ -1,12 +1,13 @@
-import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Container, SliderProps } from "@mui/material";
+import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Container, SliderProps, IconButton, TextField, InputAdornment } from "@mui/material";
 import axios from "axios";
-import React from "react";
+import React, { ChangeEvent, FormEvent } from "react";
 import NavBar from './NavBar';
 import CSS from 'csstype';
 import {useSearchStore} from "../store";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import PetitionCard from "./PetitionCard";
+import SearchIcon from '@mui/icons-material/Search';
 import Cookies from "js-cookie";
 
 const POS_TAG_HEIGHT = 48;
@@ -45,7 +46,7 @@ interface Category {
 }
 
 const Petitions = () => {
-    const search = useSearchStore(state => state.search)
+    const [searchQuery, setSearchQuery] = React.useState("");
     const [filterCats, setFilterCats] = React.useState<String[]>([]);
     const [filteredCost, setFilteredCost] = React.useState<number>(100);
     const [dynamicFilteredCost, setDynamicFilteredCost] = React.useState<number>(100)
@@ -73,12 +74,12 @@ const Petitions = () => {
 
     React.useEffect(() => {
         fetchPetitions()
-    }, [search, filterCats, filteredCost, sort, page, rowsPerPage])
+    }, [searchQuery, filterCats, filteredCost, sort, page, rowsPerPage])
 
     React.useEffect(() => {
         setPage(1)
         fetchPetitions()
-    }, [search, filterCats, filteredCost, sort, rowsPerPage])
+    }, [searchQuery, filterCats, filteredCost, sort, rowsPerPage])
 
     const fetchPetitions = async () => {
         try {
@@ -112,10 +113,10 @@ const Petitions = () => {
     }
 
     const parseSearch = () => {
-        if (search === "") {
+        if (searchQuery === "") {
             return ""
         } else {
-            return `&q=${search}`
+            return `&q=${searchQuery}`
         }
     }
 
@@ -136,26 +137,6 @@ const Petitions = () => {
         }
         let resultString = "&supportingCost=" + filteredCost.toString()
         return resultString
-    }
-
-    const getAllPetitions = () => {
-        const parsedCatergories = parseCategories()
-        const parsedCost = parseCost()
-
-        if (search === "") {
-            axios.get("http://localhost:4941/api/v1/petitions?count=" + rowsPerPage + parsedCatergories + parsedCost + sort + "&startIndex=" + (rowsPerPage * page))
-            .then((reponse) => {
-                setPetitions(reponse.data)
-                setPetitionCount(reponse.data.count)
-            })
-        } else {
-            axios.get("http://localhost:4941/api/v1/petitions?count=" + rowsPerPage + "&q=" + search + parsedCatergories + parsedCost + sort + "&startIndex=" + (rowsPerPage * page))
-            .then((reponse) => {
-                setPetitions(reponse.data)
-                setPetitionCount(reponse.data.count)
-            })
-        }
-        
     }
 
     const getCategories = () => {
@@ -183,8 +164,8 @@ const Petitions = () => {
                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                 renderValue={(selected) => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((value) => (
-                        <Chip label={value} />
+                    {selected.map((value, index) => (
+                        <Chip label={value} key={`${value}-${index}`}/>
                     ))}
                     </Box>
                 )}
@@ -223,9 +204,33 @@ const Petitions = () => {
             </FormControl>
         )
     }
+
+    const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value)
+    }
+
+    const searchPetitions = () => {
+
+        return (
+            <TextField
+                style={{ width: "100%" }}
+                label="Search Petitions"
+                variant="outlined"
+                value={searchQuery}
+                onChange={handleSearch}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                                <SearchIcon />
+                        </InputAdornment>
+                    ),
+                }}
+            />
+        )
+    }
     const changeSort = (event: SelectChangeEvent) => {
         setSort(event.target.value as string);
-      };
+    };
 
     const sortPetitions = () => {
         return (
@@ -294,13 +299,16 @@ const Petitions = () => {
             <Paper style={card}>
                 <h3>Filter</h3>
                 <Grid container spacing={20}>
-                    <Grid item xs={4}>
-                        {filterCategories()}
+                    <Grid item xs={3}>
+                        {searchPetitions()}
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                         {filterCost()}
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
+                        {filterCategories()}
+                    </Grid>
+                    <Grid item xs={3}>
                         {sortPetitions()}
                     </Grid>
                 </Grid>

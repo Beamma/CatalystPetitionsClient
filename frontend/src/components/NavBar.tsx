@@ -12,65 +12,16 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import PollIcon from '@mui/icons-material/Poll';
-import SearchIcon from '@mui/icons-material/Search';
 import { Link, Navigate } from "react-router-dom";
 import { alpha, styled } from '@mui/material/styles';
 import { Alert, Autocomplete, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputBase, Snackbar, TextField } from '@mui/material';
 import axios from 'axios';
-import {useSearchStore} from "../store";
 import {useUserStore} from "../store/user";
 import Cookies from 'js-cookie';
 
 const pages = [{ title: "Petitions", link: "../petitions"}, {title: "My Petitions", link: "../user/petitions"},{ title: "Create Petition", link: "../petitions/create"}];
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 1),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 1),
-  },
-  marginLeft: 0,
-  marginRight: '20px',
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(1),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center'
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  width: '100%',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    [theme.breakpoints.up('sm')]: {
-      width: '20ch',
-      '&:focus': {
-        width: '30ch',
-      },
-    },
-  },
-}));
-
 function NavBar() {
-  const search = useSearchStore(state => state.search)
-  const setSearch = useSearchStore(state => state.setSearch)
-  // const setUserId = useUserStore(state => state.setUser)
-  // const userId = useUserStore(state => state.id)
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [suggestedPetitions, setSuggestedPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
@@ -104,11 +55,6 @@ function NavBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
-  const searchPetitions = (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-    setRedirect(true);
-  }
 
   const signIn = () => {
     setSignInStatus(true);
@@ -309,51 +255,6 @@ function NavBar() {
                 </Button>
               ))}
             </Box>
-            <Box>
-              <form onSubmit={searchPetitions}>
-                <Search>
-                  <SearchIconWrapper>
-                    <SearchIcon sx={{ color: 'black'}} />
-                  </SearchIconWrapper>
-                  <StyledInputBase
-                    placeholder="Search Petitions"
-                    inputProps={{ 'aria-label': 'search' }}
-                    sx={{ color: 'black'}}
-                    value={search}
-                    onChange={(event) => setSearch(event.target.value)}
-                  />
-                </Search>
-              </ form>
-            </Box>
-            {/* <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src={'http://localhost:4941/api/v1/users/' + userId +'/image'} />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box> */}
             {userInfo()}
           </Toolbar>
         </Container>
