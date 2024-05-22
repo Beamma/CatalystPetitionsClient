@@ -9,12 +9,8 @@ Need to fix pagination
 Need default petitions image
 Need to change links to navigate to
 Possibly have to window reload on log out, for things like support Tier Button
-If logged out dont display My Petitions
-Fix aligment signin button
 Date on petitions is wrong
-Add x to categories chips filtering
 Creation date in for petitions needs to be of correct form
-Similar petitions title shouldnt be displayed if no similar petitions
 Need to alter creation date for similar petitions, petition view, and list of petitions
 Need to fix navbar profile image, so it dispalys correct initials
 Need to add Success / failure snack bars
@@ -24,7 +20,6 @@ type checking for image uploading
 checking inputs for validness
 Password too small length, displays different error message
 Need to make sure page restrictions are all handled correctly
-remove create petition off nav bar unless logged in. as well as remove access to the route
 When creating petition need to require image
 need to change how create/ edit petition looks
 need to add edit and delete icons for all owned petition cards on all pages

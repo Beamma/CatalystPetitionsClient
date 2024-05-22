@@ -19,8 +19,6 @@ import axios from 'axios';
 import {useUserStore} from "../store/user";
 import Cookies from 'js-cookie';
 
-const pages = [{ title: "Petitions", link: "../petitions"}, {title: "My Petitions", link: "../user/petitions"},{ title: "Create Petition", link: "../petitions/create"}];
-
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -32,10 +30,25 @@ function NavBar() {
   const [logOutModal, setLogOutModal] = React.useState(false)
   const [snackOpen, setSnackOpen] = React.useState(false);
   const [userId, setUserId] = React.useState<string | undefined>();
+  const [pages, setPages] = React.useState([{ title: "Petitions", link: "../petitions"}, {title: "My Petitions", link: "../user/petitions"},{ title: "Create Petition", link: "../petitions/create"}])
 
   React.useEffect(() => {
-    updateUserId()
+      updateUserId()
+      updatePages()
   }, [logOut])
+
+  React.useEffect(() =>{
+    updatePages()
+  }, [])
+
+  const updatePages = () => {
+    if (Cookies.get('userId')) {
+      setPages([{ title: "Petitions", link: "../petitions"}, {title: "My Petitions", link: "../user/petitions"},{ title: "Create Petition", link: "../petitions/create"}])
+    } else {
+      setPages([{ title: "Petitions", link: "../petitions"}])
+    }
+  }
+  
 
   const updateUserId = () => {
     setUserId(Cookies.get("userId"))
