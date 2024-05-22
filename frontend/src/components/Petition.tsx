@@ -571,7 +571,7 @@ const Petition = () => {
                             <Typography variant="h5" component="h3" gutterBottom>
                                 Support Tiers
                             </Typography>
-                            <Grid container spacing={2}>
+                            <Grid container spacing={2} sx={{ marginBottom: "20px"}}>
                                 {petition.supportTiers.map((tier) => (
                                     <Grid item xs={12} sm={6} md={4} key={tier.supportTierId}>
                                         <Card>
