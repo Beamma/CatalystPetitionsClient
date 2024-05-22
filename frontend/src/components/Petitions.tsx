@@ -1,11 +1,14 @@
-import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
+import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Container, SliderProps, IconButton, TextField, InputAdornment } from "@mui/material";
 import axios from "axios";
-import React from "react";
+import React, { ChangeEvent, FormEvent } from "react";
 import NavBar from './NavBar';
 import CSS from 'csstype';
 import {useSearchStore} from "../store";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import PetitionCard from "./PetitionCard";
+import SearchIcon from '@mui/icons-material/Search';
+import Cookies from "js-cookie";
 
 const POS_TAG_HEIGHT = 48;
 const POS_TAG_PADDING_TOP = 8;
@@ -18,17 +21,41 @@ const MenuProps = {
     },
 };
 
+interface Petition {
+    petitionId: number;
+    title: string;
+    categoryId: number;
+    ownerId: number;
+    ownerFirstName: string;
+    ownerLastName: string;
+    numberOfSupporters: number;
+    creationDate: string;
+    supportingCost: number;
+    categoryName?: string; // Add categoryName property
+    ownerProfilePictureUrl?: string;
+}
+
+interface PetitionsResponse {
+    petitions: Petition[];
+    count: number;
+}
+
+interface Category {
+    categoryId: number;
+    name: string;
+}
 
 const Petitions = () => {
-    const search = useSearchStore(state => state.search)
-    const [petitions, setPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
-    const [categories, setCategories] = React.useState<category[]>([]);
+    const [searchQuery, setSearchQuery] = React.useState("");
     const [filterCats, setFilterCats] = React.useState<String[]>([]);
     const [filteredCost, setFilteredCost] = React.useState<number>(100);
+    const [dynamicFilteredCost, setDynamicFilteredCost] = React.useState<number>(100)
     const [sort, setSort] = React.useState('');
     const [petitionCount, setPetitionCount] = React.useState(0);
-    const [page, setPage] = React.useState(0);
+    const [page, setPage] = React.useState(1);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [petitions, setPetitions] = React.useState<Petition[]>([]);
+    const [categories, setCategories] = React.useState<Category[]>([]);
 
     const updateFilterCats = (event: SelectChangeEvent<typeof filterCats>) => {
         const {
@@ -40,30 +67,58 @@ const Petitions = () => {
         );
       };
 
-    interface HeadCell {
-        id: string;
-        label: string;
-        numeric: boolean;
-    }
-    
-    const headCells: readonly HeadCell[] = [
-        {id: 'Image', label: 'Image', numeric: false},
-        { id: 'Title', label: 'Title', numeric: false },
-        { id: 'CreationDate', label: 'Creation Date', numeric: false },
-        { id: 'Category', label: 'Category', numeric: false },
-        { id: 'Cost', label: 'Cost', numeric: false },
-        { id: 'Owner', label: 'Owner', numeric: false },
-    ];
-
     const card: CSS.Properties = {
         padding: "10px",
         margin: "20px",
     }
 
     React.useEffect(() => {
-        getAllPetitions()
-        getCategories()
-    }, [search, filterCats, filteredCost, sort, page, rowsPerPage])
+        fetchPetitions()
+    }, [searchQuery, filterCats, filteredCost, sort, page, rowsPerPage])
+
+    React.useEffect(() => {
+        setPage(1)
+        fetchPetitions()
+    }, [searchQuery, filterCats, filteredCost, sort, rowsPerPage])
+
+    const fetchPetitions = async () => {
+        try {
+            const parsedCatergories = parseCategories()
+            const parsedCost = parseCost()
+            const parsedSearch = parseSearch()
+
+            const url = "http://localhost:4941/api/v1/petitions?count=" + rowsPerPage + parsedCatergories + parsedCost + sort + "&startIndex=" + (rowsPerPage * (page-1)) + parsedSearch
+
+            const [petitionsResponse, categoriesResponse] = await Promise.all([
+                axios.get<PetitionsResponse>(url),
+                axios.get<Category[]>('http://localhost:4941/api/v1/petitions/categories/')
+            ]);
+            
+            setPetitionCount(petitionsResponse.data.count)
+
+            const petitionsData = petitionsResponse.data.petitions;
+            const categoriesData = categoriesResponse.data;
+            setCategories(categoriesResponse.data)
+
+            const petitionsWithCategories = await Promise.all(petitionsData.map(async (petition) => {
+                const ownerProfilePictureUrl = `http://localhost:4941/api/v1/users/${petition.ownerId}/image`
+                const category = categoriesData.find(cat => cat.categoryId === petition.categoryId);
+                return { ...petition, ownerProfilePictureUrl, categoryName: category ? category.name : 'Unknown' };
+            }));
+
+              setPetitions(petitionsWithCategories);
+        } catch (error) {
+              console.error('Error fetching petitions or categories:', error);
+        }
+    }
+
+    const parseSearch = () => {
+        if (searchQuery === "") {
+            return ""
+        } else {
+            return `&q=${searchQuery}`
+        }
+    }
 
     const parseCategories = () => {
         let resultString = ""
@@ -84,26 +139,6 @@ const Petitions = () => {
         return resultString
     }
 
-    const getAllPetitions = () => {
-        const parsedCatergories = parseCategories()
-        const parsedCost = parseCost()
-
-        if (search === "") {
-            axios.get("http://localhost:4941/api/v1/petitions?count=" + rowsPerPage + parsedCatergories + parsedCost + sort + "&startIndex=" + (rowsPerPage * page))
-            .then((reponse) => {
-                setPetitions(reponse.data)
-                setPetitionCount(reponse.data.count)
-            })
-        } else {
-            axios.get("http://localhost:4941/api/v1/petitions?count=" + rowsPerPage + "&q=" + search + parsedCatergories + parsedCost + sort + "&startIndex=" + (rowsPerPage * page))
-            .then((reponse) => {
-                setPetitions(reponse.data)
-                setPetitionCount(reponse.data.count)
-            })
-        }
-        
-    }
-
     const getCategories = () => {
         axios.get("http://localhost:4941/api/v1/petitions/categories")
             .then((reponse) => {
@@ -116,22 +151,7 @@ const Petitions = () => {
         return category ? category.name : undefined;
     }
 
-    const petition_rows = () => {
-        return petitions.petitions.map((row: petition) =>
-            <TableRow hover
-                tabIndex={-1}
-                key={row.petitionId}>
-                <TableCell align="left"><a href={'/petitions/' + row.petitionId}><img src={'http://localhost:4941/api/v1/petitions/' + row.petitionId +'/image'} width={150} height={150}></img></a></TableCell>
-                <TableCell align="left"><a href={'/petitions/' + row.petitionId}>{row.title}</a></TableCell>
-                <TableCell align="left">{new Date(row.creationDate).toLocaleDateString()}</TableCell>
-                <TableCell align="left">{getCategoryName(row.categoryId)}</TableCell>
-                <TableCell align="left">{row.supportingCost}</TableCell>
-                <TableCell align="left">{row.ownerFirstName} {row.ownerLastName} <img src={'http://localhost:4941/api/v1/users/' + row.ownerId +'/image'} width={50} height={50} style={{ borderRadius: '50%' }} alt='Hero'></img></TableCell>
-            </TableRow>
-        )
-    }
-
-    const FilterCategories = () => {
+    const filterCategories = () => {
         return (
             <FormControl fullWidth>
                 <InputLabel id="demo-multiple-chip-label">Categories</InputLabel>
@@ -144,8 +164,8 @@ const Petitions = () => {
                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                 renderValue={(selected) => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((value) => (
-                        <Chip label={value} />
+                    {selected.map((value, index) => (
+                        <Chip label={value} key={`${value}-${index}`}/>
                     ))}
                     </Box>
                 )}
@@ -164,21 +184,53 @@ const Petitions = () => {
         )
     }
 
-    const handleFilterCostChange = (event: Event, newValue: number | number[]) => {
-        setFilteredCost(newValue as number);
-      };
+    const handleFilterCostChange: SliderProps['onChangeCommitted'] = (
+        event: React.SyntheticEvent | Event,
+        value: number | number[]
+    ) => {
+        setFilteredCost(value as number);
+    };
+
+    const handleDynamicCost = (event: Event, newValue: number | number[]) => {
+        setDynamicFilteredCost(newValue as number);
+    };
+
 
     const filterCost = () => {
         return (
             <FormControl fullWidth>
                 Support Tier Cost
-                <Slider aria-label="Default" valueLabelDisplay="auto" onChange={handleFilterCostChange} value={filteredCost} />
+                <Slider aria-label="Default" valueLabelDisplay="auto" onChangeCommitted={handleFilterCostChange} value={dynamicFilteredCost} onChange={handleDynamicCost}/>
             </FormControl>
+        )
+    }
+
+    const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value)
+    }
+
+    const searchPetitions = () => {
+
+        return (
+            <TextField
+                style={{ width: "100%" }}
+                label="Search Petitions"
+                variant="outlined"
+                value={searchQuery}
+                onChange={handleSearch}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                                <SearchIcon />
+                        </InputAdornment>
+                    ),
+                }}
+            />
         )
     }
     const changeSort = (event: SelectChangeEvent) => {
         setSort(event.target.value as string);
-      };
+    };
 
     const sortPetitions = () => {
         return (
@@ -202,36 +254,42 @@ const Petitions = () => {
         )
     }
 
-    const handleChangePage = (
-        event: React.MouseEvent<HTMLButtonElement> | null,
-        newPage: number,
-        ) => {
-            setPage(newPage);
-            
-        };
+    const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+    };    
     
-    const handleChangeRowsPerPage = (
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        ) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-        };
+    const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
+        setRowsPerPage(Number(event.target.value))
+
+      };
 
     const pagination = () => {
         return (
-            
-                <TablePagination
-                component="div"
-                count={petitionCount}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                showFirstButton
-                showLastButton
-                rowsPerPageOptions={[5, 6, 7, 8, 9, 10]}
-                />
-            
+                <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>
+                    <FormControl size="small">
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={rowsPerPage.toString()}
+                            onChange={handleChangeRowsPerPage}
+                            size="small"
+                        >
+                            <MenuItem value={5}>5</MenuItem>
+                            <MenuItem value={6}>6</MenuItem>
+                            <MenuItem value={7}>7</MenuItem>
+                            <MenuItem value={8}>8</MenuItem>
+                            <MenuItem value={9}>9</MenuItem>
+                            <MenuItem value={10}>10</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Pagination 
+                        count={Math.floor(petitionCount/rowsPerPage)+1} 
+                        page={page} 
+                        onChange={handleChangePage}
+                        showFirstButton
+                        showLastButton
+                    />
+                </div>
           );
     }
 
@@ -241,41 +299,45 @@ const Petitions = () => {
             <Paper style={card}>
                 <h3>Filter</h3>
                 <Grid container spacing={20}>
-                    <Grid item xs={4}>
-                        <FilterCategories />
+                    <Grid item xs={3}>
+                        {searchPetitions()}
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                         {filterCost()}
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
+                        {filterCategories()}
+                    </Grid>
+                    <Grid item xs={3}>
                         {sortPetitions()}
                     </Grid>
                 </Grid>
             </Paper>
-            <Paper elevation={3} style={card}>
                 <h1>Petitions</h1>
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                {headCells.map((headCell) => (
-                                    <TableCell
-                                        key={headCell.id}
-                                        padding={'normal'}>
-                                        {headCell.label}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                    <TableBody>
-                        {petition_rows()}
-                    </TableBody>
-                    <TableFooter>
-                        {pagination()}
-                    </TableFooter>
-                    </Table>
-                </TableContainer>
-            </Paper>
+                <Container maxWidth="xl" style={{ display: 'flex', flexDirection: 'column', paddingBottom: '20px' }}>
+                    <Grid container spacing={3} >
+                        {petitions.map((petition) => (
+                            <Grid item xs={12} sm={6} md={3} key={petition.petitionId}>
+                                <PetitionCard
+                                    key={petition.petitionId}
+                                    title={petition.title}
+                                    ownerFirstName={petition.ownerFirstName}
+                                    ownerLastName={petition.ownerLastName}
+                                    numberOfSupporters={petition.numberOfSupporters}
+                                    creationDate={petition.creationDate}
+                                    imageUrl={`http://localhost:4941/api/v1/petitions/${petition.petitionId}/image` || ''}
+                                    categoryName={petition.categoryName || 'Unknown'}
+                                    ownerProfilePictureUrl={petition.ownerProfilePictureUrl || ''}
+                                    supportingCost={petition.supportingCost}
+                                    categoryId={petition.categoryId}
+                                    petitionId={petition.petitionId}
+                                    ownerId={petition.ownerId}
+                                />
+                            </ Grid>
+                        ))}
+                    </Grid>
+                    {pagination()}
+                </Container>
         </div>
     )
 }

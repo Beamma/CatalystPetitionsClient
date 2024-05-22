@@ -5,22 +5,12 @@ For petition card, when I delete is there a way to talk back to the parent compo
 
 Deleting support tiers on create petition should delete the grid that u select delete for.
 Need to display default images if 404
-Need to convert petitions page to have cards
 Need to fix pagination
 Need default petitions image
-Money raised, should say 0 if none
 Need to change links to navigate to
 Possibly have to window reload on log out, for things like support Tier Button
-If logged out dont display My Petitions
-Fix aligment on pagination and on signin button
-Supporters only shows if there is supporters
 Date on petitions is wrong
-Need to display page number itself
-Indicate last page
-When ever a filter is altered, the page number should go back to 1
-Add x to categories chips filtering
 Creation date in for petitions needs to be of correct form
-Similar petitions title shouldnt be displayed if no similar petitions
 Need to alter creation date for similar petitions, petition view, and list of petitions
 Need to fix navbar profile image, so it dispalys correct initials
 Need to add Success / failure snack bars
@@ -30,7 +20,6 @@ type checking for image uploading
 checking inputs for validness
 Password too small length, displays different error message
 Need to make sure page restrictions are all handled correctly
-remove create petition off nav bar unless logged in. as well as remove access to the route
 When creating petition need to require image
 need to change how create/ edit petition looks
 need to add edit and delete icons for all owned petition cards on all pages
@@ -42,3 +31,11 @@ Need to update how User Profile page looks
 Need to display default profile pic if none exists
 Bug when editing profile page, profile picture disapears once confirm edit
 Password update doesnt actually work
+Chips should have Xs
+Need view less petitions button
+Need View less supporters button
+Fix all console errors
+Align edit and delete buttons for petition
+Make support tier cards the same height
+Change YOU SUPPORT THIS PETITION to TIER
+Make buttons consistent
