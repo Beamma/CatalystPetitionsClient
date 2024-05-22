@@ -418,7 +418,7 @@ const Create = () => {
         return (
             <div>
                 <NavBar></NavBar>
-                {error}
+                {errorMessage}
             </div>
         )
     }

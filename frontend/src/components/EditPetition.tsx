@@ -10,20 +10,6 @@ import { Delete } from '@mui/icons-material';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-interface Petition {
-    petitionId: number;
-    title: string;
-    categoryId: number;
-    ownerId: number;
-    ownerFirstName: string;
-    ownerLastName: string;
-    numberOfSupporters: number;
-    creationDate: string;
-    description: string;
-    moneyRaised: number;
-    supportTiers: SupportTier[];
-}
-
 interface PetitionFormData {
     title: string;
     description: string;
@@ -350,134 +336,6 @@ const EditPetition = () => {
         return supporters.some(supporter => supporter.supportTierId === supportTierId);
     };
 
-    // const displayPetitionDetails = () => {
-    //     return (
-    //         <div>
-    //             <TextField
-    //                 fullWidth
-    //                 required
-    //                 label="Title"
-    //                 name="title"
-    //                 value={petitionData.title}
-    //                 onChange={handleChange}
-    //                 margin="normal"
-    //             />
-    //             <TextField
-    //                 fullWidth
-    //                 required
-    //                 label="Description"
-    //                 name="description"
-    //                 value={petitionData.description}
-    //                 onChange={handleChange}
-    //                 margin="normal"
-    //                 multiline
-    //                 rows={4}
-    //             />
-    //             <FormControl fullWidth margin="normal">
-    //                 <InputLabel id="category-label">Category</InputLabel>
-    //                 <Select
-    //                     labelId="category-label"
-    //                     id="category"
-    //                     value={petitionData.categoryId}
-    //                     onChange={handleChange}
-    //                     name="categoryId"
-    //                     required
-    //                 >
-    //                     {categories.map((category) => (
-    //                         <MenuItem key={category.categoryId} value={category.categoryId}>
-    //                             {category.name}
-    //                         </MenuItem>
-    //                     ))}
-    //                 </Select>
-    //             </FormControl>
-    //             {displayImage()}
-    //         </div>
-    //     )
-    // }
-
-    // const displayTiers = () => {
-    //     return (
-    //         <Card variant="outlined">
-    //             <div className="scrollable-container">
-    //                 {tierData.supportTiers.map((tier, index) => (
-    //                     <Container>
-    //                         <Typography variant="h6">
-    //                             Support Tier {index + 1}
-    //                             {tierData.supportTiers.length > 1 && !hasSupporters(tier.supportTierId) && (
-    //                                 <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
-    //                                     <Delete />
-    //                                 </IconButton>
-    //                             )}
-    //                         </Typography>
-    //                         <TextField
-    //                             fullWidth
-    //                             required
-    //                             label="Title"
-    //                             value={tier.title}
-    //                             onChange={(e) => handleTierChange(index, 'title', e.target.value)}
-    //                             margin="normal"
-    //                         />
-    //                         <TextField
-    //                             fullWidth
-    //                             required
-    //                             label="Description"
-    //                             value={tier.description}
-    //                             onChange={(e) => handleTierChange(index, 'description', e.target.value)}
-    //                             margin="normal"
-    //                             multiline
-    //                             rows={4}
-    //                         />
-    //                         <TextField
-    //                             fullWidth
-    //                             required
-    //                             type="number"
-    //                             label="Cost"
-    //                             value={tier.cost}
-    //                             onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
-    //                             margin="normal"
-    //                         />
-    //                     </Container>
-    //                 ))}
-    //                 {tierData.supportTiers.length < 3 && (
-    //                     <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
-    //                         Add Support Tier
-    //                     </Button>
-    //                 )}
-    //             </div>
-    //         </Card>
-    //     )
-    // }
-
-    // const displayImage = () => {
-    //     if (selectedFile) {
-    //         return(
-    //             <div>
-    //                 <img src={URL.createObjectURL(selectedFile) || ""} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
-    //                 <TextField
-    //                     fullWidth
-    //                     color="secondary"
-    //                     type="file"
-    //                     onChange={handleFileChange}
-    //                 />
-    //             </div>
-                
-    //         )
-    //     } else {
-    //         return (
-    //             <div>
-    //                 <img src={`http://localhost:4941/api/v1/petitions/${id}/image`} width={250} height={250} style={{ borderRadius: '50%' }} alt='Hero'></img>
-    //                 <TextField
-    //                     fullWidth
-    //                     color="secondary"
-    //                     type="file"
-    //                     onChange={handleFileChange}
-    //                 />
-    //             </div>
-    //         )
-    //     }
-        
-    // }
-
     const displaySnack = () => {
         return (
             <div>
@@ -512,16 +370,16 @@ const EditPetition = () => {
         if (photoExists === true) {
             return (
                 <div>
-                        <img src={`http://localhost:4941/api/v1/petitions/${id}/image` || ""} width="80%" style={{ borderRadius: '5px' }}></img>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            startIcon={<DeleteIcon />}
-                            onClick={handleRemoveImage}
-                            sx={{ marginTop: "10px"}}
-                        >
-                            Remove Image
-                        </Button>
+                    <img src={`http://localhost:4941/api/v1/petitions/${id}/image` || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<DeleteIcon />}
+                        onClick={handleRemoveImage}
+                        sx={{ marginTop: "10px"}}
+                    >
+                        Remove Image
+                    </Button>
                 </div>
             )
         } else if (selectedFile === null) {
@@ -617,47 +475,98 @@ const EditPetition = () => {
         )
     }
 
+    const displaySupportTierCard = (index: number, tier: SupportTier) => {
+        if (hasSupporters(tier.supportTierId)) {
+            return (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Typography variant="h6">
+                        Support Tier {index + 1}
+                        {tierData.supportTiers.length > 1 && (
+                            <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete" disabled>
+                                <Delete />
+                            </IconButton>
+                        )}
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        required
+                        label="Title"
+                        value={tier.title}
+                        onChange={(e) => handleTierChange(index, 'title', e.target.value)}
+                        margin="normal"
+                        disabled
+                    />
+                    <TextField
+                        fullWidth
+                        required
+                        label="Description"
+                        value={tier.description}
+                        onChange={(e) => handleTierChange(index, 'description', e.target.value)}
+                        margin="normal"
+                        multiline
+                        rows={4}
+                        disabled
+                    />
+                    <TextField
+                        fullWidth
+                        required
+                        type="number"
+                        label="Cost"
+                        value={tier.cost}
+                        onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
+                        margin="normal"
+                        disabled
+                    />
+                </Grid>
+            )
+        }
+
+        return (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+                <Typography variant="h6">
+                    Support Tier {index + 1}
+                    {tierData.supportTiers.length > 1 && (
+                        <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
+                            <Delete />
+                        </IconButton>
+                    )}
+                </Typography>
+                <TextField
+                    fullWidth
+                    required
+                    label="Title"
+                    value={tier.title}
+                    onChange={(e) => handleTierChange(index, 'title', e.target.value)}
+                    margin="normal"
+                />
+                <TextField
+                    fullWidth
+                    required
+                    label="Description"
+                    value={tier.description}
+                    onChange={(e) => handleTierChange(index, 'description', e.target.value)}
+                    margin="normal"
+                    multiline
+                    rows={4}
+                />
+                <TextField
+                    fullWidth
+                    required
+                    type="number"
+                    label="Cost"
+                    value={tier.cost}
+                    onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
+                    margin="normal"
+                />
+            </Grid>
+        )
+    }
+
     const displayAddSupportTier = () => {
         return (
             <Grid container spacing={2}>
                 {tierData.supportTiers.map((tier, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
-                        <Typography variant="h6">
-                            Support Tier {index + 1}
-                            {tierData.supportTiers.length > 1 && (
-                                <IconButton onClick={() => handleRemoveTier(index)} aria-label="delete">
-                                    <Delete />
-                                </IconButton>
-                            )}
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            required
-                            label="Title"
-                            value={tier.title}
-                            onChange={(e) => handleTierChange(index, 'title', e.target.value)}
-                            margin="normal"
-                        />
-                        <TextField
-                            fullWidth
-                            required
-                            label="Description"
-                            value={tier.description}
-                            onChange={(e) => handleTierChange(index, 'description', e.target.value)}
-                            margin="normal"
-                            multiline
-                            rows={4}
-                        />
-                        <TextField
-                            fullWidth
-                            required
-                            type="number"
-                            label="Cost"
-                            value={tier.cost}
-                            onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
-                            margin="normal"
-                        />
-                    </Grid>
+                    displaySupportTierCard(index, tier)
                 ))}
                 {tierData.supportTiers.length < 3 && (
                     <CenteredGridItem xs={12} sm={6} md={4}>
@@ -699,6 +608,9 @@ const EditPetition = () => {
                         <Typography variant="h5" component="h3" gutterBottom>
                             Support Tiers
                         </Typography>
+                        <Typography variant="body2" sx={{ fontStyle: "italic" }}  gutterBottom>
+                            You may only edit and delete petitions that have no supporters
+                        </Typography>
                         <Grid container spacing={2}>
                             {displayAddSupportTier()}
                         </Grid>
@@ -727,7 +639,7 @@ const EditPetition = () => {
         return (
             <div>
                 <NavBar></NavBar>
-                {error}
+                {errorMessage}
             </div>
         )
     }
