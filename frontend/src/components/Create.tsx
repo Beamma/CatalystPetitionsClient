@@ -377,7 +377,7 @@ const Create = () => {
                                 
                             }}
                         >   
-                            <img src={URL.createObjectURL(selectedFile) || ""} width="120%" style={{ borderRadius: '5px' }}></img>
+                            <img src={URL.createObjectURL(selectedFile) || ""} width="120%" height={"75%"} style={{ borderRadius: '5px' }}></img>
                         </Box>
                         <Button
                             variant="contained"
@@ -392,6 +392,45 @@ const Create = () => {
             )
             
         }
+    }
+
+    const displayPetitionInfo = () => {
+        return (
+            <Grid container direction="column" spacing={2}>
+                    <Grid item>
+                        <TextField
+                            fullWidth
+                            required
+                            label="Description"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            margin="normal"
+                            multiline
+                            rows={4}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel id="category-label">Category</InputLabel>
+                            <Select
+                                labelId="category-label"
+                                id="category"
+                                value={formData.categoryId}
+                                onChange={handleChange}
+                                name="categoryId"
+                                required
+                            >
+                                {categories.map((category) => (
+                                    <MenuItem key={category.categoryId} value={category.categoryId}>
+                                        {category.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+        )
     }
 
     const displayPetitionCreateBody = () => {
@@ -416,7 +455,7 @@ const Create = () => {
                             {displayImageUpload()}
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            Left
+                            {displayPetitionInfo()}
                         </Grid>
                     </Grid>
                 </Card>
