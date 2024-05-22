@@ -1,4 +1,4 @@
-import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Container } from "@mui/material";
+import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Container, SliderProps } from "@mui/material";
 import axios from "axios";
 import React from "react";
 import NavBar from './NavBar';
@@ -48,9 +48,10 @@ const Petitions = () => {
     const search = useSearchStore(state => state.search)
     const [filterCats, setFilterCats] = React.useState<String[]>([]);
     const [filteredCost, setFilteredCost] = React.useState<number>(100);
+    const [dynamicFilteredCost, setDynamicFilteredCost] = React.useState<number>(100)
     const [sort, setSort] = React.useState('');
     const [petitionCount, setPetitionCount] = React.useState(0);
-    const [page, setPage] = React.useState(0);
+    const [page, setPage] = React.useState(1);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [petitions, setPetitions] = React.useState<Petition[]>([]);
     const [categories, setCategories] = React.useState<Category[]>([]);
@@ -75,9 +76,9 @@ const Petitions = () => {
     }, [search, filterCats, filteredCost, sort, page, rowsPerPage])
 
     React.useEffect(() => {
-        setPage(0)
+        setPage(1)
         fetchPetitions()
-    }, [search, filterCats, filteredCost, sort])
+    }, [search, filterCats, filteredCost, sort, rowsPerPage])
 
     const fetchPetitions = async () => {
         try {
@@ -85,7 +86,7 @@ const Petitions = () => {
             const parsedCost = parseCost()
             const parsedSearch = parseSearch()
 
-            const url = "http://localhost:4941/api/v1/petitions?count=" + rowsPerPage + parsedCatergories + parsedCost + sort + "&startIndex=" + (rowsPerPage * page) + parsedSearch
+            const url = "http://localhost:4941/api/v1/petitions?count=" + rowsPerPage + parsedCatergories + parsedCost + sort + "&startIndex=" + (rowsPerPage * (page-1)) + parsedSearch
 
             const [petitionsResponse, categoriesResponse] = await Promise.all([
                 axios.get<PetitionsResponse>(url),
@@ -202,15 +203,23 @@ const Petitions = () => {
         )
     }
 
-    const handleFilterCostChange = (event: Event, newValue: number | number[]) => {
-        setFilteredCost(newValue as number);
-      };
+    const handleFilterCostChange: SliderProps['onChangeCommitted'] = (
+        event: React.SyntheticEvent | Event,
+        value: number | number[]
+    ) => {
+        setFilteredCost(value as number);
+    };
+
+    const handleDynamicCost = (event: Event, newValue: number | number[]) => {
+        setDynamicFilteredCost(newValue as number);
+    };
+
 
     const filterCost = () => {
         return (
             <FormControl fullWidth>
                 Support Tier Cost
-                <Slider aria-label="Default" valueLabelDisplay="auto" onChange={handleFilterCostChange} value={filteredCost} />
+                <Slider aria-label="Default" valueLabelDisplay="auto" onChangeCommitted={handleFilterCostChange} value={dynamicFilteredCost} onChange={handleDynamicCost}/>
             </FormControl>
         )
     }
@@ -240,36 +249,42 @@ const Petitions = () => {
         )
     }
 
-    const handleChangePage = (
-        event: React.MouseEvent<HTMLButtonElement> | null,
-        newPage: number,
-        ) => {
-            setPage(newPage);
-            
-        };
+    const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+    };    
     
-    const handleChangeRowsPerPage = (
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        ) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-        };
+    const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
+        setRowsPerPage(Number(event.target.value))
+
+      };
 
     const pagination = () => {
         return (
-            
-                <TablePagination
-                component="div"
-                count={petitionCount}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                showFirstButton
-                showLastButton
-                rowsPerPageOptions={[5, 6, 7, 8, 9, 10]}
-                />
-            
+                <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>
+                    <FormControl size="small">
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={rowsPerPage.toString()}
+                            onChange={handleChangeRowsPerPage}
+                            size="small"
+                        >
+                            <MenuItem value={5}>5</MenuItem>
+                            <MenuItem value={6}>6</MenuItem>
+                            <MenuItem value={7}>7</MenuItem>
+                            <MenuItem value={8}>8</MenuItem>
+                            <MenuItem value={9}>9</MenuItem>
+                            <MenuItem value={10}>10</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Pagination 
+                        count={Math.floor(petitionCount/rowsPerPage)+1} 
+                        page={page} 
+                        onChange={handleChangePage}
+                        showFirstButton
+                        showLastButton
+                    />
+                </div>
           );
     }
 
@@ -291,8 +306,8 @@ const Petitions = () => {
                 </Grid>
             </Paper>
                 <h1>Petitions</h1>
-                <Container maxWidth="xl">
-                    <Grid container spacing={3}>
+                <Container maxWidth="xl" style={{ display: 'flex', flexDirection: 'column', paddingBottom: '20px' }}>
+                    <Grid container spacing={3} >
                         {petitions.map((petition) => (
                             <Grid item xs={12} sm={6} md={3} key={petition.petitionId}>
                                 <PetitionCard

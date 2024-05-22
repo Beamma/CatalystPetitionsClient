@@ -10,11 +10,9 @@ Need default petitions image
 Need to change links to navigate to
 Possibly have to window reload on log out, for things like support Tier Button
 If logged out dont display My Petitions
-Fix aligment on pagination and on signin button
+Fix aligment signin button
 Date on petitions is wrong
-Need to display page number itself
 Indicate last page
-When ever a filter is altered, the page number should go back to 1
 Add x to categories chips filtering
 Creation date in for petitions needs to be of correct form
 Similar petitions title shouldnt be displayed if no similar petitions
