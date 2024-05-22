@@ -7,7 +7,6 @@ const backgroundImageStyle = {
     height: '100vh',
     width: '100%',
     color: 'white', // Adjust text color for better visibility
-    backgroundImage: ''
 };
 
 const Home = () => {

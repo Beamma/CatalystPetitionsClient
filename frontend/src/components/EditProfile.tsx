@@ -107,9 +107,6 @@ const EditProfile = () => {
     }
 
     const editUserInfo = () => {
-        if (deletePhoto) {
-            deleteImage()
-        }
 
         if (email === "" || fname === "" || lname === "") {
             setSnackMessage("Please ensure First name, Last name and email are populated")
@@ -135,6 +132,11 @@ const EditProfile = () => {
             return
         }
 
+        if (deletePhoto) {
+            deleteImage()
+            window.location.reload()
+        }
+
         if (selectedFile !== null) {
             if (selectedFile === null || !(["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(selectedFile.type))) {
                 setSnackMessage("Please upload a file of type jpg, png of gif")
@@ -149,6 +151,7 @@ const EditProfile = () => {
                     setSnackOpenSuccess(true)
                     setSnackMessage("Successfully updated user")
                     setPhotoExists(true)
+                    window.location.reload()
                 }, (error) => {
                     setSnackMessage(error.response.statusText)
                     setSnackOpenFail(true)

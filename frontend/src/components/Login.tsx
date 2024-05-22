@@ -36,8 +36,6 @@ const Login = () => {
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
     const [response, setResponse] = React.useState(false);
-    const userId = useUserStore(state => state.id)
-    const setUserId = useUserStore(state => state.setUser)
 
     const handleClickShowPassword = () => setShowPassword((prev) => !prev);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -79,7 +77,6 @@ const Login = () => {
                     console.log(response.data.token)
                     Cookies.set('X-Authorization', response.data.token);
                     Cookies.set('userId', response.data.userId);
-                    setUserId(response.data.userId);
                     setResponse(true)
                 }, (error) => {
                     setSnackMessage(error.response.statusText)

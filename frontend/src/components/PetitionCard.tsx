@@ -173,14 +173,14 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
                                 {title}
                             </Typography>
                             <Box display="flex" alignItems="center" justifyContent={'center'}>
-                            {ownerProfilePictureUrl && (
-                                <Avatar alt={`${ownerFirstName} ${ownerLastName}`} src={ownerProfilePictureUrl} sx={{ marginRight: 2 }} />
-                            )}
-                            <Box>
-                                <Typography variant="body2" color="text.secondary">
-                                {ownerFirstName} {ownerLastName}
-                                </Typography>
-                            </Box>
+                                {ownerProfilePictureUrl && (
+                                    <Avatar alt={`${ownerFirstName} ${ownerLastName}`} src={ownerProfilePictureUrl} sx={{ marginRight: 2 }} />
+                                )}
+                                <Box>
+                                    <Typography variant="body2" color="text.secondary">
+                                    {ownerFirstName} {ownerLastName}
+                                    </Typography>
+                                </Box>
                             </Box>
                             <Typography variant="body2" color="text.secondary">
                             Supporters: {numberOfSupporters}

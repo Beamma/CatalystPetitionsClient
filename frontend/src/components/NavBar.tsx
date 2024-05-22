@@ -13,10 +13,8 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import PollIcon from '@mui/icons-material/Poll';
 import { Link, Navigate } from "react-router-dom";
-import { alpha, styled } from '@mui/material/styles';
-import { Alert, Autocomplete, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputBase, Snackbar, TextField } from '@mui/material';
+import { Alert, Dialog, DialogContent, DialogContentText, DialogTitle, Snackbar } from '@mui/material';
 import axios from 'axios';
-import {useUserStore} from "../store/user";
 import Cookies from 'js-cookie';
 
 function NavBar() {
@@ -37,9 +35,10 @@ function NavBar() {
       updatePages()
   }, [logOut])
 
-  React.useEffect(() =>{
-    updatePages()
-  }, [])
+  // React.useEffect(() =>{
+  //   // updatePages()
+  //     console.log("Reoload1")
+  // }, [])
 
   const updatePages = () => {
     if (Cookies.get('userId')) {
@@ -87,14 +86,15 @@ function NavBar() {
 
   const handleLogOutModalAgree = () => {
     axios.post('http://localhost:4941/api/v1/users/logout', {}, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
-      .then(() => {
-          setLogOutModal(false);
-          setLogOut(true);
-          setUserId(undefined)
-          Cookies.remove('X-Authorization');
-          Cookies.remove('userId');
-          handleSnackOpen()
-      })
+        .then(() => {
+            setLogOutModal(false);
+            setLogOut(true);
+            setUserId(undefined)
+            Cookies.remove('X-Authorization');
+            Cookies.remove('userId');
+            handleSnackOpen()
+            window.location.reload()
+        })
   }
 
   const handleLogOutModalDisagree = () => {
@@ -134,7 +134,7 @@ function NavBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar src={'http://localhost:4941/api/v1/users/' + userId +'/image'} />
+                <Avatar src={'http://localhost:4941/api/v1/users/' + Cookies.get("userId") +'/image'} />
               </IconButton>
             </Tooltip>
             <Menu

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import axios from "axios";
 import { Box, Button, Card, Container, Grid, IconButton, Typography} from "@mui/material";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import NavBar from './NavBar';
 import EditIcon from '@mui/icons-material/Edit';
@@ -17,15 +17,22 @@ const UserProfile = () => {
     const [email, setEmail] = React.useState("");
     const [photoUrl, setPhotoUrl] = React.useState<string>("");
     const [edit, setEdit] = React.useState(false);
+    const navigate = useNavigate();
 
 
     React.useEffect(() => {
-        
+        displayImage()
     }, [])
 
     React.useEffect(() => {
         getUserInfo()
     }, [error, edit])
+
+    const displayImage = () =>{
+        return (
+            <img src={ photoUrl || `https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png`} style={{ width: "80%", borderRadius: "10px" }} ></img>
+        )
+    }
 
     const getUserInfo = () => {
         if (! id?.match(/^\d+$/)) {
@@ -45,11 +52,11 @@ const UserProfile = () => {
 
                 axios.get(`http://localhost:4941/api/v1/users/${id}/image`)
                 .then((response) => {
+                    setPhotoUrl("")
                     setPhotoUrl('http://localhost:4941/api/v1/users/' + id +'/image')
                 }, (error) => {
                     setPhotoUrl("")
                 })
-                setPhotoUrl('http://localhost:4941/api/v1/users/' + id +'/image')
 
             }, (error) => {
                 setError(true);
@@ -83,7 +90,7 @@ const UserProfile = () => {
                         </Typography>
                         <Grid container spacing={2} sx={{ paddingBottom: "50px", paddingTop: "20px"}}>
                             <Grid item xs={12} sm={6} md={6}>
-                                <img src={ photoUrl || `https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png`} style={{ width: "80%", borderRadius: "10px" }} ></img>
+                                {displayImage()}
                             </Grid>
                             <Grid item xs={12} sm={6} md={6}>
                                 <Box sx={{paddingBottom: "20px"}}>

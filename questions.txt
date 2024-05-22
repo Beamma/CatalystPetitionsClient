@@ -1,14 +1,15 @@
 
-Image doesnt change straight away? - easier to show now (Registering, and sometimes editing profile)
+Image doesnt change straight away? - easier to show now (Registering, and sometimes editing profile) Window reload
 For petition card, when I delete is there a way to talk back to the parent component to say to reload or something
 Console errors
-How to update nav bar image, when editing profile image.
+How to update nav bar image, when editing profile image. Window reload
+What does it mean to prompt to log in
 
 
 
 Need to change links to navigate to
 Possibly have to window reload on log out, for things like support Tier Button
-Need to add Success / failure snack bars
+Need to add Success / failure snack barss
 type checking for image uploading
 checking inputs for validness
 Need to make sure page restrictions are all handled correctly
@@ -24,6 +25,7 @@ Possibly change image links to be local
 Update filtering box on Petitions page
 Change SupportTier Cost to be input instead of slider
 Category on create petition page, cant have Id, set as 0
+When click sign in when already signed in
 
 
 Make sure to run through the ACs
