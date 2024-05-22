@@ -39,6 +39,12 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
+const CenteredGridItem = styled(Grid)({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+});
+
 const Create = () => {
     const [formData, setFormData] = useState<PetitionFormData>({
         title: '',
@@ -353,7 +359,7 @@ const Create = () => {
         } else {
             return (
                 <div>
-                            <img src={URL.createObjectURL(selectedFile) || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                        <img src={URL.createObjectURL(selectedFile) || ""} width="80%" style={{ borderRadius: '5px' }}></img>
                         <Button
                             variant="contained"
                             color="secondary"
@@ -410,9 +416,9 @@ const Create = () => {
 
     const displayAddSupportTier = () => {
         return (
-            <div>
+            <Grid container spacing={2}>
                 {formData.supportTiers.map((tier, index) => (
-                    <Container>
+                    <Grid item xs={12} sm={6} md={4} key={index}>
                         <Typography variant="h6">
                             Support Tier {index + 1}
                             {formData.supportTiers.length > 1 && (
@@ -448,14 +454,16 @@ const Create = () => {
                             onChange={(e) => handleTierChange(index, 'cost', parseFloat(e.target.value))}
                             margin="normal"
                         />
-                    </Container>
+                    </Grid>
                 ))}
                 {formData.supportTiers.length < 3 && (
-                    <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
-                        Add Support Tier
-                    </Button>
+                    <CenteredGridItem xs={12} sm={6} md={4}>
+                        <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
+                            Add Support Tier
+                        </Button>
+                    </CenteredGridItem>
                 )}
-            </div>
+            </Grid>
         )
     }
 
