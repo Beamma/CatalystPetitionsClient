@@ -149,6 +149,15 @@ const Petition = () => {
         }
     }
 
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    }).format(new Date(petition?.creationDate || "2024-01-01"));
+
     const getSimilarPetitions = async () => {
         if (! id?.match(/^\d+$/)) {
             setError(true);
@@ -564,7 +573,7 @@ const Petition = () => {
                                     <b>Number of Supporters:</b> {petition.numberOfSupporters}
                                 </Typography>
                                 <Typography variant="body1" align='left'>
-                                    <b>Created On:</b> {new Date(petition.creationDate).toLocaleDateString()}
+                                    <b>Created On:</b> {formattedDate}
                                 </Typography>
                                 <Typography variant="body1" paragraph align='left'>
                                     <b>Description:</b> {petition.description}
