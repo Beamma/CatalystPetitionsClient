@@ -2,6 +2,7 @@
 Image doesnt change straight away? - easier to show now (Registering, and sometimes editing profile)
 For petition card, when I delete is there a way to talk back to the parent component to say to reload or something
 Console errors
+How to update nav bar image, when editing profile image.
 
 
 
@@ -22,3 +23,7 @@ When layering snacks, cant close the bottom one
 Possibly change image links to be local
 Update filtering box on Petitions page
 Change SupportTier Cost to be input instead of slider
+Category on create petition page, cant have Id, set as 0
+
+
+Make sure to run through the ACs
