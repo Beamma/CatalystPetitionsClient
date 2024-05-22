@@ -134,7 +134,7 @@ function NavBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar src={'http://localhost:4941/api/v1/users/' + userId +'/image' || './defualUser.png'} />
+                <Avatar src={'http://localhost:4941/api/v1/users/' + userId +'/image'} />
               </IconButton>
             </Tooltip>
             <Menu
