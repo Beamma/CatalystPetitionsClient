@@ -27,3 +27,4 @@ Support tier boxxes same height
 Nav bar should display initials when no profile pic
 When logout on page, should redirect user away from sensitive pages
 When scale page to small for petitions, it should go to 2 or 3
+When layering snacks, cant close the bottom one

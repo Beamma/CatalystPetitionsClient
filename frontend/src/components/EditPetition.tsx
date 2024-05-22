@@ -209,6 +209,33 @@ const EditPetition = () => {
     }
 
     const handleSubmit = async () => {
+        if (petitionData.title === "" || petitionData.description === "" || petitionData.categoryId === 0) {
+            setSnackMessage("Please input all fields")
+            setSnackOpenFail(true)
+            return
+        }
+
+        if (!photoExists) {
+            if (selectedFile === null || !(["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(selectedFile.type))) {
+                setSnackMessage("Please upload a file of type jpg, png of gif")
+                setSnackOpenFail(true)
+                return
+            }
+        }
+
+        const checkedTiers = tierData.supportTiers.map((tier) => {
+            if (tier.cost < 0 || tier.description === "" || tier.title === "") {
+                return false;
+            }
+        });
+
+        if (checkedTiers.includes(false)) {
+            setSnackMessage("Please fill out all fields the support tiers")
+            setSnackOpenFail(true)
+            return
+        }
+
+
         axios.patch(`http://localhost:4941/api/v1/petitions/${id}`, petitionData, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
         .then((response) => {
             setPetitionData({
@@ -220,6 +247,8 @@ const EditPetition = () => {
                 axios.put(`http://localhost:4941/api/v1/petitions/${id}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": selectedFile.type}})
                 .then((response) => {
                     setUpdateFlag(updateFlag * -1)
+                    setPhotoExists(true)
+                    setSelectedFile(null)
                 }, (error) => {
                     setSnackMessage(error.response.statusText)
                     setSnackOpenFail(true)
