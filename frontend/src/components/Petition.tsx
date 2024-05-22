@@ -319,6 +319,9 @@ const Petition = () => {
                 {!showAllPetitions && similarPetitions.length > 3 && (
                     <Button onClick={() => setShowAllPetitions(true)}>View More Petitions</Button>
                 )}
+                {showAllPetitions && (
+                    <Button onClick={() => setShowAllPetitions(false)}>View Less Petitions</Button>
+                )}
             </div>
         );
     }
@@ -507,6 +510,9 @@ const Petition = () => {
                     </List>
                     {!showAllSupporters && supporters.length > 5 && (
                         <Button onClick={() => setShowAllSupporters(true)}>View More Supporters</Button>
+                    )}
+                    {showAllSupporters && (
+                        <Button onClick={() => setShowAllSupporters(false)}>View Less Supporters</Button>
                     )}
                 </div>
             )

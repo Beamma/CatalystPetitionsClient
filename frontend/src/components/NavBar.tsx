@@ -115,7 +115,7 @@ function NavBar() {
   }
 
   const userInfo = () => {
-    if (userId === undefined) {
+    if (Cookies.get("userId") === undefined) {
       return (
           <Box>
             <Button
