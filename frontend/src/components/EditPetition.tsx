@@ -157,7 +157,6 @@ const EditPetition = () => {
 
             axios.get(`http://localhost:4941/api/v1/petitions/${id}/image`)
                 .then((response) => {
-                    console.log(response.status)
                     if (response.status === 404) {
                         setPhotoExists(false);
                     } else {
@@ -343,7 +342,7 @@ const EditPetition = () => {
                     autoHideDuration={6000}
                     open={snackOpenSuccess}
                     onClose={handleSnackCloseSuccess}
-                    key={snackMessage}>
+                    key={"Success"}>
                     <Alert onClose={handleSnackCloseSuccess} severity="success" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>
@@ -352,7 +351,7 @@ const EditPetition = () => {
                     autoHideDuration={6000}
                     open={snackOpenFail}
                     onClose={handleSnackCloseFail}
-                    key={snackMessage}>
+                    key={"Failure"}>
                     <Alert onClose={handleSnackCloseFail} severity="error" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>
@@ -454,7 +453,6 @@ const EditPetition = () => {
                     </Grid>
                     <Grid item>
                         <FormControl fullWidth margin="normal">
-                            <InputLabel id="category-label">Category</InputLabel>
                             <Select
                                 labelId="category-label"
                                 id="category"
@@ -462,7 +460,10 @@ const EditPetition = () => {
                                 onChange={handleChange}
                                 name="categoryId"
                                 required
-                            >
+                            >   
+                                <MenuItem key={0} value={0}>
+                                        Please Select A Category
+                                    </MenuItem>
                                 {categories.map((category) => (
                                     <MenuItem key={category.categoryId} value={category.categoryId}>
                                         {category.name}
@@ -569,7 +570,7 @@ const EditPetition = () => {
                     displaySupportTierCard(index, tier)
                 ))}
                 {tierData.supportTiers.length < 3 && (
-                    <CenteredGridItem xs={12} sm={6} md={4}>
+                    <CenteredGridItem item xs={12} sm={6} md={4}>
                         <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
                             Add Support Tier
                         </Button>

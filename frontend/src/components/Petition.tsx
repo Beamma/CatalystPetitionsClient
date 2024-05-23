@@ -239,7 +239,7 @@ const Petition = () => {
                     autoHideDuration={6000}
                     open={snackOpenSuccess}
                     onClose={handleSnackCloseSuccess}
-                    key={snackMessage}>
+                    key={"Success"}>
                     <Alert onClose={handleSnackCloseSuccess} severity="success" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>
@@ -248,7 +248,7 @@ const Petition = () => {
                     autoHideDuration={6000}
                     open={snackOpenFail}
                     onClose={handleSnackCloseFail}
-                    key={snackMessage}>
+                    key={"Failure"}>
                     <Alert onClose={handleSnackCloseFail} severity="error" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>

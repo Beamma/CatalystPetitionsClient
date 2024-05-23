@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Typography, Grid, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Card, Paper, Container, Box, styled, CardContent } from '@mui/material';
+import { TextField, Button, Typography, Grid, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Card, Paper, Container, Box, styled, CardContent, Autocomplete } from '@mui/material';
 import NavBar from "./NavBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Delete, Padding } from '@mui/icons-material';
@@ -192,7 +192,7 @@ const Create = () => {
                     autoHideDuration={6000}
                     open={snackOpenSuccess}
                     onClose={handleSnackCloseSuccess}
-                    key={snackMessage}>
+                    key={"Success"}>
                     <Alert onClose={handleSnackCloseSuccess} severity="success" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>
@@ -201,7 +201,7 @@ const Create = () => {
                     autoHideDuration={6000}
                     open={snackOpenFail}
                     onClose={handleSnackCloseFail}
-                    key={snackMessage}>
+                    key={'Failure'}>
                     <Alert onClose={handleSnackCloseFail} severity="error" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>
@@ -289,7 +289,6 @@ const Create = () => {
                     </Grid>
                     <Grid item>
                         <FormControl fullWidth margin="normal">
-                            <InputLabel id="category-label">Category</InputLabel>
                             <Select
                                 labelId="category-label"
                                 id="category"
@@ -297,7 +296,10 @@ const Create = () => {
                                 onChange={handleChange}
                                 name="categoryId"
                                 required
-                            >
+                            > 
+                            <MenuItem key={0} value={0}>
+                                Please select a Category
+                            </MenuItem>
                                 {categories.map((category) => (
                                     <MenuItem key={category.categoryId} value={category.categoryId}>
                                         {category.name}
@@ -353,7 +355,7 @@ const Create = () => {
                     </Grid>
                 ))}
                 {formData.supportTiers.length < 3 && (
-                    <CenteredGridItem xs={12} sm={6} md={4}>
+                    <CenteredGridItem item xs={12} sm={6} md={4}>
                         <Button onClick={handleAddTier} variant="outlined" startIcon={<AddIcon />} color="primary">
                             Add Support Tier
                         </Button>

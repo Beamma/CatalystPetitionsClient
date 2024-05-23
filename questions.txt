@@ -26,6 +26,7 @@ Update filtering box on Petitions page
 Change SupportTier Cost to be input instead of slider
 Category on create petition page, cant have Id, set as 0
 When click sign in when already signed in
+Tags are sometimes unknown in similar petitions
 
 
 Make sure to run through the ACs
