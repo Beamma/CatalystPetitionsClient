@@ -247,7 +247,7 @@ const Petitions = () => {
                     <MenuItem value={"&sortBy=ALPHABETICAL_DESC"}>Alphabetical (Z-A)<ArrowDropDownIcon /></MenuItem>
                     <MenuItem value={"&sortBy=COST_ASC"}>Cost (Low to High)<ArrowDropUpIcon /></MenuItem>
                     <MenuItem value={"&sortBy=COST_DESC"}>Cost (High to Low)<ArrowDropDownIcon /></MenuItem>
-                    <MenuItem value={"&sortBy=CREATED_ASC"}>Creadted (Oldest First)<ArrowDropUpIcon /></MenuItem>
+                    <MenuItem value={"&sortBy=CREATED_ASC"}>Created (Oldest First)<ArrowDropUpIcon /></MenuItem>
                     <MenuItem value={"&sortBy=CREATED_DESC"}>Created (Newest First)<ArrowDropDownIcon /></MenuItem>
                 </Select>
             </FormControl>

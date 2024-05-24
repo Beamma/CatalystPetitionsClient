@@ -158,7 +158,7 @@ function NavBar() {
                 <Typography textAlign="center">Profile</Typography>
               </MenuItem>
               <MenuItem key={'Logout'} onClick={handleOpenLogOutModal}>
-                <Typography textAlign="center">LogOut</Typography>
+                <Typography textAlign="center">Log Out</Typography>
               </MenuItem>
             </Menu>
           </Box>

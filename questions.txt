@@ -1,11 +1,3 @@
-
-Image doesnt change straight away? - easier to show now (Registering, and sometimes editing profile) Window reload
-For petition card, when I delete is there a way to talk back to the parent component to say to reload or something
-Console errors
-How to update nav bar image, when editing profile image. Window reload
-What does it mean to prompt to log in
-
-
 Need to change links to navigate to
 Need to add Success / failure snack barss
 Chips should have Xs
@@ -28,16 +20,11 @@ Make sure to run through the ACs
 
 
 
-remove seconds off time
-u3 ac 2 potertially not filtering 
-created filter is misspelling created oldest first
+u3 ac 2 potertially not filtering
 no petittons to show when there are no petitions matching a filter
 when highlighting a petition it doesnt highlight it fully
-space inbetween log out its spelled logout
 when registering there is not much feedback when submiting a invalid img , when supplied a wrong img should be able to cant 
-when on my profile and log out get a 403. 
 add a msg when there ar eno petitions created or supported
 cost doesnt reset when creating a petition
 when no similar petitions say a msg potentially
-add a view password button to edit profile 
-profile page and edit profile page are loading before dissapearing
+profile page and edit profile page are loading before dissapearing when logged out

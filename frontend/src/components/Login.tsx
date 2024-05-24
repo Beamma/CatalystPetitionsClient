@@ -58,7 +58,7 @@ const Login = () => {
 
     React.useEffect(() => {
         
-    }, [updateFlag])
+    }, [])
 
     const handleSubmit = () => {
         if (email === null || password === null || email === undefined || password === undefined || email === "" || password === "" ) {
@@ -169,11 +169,6 @@ const Login = () => {
                       Sign In
                     </Button>
                     <Grid container>
-                      {/* <Grid item xs>
-                        <Link href="#" variant="body2">
-                          Forgot password?
-                        </Link>
-                      </Grid> */}
                       <Grid item>
                         <Link href="/users/register" variant="body2">
                           {"Don't have an account? Sign Up"}

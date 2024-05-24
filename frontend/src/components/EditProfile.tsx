@@ -5,12 +5,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from "axios";
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Alert, Avatar, Box, Button, Card, Container, CssBaseline, Grid, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme, styled} from "@mui/material";
+import { Alert, Avatar, Box, Button, Card, Container, CssBaseline, Grid, IconButton, InputAdornment, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme, styled} from "@mui/material";
 import { Navigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { ChangeEvent } from 'react';
 import NavBar from './NavBar';
 import NotFound from './NotFound';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -35,12 +36,26 @@ const EditProfile = () => {
     const [photoUrl, setPhotoUrl] = React.useState<string>("");
     const [newPassword, setNewPassword] = React.useState("");
     const [oldPassword, setOldPassword] = React.useState("");
+    const [showPasswordNew, setShowPasswordNew] = React.useState<boolean>(false);
+    const [showPasswordOld, setShowPasswordOld] = React.useState<boolean>(false);
     const [photoExists, setPhotoExists] = React.useState(false);
     const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
     const [snackMessage, setSnackMessage] = React.useState("")
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
     const [deletePhoto, setDeletePhoto] = React.useState(false);
+
+    const handleClickShowPasswordOld = () => {
+        setShowPasswordOld((prev) => !prev);
+    }
+    const handleMouseDownPasswordOld = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+
+    const handleClickShowPasswordNew = () => setShowPasswordNew((prev) => !prev);
+    const handleMouseDownPasswordNew = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
 
     const handleSnackCloseSuccess = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -170,6 +185,8 @@ const EditProfile = () => {
                 setSnackOpenFail(false)
                 setSnackOpenSuccess(true)
                 setSnackMessage("Successfully updated user")
+                setOldPassword("")
+                setNewPassword("")
             }, (error) => {
                 setSnackMessage(error.response.statusText)
                 setSnackOpenFail(true)
@@ -352,24 +369,52 @@ const EditProfile = () => {
                                         fullWidth
                                         name="newPassword"
                                         label="New Password"
-                                        type="password"
+                                        type={showPasswordNew ? 'text' : 'password'}
                                         id="newPassword"
                                         autoComplete="new-password"
                                         value={newPassword}
                                         onChange={(event) => setNewPassword(event.target.value)}
                                         sx={{ marginBottom: "20px" }}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={handleClickShowPasswordNew}
+                                                        onMouseDown={handleMouseDownPasswordNew}
+                                                        edge="end"
+                                                    >
+                                                        {showPasswordNew ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
                                     />
                                     <TextField
                                         required
                                         fullWidth
                                         name="oldPassword"
                                         label="Old Password"
-                                        type="password"
+                                        type={showPasswordOld ? 'text' : 'password'}
                                         id="oldPassword"
                                         autoComplete="old-password"
                                         value={oldPassword}
                                         onChange={(event) => setOldPassword(event.target.value)}
                                         sx={{ marginBottom: "20px" }}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={handleClickShowPasswordOld}
+                                                        onMouseDown={handleMouseDownPasswordOld}
+                                                        edge="end"
+                                                    >
+                                                        {showPasswordOld ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
                                     />
                                 </Box>
                             </Grid>

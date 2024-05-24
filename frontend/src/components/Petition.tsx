@@ -161,8 +161,7 @@ const Petition = () => {
         month: 'short',
         day: '2-digit',
         hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
+        minute: '2-digit'
     }).format(new Date(petition?.creationDate || "2024-01-01"));
 
     const getSimilarPetitions = async () => {
