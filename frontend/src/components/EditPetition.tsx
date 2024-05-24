@@ -630,7 +630,6 @@ const EditPetition = () => {
     if (Number(Cookies.get("userId")) !== ownerId) {
         return(
             <div>
-                <NavBar />
                 <NotFound />
             </div>
         )

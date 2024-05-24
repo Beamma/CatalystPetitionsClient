@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Cookie } from '@mui/icons-material';
 import Cookies from 'js-cookie';
 import { Box, Button, Container, Grid } from '@mui/material';
+import { Navigate } from 'react-router-dom';
 
 interface Petition {
     petitionId: number;
@@ -36,7 +37,6 @@ const MyPetitions = () => {
     const [petitionPage, setPetitionPage] = useState<string>("Owned");
 
     useEffect(() => {
-        fetchPetitions();
     }, [])
 
     useEffect(() => {
@@ -104,6 +104,10 @@ const MyPetitions = () => {
                 )
             }
         }
+
+    if (Cookies.get("userId") === undefined) {
+        return(<Navigate to={"/home"} />)
+    }
     
     
     return (

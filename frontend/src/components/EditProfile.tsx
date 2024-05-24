@@ -10,6 +10,7 @@ import { Navigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { ChangeEvent } from 'react';
 import NavBar from './NavBar';
+import NotFound from './NotFound';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -294,8 +295,7 @@ const EditProfile = () => {
     if (error) {
         return (
             <div>
-                <h1>Error</h1>
-                {errorMessage}
+                <NotFound></NotFound>
             </div>
         )
     } else {

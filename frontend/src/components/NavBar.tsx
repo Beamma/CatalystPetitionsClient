@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import PollIcon from '@mui/icons-material/Poll';
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Alert, Dialog, DialogContent, DialogContentText, DialogTitle, Snackbar } from '@mui/material';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -29,6 +29,7 @@ function NavBar() {
   const [snackOpen, setSnackOpen] = React.useState(false);
   const [userId, setUserId] = React.useState<string | undefined>();
   const [pages, setPages] = React.useState([{ title: "Petitions", link: "../petitions"}, {title: "My Petitions", link: "../user/petitions"},{ title: "Create Petition", link: "../petitions/create"}])
+  const navigate = useNavigate();
 
   React.useEffect(() => {
       updateUserId()
@@ -93,7 +94,7 @@ function NavBar() {
             Cookies.remove('X-Authorization');
             Cookies.remove('userId');
             handleSnackOpen()
-            window.location.reload()
+            navigate("/home")
         })
   }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import NavBar from './NavBar';
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import axios, { AxiosResponse } from 'axios';
 import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemText, Modal, Snackbar, TextField, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -94,6 +94,7 @@ const Petition = () => {
     const [reload, setReload] = React.useState(1)
     const [tierToSupport, setTierToSupport] = React.useState(0);
     const [supportMessage, setSupportMessage] = React.useState("");
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         getPeitionInfo()
@@ -385,6 +386,10 @@ const Petition = () => {
         })
     };
 
+    const redirectLogin = () => {
+        navigate("/users/login")
+    }
+
     const supportTierButtonHandler = (tierId: number) => {
         let result = '';
         supporters.forEach(supporter => {
@@ -416,7 +421,7 @@ const Petition = () => {
             ) 
         } else {
             return (
-                <Button variant="text" disabled>
+                <Button variant="text" onClick={redirectLogin}>
                     Login / Register to support petitions
                 </Button>
             )
@@ -614,9 +619,12 @@ const Petition = () => {
 
     if (error) {
         return (
-            <Container>
-                <Alert severity="error">{errorMessage}</Alert>
-            </Container>
+            <div>
+                <NavBar></NavBar>
+                <h1>Error loading petition</h1>
+            </div>
+            
+            
         )
     } else {
         return (

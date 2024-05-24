@@ -410,7 +410,6 @@ const Create = () => {
     if (!Number(Cookies.get("userId"))) {
         return(
             <div>
-                <NavBar />
                 <NotFound />
             </div>
         )

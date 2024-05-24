@@ -5,6 +5,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import NavBar from './NavBar';
 import EditIcon from '@mui/icons-material/Edit';
+import NotFound from './NotFound';
 
 
 const UserProfile = () => {
@@ -72,8 +73,7 @@ const UserProfile = () => {
     if (error) {
         return (
             <div>
-                <h1>Error</h1>
-                {errorMessage}
+                <NotFound></NotFound>
             </div>
         )
     } else if (edit) {
