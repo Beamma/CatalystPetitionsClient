@@ -290,7 +290,14 @@ const Petition = () => {
 
     const displaySimilarPetitions = () => {
         if (similarPetitions.length === 0) {
-            return
+            return (
+                <Typography variant="body2" gutterBottom sx={{ 
+                    margin: '20px', 
+                    fontStyle: 'italic' 
+                }}>
+                    There are no similar petitions
+                </Typography>
+            )
         }
         return (
             <div style={{ paddingBottom: '20px' }}>

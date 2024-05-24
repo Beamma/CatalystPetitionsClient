@@ -24,7 +24,5 @@ u3 ac 2 potertially not filtering
 no petittons to show when there are no petitions matching a filter
 when highlighting a petition it doesnt highlight it fully
 when registering there is not much feedback when submiting a invalid img , when supplied a wrong img should be able to cant 
-add a msg when there ar eno petitions created or supported
 cost doesnt reset when creating a petition
-when no similar petitions say a msg potentially
 profile page and edit profile page are loading before dissapearing when logged out

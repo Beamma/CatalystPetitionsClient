@@ -4,7 +4,7 @@ import PetitionCard from './PetitionCard';
 import axios from 'axios';
 import { Cookie } from '@mui/icons-material';
 import Cookies from 'js-cookie';
-import { Box, Button, Container, Grid } from '@mui/material';
+import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import { Navigate } from 'react-router-dom';
 
 interface Petition {
@@ -109,6 +109,23 @@ const MyPetitions = () => {
         return(<Navigate to={"/home"} />)
     }
     
+    if (petitions.length === 0) {
+        return (
+            <div>
+                <NavBar></NavBar>
+                {displayTopButtons()}
+                <Typography variant="h2" gutterBottom sx={{ 
+                    margin: '200px',
+                    marginBottom: '20px'
+                }}>
+                    No petitions to display
+                </Typography>
+                <Typography sx={{fontStyle: 'italic'}}>
+                    Try Creating Or Supporting One!
+                </Typography>
+            </div>
+        )
+    }
     
     return (
         <div>
