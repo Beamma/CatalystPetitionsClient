@@ -2,7 +2,6 @@ import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, IconButton, I
 import axios from "axios";
 import React, { ChangeEvent } from "react";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import UploadIcon from '@mui/icons-material/Upload';
 import { Navigate, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';

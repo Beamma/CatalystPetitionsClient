@@ -1,4 +1,3 @@
-import Logout from "./Logout";
 import NavBar from './NavBar';
 
 const backgroundImageStyle = {

@@ -1,12 +1,9 @@
 import * as React from 'react';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from "axios";
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Alert, Avatar, Box, Button, Card, Container, CssBaseline, Grid, IconButton, InputAdornment, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme, styled} from "@mui/material";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Alert, Box, Button, Card, Container, Grid, IconButton, InputAdornment, Snackbar, TextField, Typography, styled} from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { ChangeEvent } from 'react';
 import NavBar from './NavBar';
@@ -33,7 +30,6 @@ const EditProfile = () => {
     const [fname, setFname] = React.useState("");
     const [lname, setLname] = React.useState("");
     const [email, setEmail] = React.useState("");
-    const [photoUrl, setPhotoUrl] = React.useState<string>("");
     const [newPassword, setNewPassword] = React.useState("");
     const [oldPassword, setOldPassword] = React.useState("");
     const [showPasswordNew, setShowPasswordNew] = React.useState<boolean>(false);
@@ -101,7 +97,6 @@ const EditProfile = () => {
                     setError(true)
                     setErrorMessage("403 Forbidden")
                 }
-                setPhotoUrl('http://localhost:4941/api/v1/users/' + id +'/image')
 
             }, (error) => {
                 setError(true);
@@ -316,10 +311,17 @@ const EditProfile = () => {
         )
     }
     
-    if (error) {
+    if (Cookies.get("userId") === undefined) {
         return (
             <div>
                 <NotFound></NotFound>
+            </div>
+        )
+    } else if (error) {
+        return (
+            <div>
+                <NavBar></NavBar>
+                {errorMessage}
             </div>
         )
     } else {

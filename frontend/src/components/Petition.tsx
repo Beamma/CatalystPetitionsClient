@@ -1,12 +1,11 @@
 import React from 'react';
 import NavBar from './NavBar';
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import axios, { AxiosResponse } from 'axios';
-import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemText, Modal, Snackbar, TextField, Typography } from '@mui/material';
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import axios from 'axios';
+import { Alert, Avatar, Box, Button, Card, CardContent, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemText, Modal, Snackbar, TextField, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
-import { Margin } from '@mui/icons-material';
 import PetitionCard from './PetitionCard';
 
 const style = {
@@ -634,7 +633,7 @@ const Petition = () => {
         return (
             <div>
                 <NavBar></NavBar>
-                <h1>Error loading petition</h1>
+                <h1>{errorMessage}</h1>
             </div>
             
             

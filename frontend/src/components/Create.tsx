@@ -1,9 +1,9 @@
 import React, { ChangeEvent, useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Typography, Grid, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, Card, Paper, Container, Box, styled, CardContent, Autocomplete } from '@mui/material';
+import { TextField, Button, Typography, Grid, IconButton, Snackbar, Alert, FormControl, Select, MenuItem, SelectChangeEvent, Card, Container, Box, styled, CardContent} from '@mui/material';
 import NavBar from "./NavBar";
 import AddIcon from '@mui/icons-material/Add';
-import { Delete, Padding } from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';

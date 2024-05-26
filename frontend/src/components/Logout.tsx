@@ -1,12 +1,7 @@
 import * as React from 'react';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import axios from "axios";
-import { Alert, Avatar, Box, Button, Container, CssBaseline, Grid, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme} from "@mui/material";
-import { Navigate } from "react-router-dom";
+import { Alert, Box, Button, Container, CssBaseline, Snackbar, ThemeProvider, createTheme} from "@mui/material";
 import Cookies from 'js-cookie';
-import { useUserStore } from '../store/user';
 
 
 
@@ -17,9 +12,6 @@ const Logout = () => {
     const [snackMessage, setSnackMessage] = React.useState("")
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
-    const [response, setResponse] = React.useState(false);
-    const userId = useUserStore(state => state.id)
-    const setUserId = useUserStore(state => state.setUser)
 
     const handleSnackCloseSuccess = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -49,8 +41,6 @@ const Logout = () => {
                 setSnackOpenSuccess(true)
 
                 Cookies.remove('X-Authorization');
-                setResponse(true)
-                setUserId("0");
             }, (error) => {
                 setSnackMessage(error.response.statusText)
                 setSnackOpenFail(true)

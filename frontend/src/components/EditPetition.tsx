@@ -1,10 +1,10 @@
 import Cookies from 'js-cookie';
 import React, { ChangeEvent } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import NavBar from './NavBar';
 import NotFound from './NotFound';
 import axios from 'axios';
-import { Alert, Avatar, Box, Button, Card, CardContent, Container, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography, styled } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, Container, FormControl, Grid, IconButton, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography, styled } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Delete } from '@mui/icons-material';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';

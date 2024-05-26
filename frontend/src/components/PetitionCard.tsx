@@ -4,11 +4,10 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Alert, Avatar, Box, Button, CardActionArea, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Snackbar } from '@mui/material';
-import { white } from 'material-ui/styles/colors';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Cookies from 'js-cookie';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 interface PetitionCardProps {
@@ -35,12 +34,7 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackMessage, setSnackMessage] = React.useState("")
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
-    const [redirect, setRedirect] = useState(1);
     const navigate = useNavigate();
-    const color = numberToRGB(categoryId);
-    const chipStyle: React.CSSProperties = {
-      backgroundColor: color,
-    };
     const editPetition = () => {
         const url = `/petitions/${petitionId}/edit`
         navigate(url);
@@ -144,11 +138,6 @@ const PetitionCard: React.FC<PetitionCardProps> = ({ title, ownerFirstName, owne
             return
         }
     }
-
-    const linkStyle = {
-        textDecoration: 'none',
-        color: 'inherit',
-    };
     
     const linkToPetition = () => {
         navigate(`/petitions/${petitionId}`)

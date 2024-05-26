@@ -1,14 +1,12 @@
-import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Container, SliderProps, IconButton, TextField, InputAdornment, Typography, Button } from "@mui/material";
+import { Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Container, SliderProps, TextField, InputAdornment, Typography, Button } from "@mui/material";
 import axios from "axios";
-import React, { ChangeEvent, FormEvent } from "react";
+import React, { ChangeEvent } from "react";
 import NavBar from './NavBar';
 import CSS from 'csstype';
-import {useSearchStore} from "../store";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import PetitionCard from "./PetitionCard";
 import SearchIcon from '@mui/icons-material/Search';
-import Cookies from "js-cookie";
 
 const POS_TAG_HEIGHT = 48;
 const POS_TAG_PADDING_TOP = 8;
@@ -145,18 +143,6 @@ const Petitions = () => {
         }
         let resultString = "&supportingCost=" + filteredCost.toString()
         return resultString
-    }
-
-    const getCategories = () => {
-        axios.get("http://localhost:4941/api/v1/petitions/categories")
-            .then((reponse) => {
-                setCategories(reponse.data)
-            })
-    }
-
-    function getCategoryName(categoryId: number): string | undefined {
-        const category = categories.find(category => category.categoryId === categoryId);
-        return category ? category.name : undefined;
     }
 
     const filterCategories = () => {

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import NavBar from './NavBar';
 import PetitionCard from './PetitionCard';
 import axios from 'axios';
-import { Cookie } from '@mui/icons-material';
 import Cookies from 'js-cookie';
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import { Navigate } from 'react-router-dom';
@@ -33,7 +32,6 @@ interface Category {
 
 const MyPetitions = () => {
     const [petitions, setPetitions] = useState<Petition[]>([]);
-    const [categories, setCategories] = useState<Category[]>([]);
     const [petitionPage, setPetitionPage] = useState<string>("Owned");
 
     useEffect(() => {

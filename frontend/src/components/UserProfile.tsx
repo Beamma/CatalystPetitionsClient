@@ -1,6 +1,6 @@
 import * as React from 'react';
 import axios from "axios";
-import { Box, Button, Card, Container, Grid, IconButton, Typography} from "@mui/material";
+import { Box, Button, Card, Container, Grid, Typography} from "@mui/material";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import NavBar from './NavBar';
@@ -9,7 +9,6 @@ import NotFound from './NotFound';
 
 
 const UserProfile = () => {
-    const [updateFlag, setUpdateFlag] = React.useState(true);
     const [error, setError] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState("");
     const {id} = useParams();
@@ -69,11 +68,18 @@ const UserProfile = () => {
     const handleEdit = () => {
         setEdit(true);
     }
+
+    if (Cookies.get("userId") === undefined) {
+        return (
+            <NotFound></NotFound>
+        )
+    }
     
     if (error) {
         return (
             <div>
-                <NotFound></NotFound>
+                <NavBar></NavBar>
+                {errorMessage}
             </div>
         )
     } else if (edit) {

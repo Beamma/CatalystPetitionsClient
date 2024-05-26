@@ -20,7 +20,6 @@ import Cookies from 'js-cookie';
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const [suggestedPetitions, setSuggestedPetitions] = React.useState<petitionReturn>({petitions: [], count: 0});
   const [redirect, setRedirect] = React.useState(false);
   const [signInStatus, setSignInStatus] = React.useState(false);
   const [navProfile, setNavProfile] = React.useState(false);
