@@ -3,17 +3,13 @@
 Possibly change image links to be local
 Update filtering box on Petitions page
     Change SupportTier Cost to be input instead of slider
-    Tags are sometimes unknown in similar petitions
     Remove unsued variables
 Error field highlighting
 Nav bar flashing when logged out
-    Need ability to toggle support tier cost off
 
 Make sure to run through the ACs
 
 
 
 when highlighting a petition it doesnt highlight it fully
-    when registering there is not much feedback when submiting a invalid img , when supplied a wrong img should be able to cant 
-    cost doesnt reset when creating a petition
 profile page and edit profile page are loading before dissapearing when logged out

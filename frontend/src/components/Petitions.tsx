@@ -1,4 +1,4 @@
-import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Container, SliderProps, IconButton, TextField, InputAdornment, Typography } from "@mui/material";
+import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Container, SliderProps, IconButton, TextField, InputAdornment, Typography, Button } from "@mui/material";
 import axios from "axios";
 import React, { ChangeEvent, FormEvent } from "react";
 import NavBar from './NavBar';
@@ -56,6 +56,11 @@ const Petitions = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [petitions, setPetitions] = React.useState<Petition[]>([]);
     const [categories, setCategories] = React.useState<Category[]>([]);
+    const [sliderEnabled, setSliderEnabled] = React.useState(true);
+
+    const toggleSlider = () => {
+        setSliderEnabled(!sliderEnabled);
+    };
 
     const updateFilterCats = (event: SelectChangeEvent<typeof filterCats>) => {
         const {
@@ -74,12 +79,12 @@ const Petitions = () => {
 
     React.useEffect(() => {
         fetchPetitions()
-    }, [searchQuery, filterCats, filteredCost, sort, page, rowsPerPage])
+    }, [searchQuery, filterCats, filteredCost, sort, page, rowsPerPage, sliderEnabled])
 
     React.useEffect(() => {
         setPage(1)
         fetchPetitions()
-    }, [searchQuery, filterCats, filteredCost, sort, rowsPerPage])
+    }, [searchQuery, filterCats, filteredCost, sort, rowsPerPage, sliderEnabled])
 
     const fetchPetitions = async () => {
         try {
@@ -132,6 +137,9 @@ const Petitions = () => {
     }
 
     const parseCost = () => {
+        if (!sliderEnabled) {
+            return ""
+        }
         if (filteredCost === undefined) {
             return ""
         }
@@ -200,7 +208,15 @@ const Petitions = () => {
         return (
             <FormControl fullWidth>
                 Support Tier Cost
-                <Slider aria-label="Default" valueLabelDisplay="auto" onChangeCommitted={handleFilterCostChange} value={dynamicFilteredCost} onChange={handleDynamicCost}/>
+                <Slider aria-label="Default" valueLabelDisplay="auto" onChangeCommitted={handleFilterCostChange} value={dynamicFilteredCost} onChange={handleDynamicCost} disabled={!sliderEnabled}/>
+                <Button
+                    size="small"
+                    variant="contained"
+                    onClick={toggleSlider}
+                    sx={{ marginBottom: '10px' }}
+                >
+                    {sliderEnabled ? 'Show All' : 'Filter By Cost'}
+                </Button>
             </FormControl>
         )
     }

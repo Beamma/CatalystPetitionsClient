@@ -81,7 +81,7 @@ const Petition = () => {
     const [showAllSupporters, setShowAllSupporters] = React.useState<boolean>(false);
     const [similarPetitions, setSimilarPetitions] = React.useState<SimilarPetition[]>([]);
     const [showAllPetitions, setShowAllPetitions] = React.useState<boolean>(false);
-    const [categories, setCategories] = React.useState<Category[]>([]);
+    const [categories, setCategories] = React.useState<Category[]>([{"categoryId":3,"name":"Animal Rights"},{"categoryId":8,"name":"Arts and Culture"},{"categoryId":9,"name":"Community Development"},{"categoryId":10,"name":"Economic Empowerment"},{"categoryId":5,"name":"Education"},{"categoryId":2,"name":"Environmental Causes"},{"categoryId":4,"name":"Health and Wellness"},{"categoryId":6,"name":"Human Rights"},{"categoryId":11,"name":"Science and Research"},{"categoryId":12,"name":"Sports and Recreation"},{"categoryId":7,"name":"Technology and Innovation"},{"categoryId":1,"name":"Wildlife"}]);
     const [editFlag, setEditFlag] = React.useState<boolean>(false);
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -99,7 +99,6 @@ const Petition = () => {
     React.useEffect(() => {
         getPeitionInfo()
         getSupporters()
-        getCategories()
         displayPetitionInfo()
         setShowAllSupporters(false)
         setShowAllPetitions(false)
@@ -112,6 +111,10 @@ const Petition = () => {
     React.useEffect(() => {
 
     }, [editFlag, redriect])
+
+    React.useEffect(() => {
+        getCategories()
+    }, [similarPetitions])
 
     React.useEffect(() => {
     }, [reload])
