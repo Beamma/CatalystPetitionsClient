@@ -1,4 +1,4 @@
-import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Container, SliderProps, IconButton, TextField, InputAdornment } from "@mui/material";
+import { TableFooter, Box, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, SelectChangeEvent, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Container, SliderProps, IconButton, TextField, InputAdornment, Typography } from "@mui/material";
 import axios from "axios";
 import React, { ChangeEvent, FormEvent } from "react";
 import NavBar from './NavBar';
@@ -293,6 +293,47 @@ const Petitions = () => {
           );
     }
 
+    const displayPetitions = () => {
+        if (petitionCount === 0) {
+            return (
+                <div>
+                    <Typography variant="h2" gutterBottom sx={{ 
+                        margin: '200px',
+                        marginBottom: '20px'
+                    }}>
+                        No petitions to display
+                    </Typography>
+                    <Typography sx={{fontStyle: 'italic', marginBottom: '200px'}}>
+                        There are no petitions to mathc your filter options
+                    </Typography>
+                </div>
+            )
+        }
+        return (
+            <Grid container spacing={3} >
+                {petitions.map((petition) => (
+                    <Grid item xs={12} sm={6} md={3} key={petition.petitionId}>
+                        <PetitionCard
+                            key={petition.petitionId}
+                            title={petition.title}
+                            ownerFirstName={petition.ownerFirstName}
+                            ownerLastName={petition.ownerLastName}
+                            numberOfSupporters={petition.numberOfSupporters}
+                            creationDate={petition.creationDate}
+                            imageUrl={`http://localhost:4941/api/v1/petitions/${petition.petitionId}/image` || ''}
+                            categoryName={petition.categoryName || 'Unknown'}
+                            ownerProfilePictureUrl={petition.ownerProfilePictureUrl || ''}
+                            supportingCost={petition.supportingCost}
+                            categoryId={petition.categoryId}
+                            petitionId={petition.petitionId}
+                            ownerId={petition.ownerId}
+                        />
+                    </ Grid>
+                ))}
+            </Grid>
+        )
+    }
+
     return (
         <div>
             <NavBar></NavBar>
@@ -315,27 +356,7 @@ const Petitions = () => {
             </Paper>
                 <h1>Petitions</h1>
                 <Container maxWidth="xl" style={{ display: 'flex', flexDirection: 'column', paddingBottom: '20px' }}>
-                    <Grid container spacing={3} >
-                        {petitions.map((petition) => (
-                            <Grid item xs={12} sm={6} md={3} key={petition.petitionId}>
-                                <PetitionCard
-                                    key={petition.petitionId}
-                                    title={petition.title}
-                                    ownerFirstName={petition.ownerFirstName}
-                                    ownerLastName={petition.ownerLastName}
-                                    numberOfSupporters={petition.numberOfSupporters}
-                                    creationDate={petition.creationDate}
-                                    imageUrl={`http://localhost:4941/api/v1/petitions/${petition.petitionId}/image` || ''}
-                                    categoryName={petition.categoryName || 'Unknown'}
-                                    ownerProfilePictureUrl={petition.ownerProfilePictureUrl || ''}
-                                    supportingCost={petition.supportingCost}
-                                    categoryId={petition.categoryId}
-                                    petitionId={petition.petitionId}
-                                    ownerId={petition.ownerId}
-                                />
-                            </ Grid>
-                        ))}
-                    </Grid>
+                    {displayPetitions()}
                     {pagination()}
                 </Container>
         </div>

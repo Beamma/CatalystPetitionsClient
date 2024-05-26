@@ -36,11 +36,6 @@ function NavBar() {
       updatePages()
   }, [logOut])
 
-  // React.useEffect(() =>{
-  //   // updatePages()
-  //     console.log("Reoload1")
-  // }, [])
-
   const updatePages = () => {
     if (Cookies.get('userId')) {
       setPages([{ title: "Petitions", link: "../petitions"}, {title: "My Petitions", link: "../user/petitions"},{ title: "Create Petition", link: "../petitions/create"}])
@@ -173,7 +168,7 @@ function NavBar() {
     return (<Navigate to = {{ pathname: `/users/${userId}` }} />)
   }
 
-  if (signInStatus) {
+  if (signInStatus && (window.location.pathname !== `/users/login`)) {
     return (<Navigate to = {{ pathname: "/users/login" }} />)
   }
   else if (redirect && window.location.pathname !== "/petitions") {

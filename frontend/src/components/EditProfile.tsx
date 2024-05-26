@@ -6,7 +6,7 @@ import axios from "axios";
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Alert, Avatar, Box, Button, Card, Container, CssBaseline, Grid, IconButton, InputAdornment, Link, Snackbar, TextField, ThemeProvider, Typography, createTheme, styled} from "@mui/material";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { ChangeEvent } from 'react';
 import NavBar from './NavBar';
@@ -44,6 +44,7 @@ const EditProfile = () => {
     const [snackOpenSuccess, setSnackOpenSuccess] = React.useState(false)
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
     const [deletePhoto, setDeletePhoto] = React.useState(false);
+    const navigate = useNavigate();
 
     const handleClickShowPasswordOld = () => {
         setShowPasswordOld((prev) => !prev);
@@ -147,8 +148,32 @@ const EditProfile = () => {
             return
         }
 
+
+        let body = {}
+        if (oldPassword !== "" && newPassword !== "") {
+            body = {"email": email, "firstName": fname, "lastName": lname, "password": newPassword, "currentPassword": oldPassword}
+        } else {
+            body = {"email": email, "firstName": fname, "lastName": lname}
+        }
+        
+        axios.patch(`http://localhost:4941/api/v1/users/${id}`, body, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+            .then((res) => {
+                setSnackOpenFail(false)
+                setSnackOpenSuccess(true)
+                setSnackMessage("Successfully updated user")
+                setOldPassword("")
+                setNewPassword("")
+                if (selectedFile === null && !deletePhoto) {
+                    navigate(`/users/${id}`)
+                }
+            }, (error) => {
+                setSnackMessage(error.response.statusText)
+                setSnackOpenFail(true)
+            })
+
         if (deletePhoto) {
             deleteImage()
+            navigate(`/users/${id}`)
             window.location.reload()
         }
 
@@ -166,31 +191,13 @@ const EditProfile = () => {
                     setSnackOpenSuccess(true)
                     setSnackMessage("Successfully updated user")
                     setPhotoExists(true)
+                    navigate(`/users/${id}`)
                     window.location.reload()
                 }, (error) => {
                     setSnackMessage(error.response.statusText)
                     setSnackOpenFail(true)
                 })
         } 
-
-        let body = {}
-        if (oldPassword !== "" && newPassword !== "") {
-            body = {"email": email, "firstName": fname, "lastName": lname, "password": newPassword, "currentPassword": oldPassword}
-        } else {
-            body = {"email": email, "firstName": fname, "lastName": lname}
-        }
-        
-        axios.patch(`http://localhost:4941/api/v1/users/${id}`, body, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
-            .then((res) => {
-                setSnackOpenFail(false)
-                setSnackOpenSuccess(true)
-                setSnackMessage("Successfully updated user")
-                setOldPassword("")
-                setNewPassword("")
-            }, (error) => {
-                setSnackMessage(error.response.statusText)
-                setSnackOpenFail(true)
-            })
     }
 
     const deleteImage = () => {

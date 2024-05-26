@@ -359,8 +359,6 @@ const Petition = () => {
     }
 
     const handleSupportClickOpen = (tierId: number) => {
-        console.log("Test")
-        console.log(tierId)
         setTierToSupport(tierId)
         setSupportOpen(true);
     };
@@ -384,7 +382,6 @@ const Petition = () => {
             setReload(reload * -1)
             setSnackMessage("You succesfully supported this petition")
             setSnackOpenSuccess(true)
-            console.log("Success Support")
             setSupportMessage("")
         }, (error) => {
             setSnackMessage(error.response.statusText)
@@ -474,7 +471,14 @@ const Petition = () => {
 
     const supportersDisplay = () => {
         if (supporters.length === 0) {
-            return
+            return (
+                <Typography variant="body2" gutterBottom sx={{ 
+                    margin: '20px', 
+                    fontStyle: 'italic' 
+                }}>
+                    There are no supporters for this petition
+                </Typography>
+            )
         } else {
             return (
                 <div>

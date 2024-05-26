@@ -583,3 +583,19 @@
 2024-05-23 22:40:13:4013 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m
 2024-05-23 22:40:39:4039 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m
 2024-05-23 22:40:39:4039 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m
+2024-05-26 12:03:58:358 [31merror[39m: [31mDuplicate entry '11227-Test2' for key 'petition_id'[39m
+2024-05-26 12:04:18:418 [31merror[39m: [31mDuplicate entry '11231-Test2' for key 'petition_id'[39m
+2024-05-26 12:04:33:433 [31merror[39m: [31mDuplicate entry '11231-Test2' for key 'petition_id'[39m
+2024-05-26 12:09:16:916 [31merror[39m: [31mDuplicate entry '11231-Test2' for key 'petition_id'[39m
+2024-05-26 12:12:35:1235 [31merror[39m: [31mDuplicate entry '11231-Test2' for key 'petition_id'[39m
+2024-05-26 12:12:45:1245 [31merror[39m: [31mDuplicate entry '11231-Test3' for key 'petition_id'[39m
+2024-05-26 12:12:54:1254 [31merror[39m: [31mDuplicate entry '11231-Test3' for key 'petition_id'[39m
+2024-05-26 12:13:14:1314 [31merror[39m: [31mDuplicate entry '11231-Test2' for key 'petition_id'[39m
+2024-05-26 12:20:44:2044 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/1ESlQPLELuue7f9gxv8nkZe2UPiQLIh8.jpeg'[39m
+2024-05-26 12:54:53:5453 [31merror[39m: [31mDuplicate entry 'sportfannz03@gmail.com' for key 'unique_key'[39m
+2024-05-26 13:00:30:030 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m
+2024-05-26 13:00:30:030 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m
+2024-05-26 13:00:37:037 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m
+2024-05-26 13:00:37:037 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m
+2024-05-26 13:00:40:040 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m
+2024-05-26 13:00:40:040 [31merror[39m: [31mENOENT: no such file or directory, open './storage/images/user_11.jpg'[39m

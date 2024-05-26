@@ -74,9 +74,8 @@ const Login = () => {
                     setSnackOpenFail(false)
                     setSnackMessage("User successfully logged in")
                     setSnackOpenSuccess(true)
-                    console.log(response.data.token)
-                    Cookies.set('X-Authorization', response.data.token);
-                    Cookies.set('userId', response.data.userId);
+                    Cookies.set('X-Authorization', response.data.token,);
+                    Cookies.set('userId', response.data.userId,);
                     setResponse(true)
                 }, (error) => {
                     setSnackMessage(error.response.statusText)
@@ -182,7 +181,7 @@ const Login = () => {
                     autoHideDuration={6000}
                     open={snackOpenSuccess}
                     onClose={handleSnackCloseSuccess}
-                    key={snackMessage}>
+                    key={"Success"}>
                     <Alert onClose={handleSnackCloseSuccess} severity="success" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>
@@ -191,7 +190,7 @@ const Login = () => {
                     autoHideDuration={6000}
                     open={snackOpenFail}
                     onClose={handleSnackCloseFail}
-                    key={snackMessage}>
+                    key={"Failure"}>
                     <Alert onClose={handleSnackCloseFail} severity="error" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>

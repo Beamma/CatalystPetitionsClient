@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import React, { ChangeEvent } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import NavBar from './NavBar';
 import NotFound from './NotFound';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Delete } from '@mui/icons-material';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import DeleteIcon from '@mui/icons-material/Delete';
+
 
 interface PetitionFormData {
     title: string;
@@ -83,6 +84,7 @@ const EditPetition = () => {
     const [updateFlag, setUpdateFlag] = React.useState<number>(1)
     const [photoExists, setPhotoExists] = React.useState(true);
     const [cancel, setCancel] = React.useState<number>(1);
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         getPeitionInfo()
@@ -220,6 +222,25 @@ const EditPetition = () => {
             return
         }
 
+        const areTitlesUnique = (items: SupportTier[]): boolean => {
+            const titles = new Set<string>();
+          
+            for (const item of items) {
+              if (titles.has(item.title)) {
+                return false; // Duplicate title found
+              }
+              titles.add(item.title);
+            }
+          
+            return true; // All titles are unique
+        };
+
+        if (!areTitlesUnique(tierData.supportTiers)) {
+            setSnackMessage("Support Tier titles must be unique")
+            setSnackOpenFail(true)
+            return
+        }
+
 
         axios.patch(`http://localhost:4941/api/v1/petitions/${id}`, petitionData, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
         .then((response) => {
@@ -231,9 +252,9 @@ const EditPetition = () => {
             if (selectedFile !== null) {
                 axios.put(`http://localhost:4941/api/v1/petitions/${id}/image`, selectedFile, {headers: {'X-Authorization': Cookies.get("X-Authorization"), "Content-Type": selectedFile.type}})
                 .then((response) => {
-                    setUpdateFlag(updateFlag * -1)
                     setPhotoExists(true)
                     setSelectedFile(null)
+                    setUpdateFlag(updateFlag * -1)
                 }, (error) => {
                     setSnackMessage(error.response.statusText)
                     setSnackOpenFail(true)
@@ -242,17 +263,36 @@ const EditPetition = () => {
             
             const { newSupportTiers, changedSupportTiers, deletedSupportTiers } = compareTiers();
             deletedSupportTiers.forEach(deletedTier => {
-                axios.delete(`http://localhost:4941/api/v1/petitions/${id}/supportTiers/${deletedTier.supportTierId}`, {headers: {'X-Authorization': Cookies.get("X-Authorization")}});
+                axios.delete(`http://localhost:4941/api/v1/petitions/${id}/supportTiers/${deletedTier.supportTierId}`, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+                .then((response) => {
+
+                }, (error) => {
+                    setSnackMessage(error.response.statusText)
+                    setSnackOpenFail(true)
+                })
             });
 
             newSupportTiers.forEach(newTier => {
                 axios.put(`http://localhost:4941/api/v1/petitions/${id}/supportTiers`,newTier, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
+                .then((response) => {
+
+                }, (error) => {
+                    setSnackMessage(error.response.statusText)
+                    setSnackOpenFail(true)
+                })
             });
 
             changedSupportTiers.forEach(changedTier => {
                 axios.patch(`http://localhost:4941/api/v1/petitions/${id}/supportTiers/${changedTier.supportTierId}`,changedTier, {headers: {'X-Authorization': Cookies.get("X-Authorization")}})
-            });
+                .then((response) => {
 
+                }, (error) => {
+                    setSnackMessage(error.response.statusText)
+                    setSnackOpenFail(true)
+                })
+            });
+            navigate(`/petitions/${id}`)
+            window.location.reload();
             setSnackOpenFail(false)
             setSnackOpenSuccess(true)
             setSnackMessage("Successfully Updated Petition")
@@ -261,8 +301,6 @@ const EditPetition = () => {
             setSnackMessage(error.response.statusText)
             setSnackOpenFail(true)
         })
-
-        
     };
 
     const handleCancel = () => {

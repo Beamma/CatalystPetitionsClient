@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { ChangeEvent } from "react";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import UploadIcon from '@mui/icons-material/Upload';
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import NavBar from "./NavBar";
@@ -33,6 +33,7 @@ const Register = () => {
     const [snackOpenFail, setSnackOpenFail] = React.useState(false)
     const [response, setResponse] = React.useState(false);
     const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
+    const navigate = useNavigate();
 
     const handleSnackCloseSuccess = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -73,7 +74,6 @@ const Register = () => {
             setSnackOpenFail(true)
         } else {
             if (selectedFile !== null) {
-                console.log(selectedFile.type)
                 if (!["image/jpeg", "image/jpg", "image/png", "image/gif"].includes(selectedFile.type)) {
                     setSnackMessage("Invalid file type, must be jpg, png or gif")
                     setSnackOpenFail(true)
@@ -108,6 +108,8 @@ const Register = () => {
                                     setSelectedFile(null);
                                     setSnackOpenFail(false)
                                     setSnackOpenSuccess(false)
+                                    navigate(`/home`)
+                                    window.location.reload()
                                 }, (error) => {
                                     setSnackMessage(error.response.statusText)
                                     setSnackOpenFail(true)
@@ -289,7 +291,7 @@ const Register = () => {
                     autoHideDuration={6000}
                     open={snackOpenSuccess}
                     onClose={handleSnackCloseSuccess}
-                    key={snackMessage}>
+                    key={"Success"}>
                     <Alert onClose={handleSnackCloseSuccess} severity="success" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>
@@ -298,7 +300,7 @@ const Register = () => {
                     autoHideDuration={6000}
                     open={snackOpenFail}
                     onClose={handleSnackCloseFail}
-                    key={snackMessage}>
+                    key={"Failure"}>
                     <Alert onClose={handleSnackCloseFail} severity="error" sx={{width: '100%'}}>
                         {snackMessage}
                     </Alert>
