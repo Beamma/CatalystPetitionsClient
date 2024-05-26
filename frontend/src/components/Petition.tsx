@@ -71,7 +71,7 @@ interface Category {
     name: string;
 }
 
-const Petition = () => {
+const PetitionPage = () => {
     const {id} = useParams();
     const [error, setError] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState("");
@@ -548,7 +548,7 @@ const Petition = () => {
                         </Typography>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <img src={'http://localhost:4941/api/v1/petitions/' + petition.petitionId +'/image'} width="80%" ></img>
+                                <img src={'http://localhost:4941/api/v1/petitions/' + petition.petitionId +'/image'} alt='' width="80%" ></img>
                             </Grid>
                             <Grid item xs={6}>
                                 <Grid container spacing={2} alignItems="center">
@@ -648,4 +648,4 @@ const Petition = () => {
     }
 }
 
-export default Petition;
+export default PetitionPage;

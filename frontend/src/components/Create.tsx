@@ -145,6 +145,7 @@ const Create = () => {
             if (tier.cost < 0 || tier.description === "" || tier.title === "") {
                 return false;
             }
+            return true
         });
 
         if (checkedTiers.includes(false)) {
@@ -255,7 +256,7 @@ const Create = () => {
         } else {
             return (
                 <div>
-                        <img src={URL.createObjectURL(selectedFile) || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                        <img src={URL.createObjectURL(selectedFile) || ""} alt='' width="80%" style={{ borderRadius: '5px' }}></img>
                         <Button
                             variant="contained"
                             color="secondary"

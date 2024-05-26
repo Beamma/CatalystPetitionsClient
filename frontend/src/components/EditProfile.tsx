@@ -131,7 +131,7 @@ const EditProfile = () => {
             return
         }
 
-        if (oldPassword == "" && newPassword !== "") {
+        if (oldPassword === "" && newPassword !== "") {
             setSnackMessage("To change password you must supply both new and old passwords")
             setSnackOpenFail(true)
             return
@@ -220,7 +220,7 @@ const EditProfile = () => {
         if (photoExists === true) {
             return (
                 <div>
-                    <img src={`http://localhost:4941/api/v1/users/${id}/image` || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                    <img src={`http://localhost:4941/api/v1/users/${id}/image` || ""} alt='' width="80%" style={{ borderRadius: '5px' }}></img>
                     <Button
                         variant="contained"
                         color="secondary"
@@ -271,7 +271,7 @@ const EditProfile = () => {
         } else {
             return (
                 <div>
-                    <img src={URL.createObjectURL(selectedFile) || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                    <img src={URL.createObjectURL(selectedFile) || ""} alt='' width="80%" style={{ borderRadius: '5px' }}></img>
                     <Button
                         variant="contained"
                         color="secondary"

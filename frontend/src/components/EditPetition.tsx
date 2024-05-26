@@ -214,6 +214,8 @@ const EditPetition = () => {
             if (tier.cost < 0 || tier.description === "" || tier.title === "") {
                 return false;
             }
+
+            return true
         });
 
         if (checkedTiers.includes(false)) {
@@ -407,7 +409,7 @@ const EditPetition = () => {
         if (photoExists === true) {
             return (
                 <div>
-                    <img src={`http://localhost:4941/api/v1/petitions/${id}/image` || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                    <img src={`http://localhost:4941/api/v1/petitions/${id}/image` || ""} alt='' width="80%" style={{ borderRadius: '5px' }}></img>
                     <Button
                         variant="contained"
                         color="secondary"
@@ -458,7 +460,7 @@ const EditPetition = () => {
         } else {
             return (
                 <div>
-                    <img src={URL.createObjectURL(selectedFile) || ""} width="80%" style={{ borderRadius: '5px' }}></img>
+                    <img src={URL.createObjectURL(selectedFile) || ""} alt='' width="80%" style={{ borderRadius: '5px' }}></img>
                     <Button
                         variant="contained"
                         color="secondary"

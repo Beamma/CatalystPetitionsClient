@@ -27,7 +27,6 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 const Login = () => {
-    const [updateFlag, setUpdateFlag] = React.useState(true);
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [showPassword, setShowPassword] = React.useState<boolean>(false);
@@ -66,7 +65,6 @@ const Login = () => {
         } else {
             axios.post('http://localhost:4941/api/v1/users/login', { "email": email, "password": password})
                 .then((response) => {
-                    setUpdateFlag(true);
                     setEmail("");
                     setPassword("");
                     

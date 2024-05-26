@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import NotFound from "./components/NotFound";
 import Home from "./components/Home";
 import Register from "./components/Register";
@@ -12,9 +12,6 @@ import Petition from './components/Petition';
 import Create from './components/Create';
 import EditPetition from './components/EditPetition';
 import MyPetitions from './components/MyPetitions';
-import Cookies from 'js-cookie';
-
-const userId = Cookies.get("userId");
 
 function App() {
   return (
