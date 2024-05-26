@@ -74,14 +74,16 @@ const Petitions = () => {
         padding: "10px",
         margin: "20px",
     }
-
     React.useEffect(() => {
         fetchPetitions()
+    })
+
+    React.useEffect(() => {
+
     }, [searchQuery, filterCats, filteredCost, sort, page, rowsPerPage, sliderEnabled])
 
     React.useEffect(() => {
         setPage(1)
-        fetchPetitions()
     }, [searchQuery, filterCats, filteredCost, sort, rowsPerPage, sliderEnabled])
 
     const fetchPetitions = async () => {
@@ -125,7 +127,7 @@ const Petitions = () => {
 
     const parseCategories = () => {
         let resultString = ""
-        filterCats.map((cat: String) =>
+        filterCats.forEach((cat: String) =>
             {
                 const categoryId = categories.find(category => category.name === cat);
                 resultString = resultString + "&categoryIds=" +categoryId?.categoryId

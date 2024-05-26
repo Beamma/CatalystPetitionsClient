@@ -3,7 +3,6 @@
 Possibly change image links to be local
 Update filtering box on Petitions page
     Change SupportTier Cost to be input instead of slider
-    Remove unsued variables
 Error field highlighting
 Nav bar flashing when logged out
 

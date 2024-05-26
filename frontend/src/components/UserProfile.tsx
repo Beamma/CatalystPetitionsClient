@@ -1,7 +1,7 @@
 import * as React from 'react';
 import axios from "axios";
 import { Box, Button, Card, Container, Grid, Typography} from "@mui/material";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
 import NavBar from './NavBar';
 import EditIcon from '@mui/icons-material/Edit';
@@ -17,20 +17,18 @@ const UserProfile = () => {
     const [email, setEmail] = React.useState("");
     const [photoUrl, setPhotoUrl] = React.useState<string>("");
     const [edit, setEdit] = React.useState(false);
-    const navigate = useNavigate();
 
-
-    React.useEffect(() => {
-        displayImage()
-    }, [])
 
     React.useEffect(() => {
         getUserInfo()
+    })
+
+    React.useEffect(() => {
     }, [error, edit])
 
     const displayImage = () =>{
         return (
-            <img src={ photoUrl || `https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png`} style={{ width: "80%", borderRadius: "10px" }} ></img>
+            <img src={ photoUrl || `https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png`} alt='UserProfile' style={{ width: "80%", borderRadius: "10px" }} ></img>
         )
     }
 
